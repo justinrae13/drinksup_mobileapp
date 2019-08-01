@@ -34,7 +34,9 @@
     <div class="img_wrapper iw_3" id="img_3" (touchstart)="touchstart_3($event)" (touchend)="touchend_3($event)">
       <img [src]="imgLink3" alt="Photo n° 3" id="third_pic">
     </div>
-    <div class="bot_overlay"><h1>{{myBar.ENT_NOM}}</h1></div>
+    <div class="bot_overlay">
+      <h1>{{myBar.ENT_NOM}}</h1>
+    </div>
   </div>
 
    <div class="bar-content">
@@ -45,6 +47,11 @@
             <p>( {{gradeTot}} / 5.0 )</p>
         </div> 
         <p class="addressBar">{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} - {{myBar.ENT_LOCALITE}}</p>
+        <div class="button_find_bar">
+            <ion-button>
+                <img src="../../assets/img/map-icon.svg">
+            </ion-button>
+        </div>
     </div>
 
     <div class="second-section">
@@ -54,21 +61,21 @@
     <div *ngIf="paramOfferId !== null">
       <div class="offered_drinks">
         <div class="offered_drinks_img">
-            <img [src]="drinksPhotoURI + 'cocktail.jpg'">
+            <img src="../../assets/img/logo-offer.svg">
         </div>
         <div class="offered_drinks_desc">
           <div>
-            <p>Boisson offerte</p>
+            <p>L'offre :</p>
             <h1>{{oneOffer.OFF_DESCRIPTION}}</h1>
           </div>
           <div>
             <span>{{bar_user_countdown}}</span>
-            <div *ngIf="payed=='good'">
+            <div *ngIf="payed==='good' || vipUser.Roles_ROL_ID===4">
                 <div *ngIf="offerIsActive" class="activer_btn" (click)="activerOffre(oneOffer.OFF_DESCRIPTION, oneOffer.OFF_DATEDEBUT, oneOffer.OFF_DATEFIN, oneOffer.OFF_ID, oneOffer.Entreprises_ENT_ID, user_id)">Activer</div>
                 <div *ngIf="!offerIsActive" class="activer_btn notactive" (click)="notActiveBtn()">Activer</div>
-            </div>
-            <div *ngIf="payed!='good'">
-                <div *ngIf="offerIsActive" class="activer_btn" (click)="jemabonne()">Activer</div>
+            </div> 
+            <div *ngIf="payed!=='good' && vipUser.Roles_ROL_ID!==4">
+                <div *ngIf="offerIsActive" class="activer_btn" (click)="jemabonneAlert()">Activer</div>
                 <div *ngIf="!offerIsActive" class="activer_btn notactive" (click)="notActiveBtn()">Activer</div>
             </div>
           </div>
@@ -119,6 +126,6 @@
   </div>
 
   <ion-button *ngIf="payed=='good'" (click)="rate(myBar.ENT_ID, user_id)" class="commentButton" shape="round"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
-  <ion-button  class="geoLocalButton" shape="round"><ion-icon name="navigate"></ion-icon>&nbsp;Localiser ce bar</ion-button>
+  <!-- <ion-button  class="geoLocalButton" shape="round"><ion-icon name="navigate"></ion-icon>&nbsp;Localiser ce bar</ion-button> -->
 
 </ion-content>

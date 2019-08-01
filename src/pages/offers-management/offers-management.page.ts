@@ -1,9 +1,11 @@
 import {Component, Inject, LOCALE_ID, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {AlertController, IonItemSliding, ModalController, ToastController} from '@ionic/angular';
+import {AlertController, IonItemSliding, ModalController, ToastController, NavController} from '@ionic/angular';
 import {OffersAddbarPage} from '../offers-addbar/offers-addbar.page';
 import {CalendarComponent} from 'ionic2-calendar/calendar';
 import {DatePipe, formatDate} from '@angular/common';
+import { Storage } from '@ionic/storage';
+import * as Global from '../../app/global';
 
 
 @Component({
@@ -30,10 +32,10 @@ export class OffersManagementPage implements OnInit {
         currentDate: new Date()
     }
     viewTitle = '';
-    users = [];
+    entValid : string = "";
     usersFilter = [];
     listeOffres = [];
-    public baseURI = 'https://macfi.ch/serveur/';
+    public baseURI = Global.mainURI;
     offres = {
         title: '',
         description: '',
@@ -44,10 +46,12 @@ export class OffersManagementPage implements OnInit {
         actif: '',
         allDay: false
     };
-    invalidColor : string = "#DC143C";
-    validColor : string = "#1bdc45"
+    loggedEnt : any = {};
+    invalidColor : string = "rgb(192, 0, 0)";
+    validColor : string = "#0095ae";
+    entreprise_id : string = "";
     @ViewChild(CalendarComponent) myCal: CalendarComponent;
-    constructor(public dp: DatePipe, public alertCtrl: AlertController, @Inject(LOCALE_ID)private locale: string, public http: HttpClient, public toastCtrl: ToastController, public alertController: AlertController) { }
+    constructor(public dp: DatePipe, public alertCtrl: AlertController, @Inject(LOCALE_ID)private locale: string, public http: HttpClient, public toastCtrl: ToastController, public alertController: AlertController, public storage: Storage, public navCtrl : NavController) { }
     ngOnInit() {
 
     }
@@ -55,8 +59,10 @@ export class OffersManagementPage implements OnInit {
     public ionViewWillEnter(): void {
         this.resetEvents();
         this.eventSource = [];
-        this.getOffres();
-        this.getProprio();
+        
+        this.storage.get('SessionIdKey').then((val) => {
+            this.getProprio(val);
+        });
     }
 
     resetEvents() {
@@ -72,20 +78,26 @@ export class OffersManagementPage implements OnInit {
         };
     }
 
-    public getProprio() {
+    public getProprio(id) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'getProprioValide'},
-            url: any      	= this.baseURI + 'aksi.php';
+            options: any		= { 'key' : 'getProprioValide', 'id_user' : id},
+            url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            this.users = data;
-            this.usersFilter = this.users;
+            this.loggedEnt = data;
+            this.entreprise_id = this.loggedEnt.ENT_ID;
+            this.getOffres(this.loggedEnt.ENT_ID);
+            if(this.loggedEnt.ENT_VALIDATION == "Non"){
+                this.activeBar();
+            }else{
+                return false;
+            }
         });
 
     }
-    public getOffres() {
+    getOffres(idEntreprise) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'getOffres'},
-            url: any      	= this.baseURI + 'aksi.php';
+            options: any		= { 'key' : 'getOffres', 'id_ent_parm' : idEntreprise},
+            url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.listeOffres = data;
             for (let i = 0; i < this.listeOffres.length; i++) {
@@ -107,7 +119,7 @@ export class OffersManagementPage implements OnInit {
 
     addEvent() {
         const eventCopy = {
-            title: this.event.title,
+            title: this.entreprise_id,
             description: this.event.description,
             startTime: new Date(this.event.startTime),
             endTime: new Date(this.event.endTime),
@@ -124,14 +136,28 @@ export class OffersManagementPage implements OnInit {
 
     }
 
+    addEventError(){
+        const start = new Date(this.event.startTime).toISOString();
+        const end = new Date(this.event.endTime).toISOString();
+
+        if(start>end){
+            this.sendNotification("La date de début doit être inférieure à la date de fin !")
+        }else if(this.event.description==""){
+            this.sendNotification("Saisissez la description de l'offre !")
+        }else{
+            this.sendNotification("Tous les champs sont obligatoires !")
+        }
+    }
+
     addOffer(description: String, dateDebut: String, dateFin: String, actif: String, idEnt: String) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'insertOffers', 'description': description, 'dateDebut': dateDebut, 'dateFin': dateFin, 'actif': actif, 'idEnt': idEnt},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.sendNotification('L\'ajout de l\'offre a bien été pris en compte!');
                 this.myCal.loadEvents();
+                console.log(idEnt)
             },
             (error: any) => {
                 console.log(error);
@@ -202,7 +228,7 @@ export class OffersManagementPage implements OnInit {
     deleteOffre(id: number) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'deleteOffre', 'id': id},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.sendNotification('Votre suppresion a bien été pris en compte !');
@@ -217,7 +243,7 @@ export class OffersManagementPage implements OnInit {
     editOffre(id: number, actif: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'editOffre', 'id': id, 'actif': actif},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.sendNotification('Votre Modification a bien été pris en compte !');
@@ -277,11 +303,27 @@ export class OffersManagementPage implements OnInit {
 
         await alert.present();
     }
+
+    async activeBar() {
+        const alert = await this.alertController.create({
+            header: 'Le status de votre bar est acuellement inactif. Vous ne pouvez pas ajouter une offre.',
+            buttons: [
+                {
+                    text: 'Ok',
+                    handler: () => {
+                        this.navCtrl.navigateForward("/tabsproprio/qrcode");
+                    }
+                }
+            ]
+        });
+
+        await alert.present();
+    }
     async sendNotification(msg: string) {
         const toast = await this.toastCtrl.create({
             message: msg,
             duration: 3000,
-            position: 'bottom'
+            position: 'top'
         });
         toast.present();
     }

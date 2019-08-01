@@ -4,6 +4,8 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as moment from 'moment';
 import {Storage} from '@ionic/storage';
+import * as Global from '../../app/global';
+
 @Component({
     selector: 'app-abonnement',
     templateUrl: './abonnement.page.html',
@@ -22,7 +24,7 @@ export class AbonnementPage implements OnInit {
     offre3: string;
     type: string;
     loggedUser: any = {};
-    baseURI = 'https://macfi.ch/serveur/';
+    baseURI = Global.mainURI;
     data: any;
     idInternaute: number;
     public paiementForm: FormGroup;
@@ -56,7 +58,7 @@ export class AbonnementPage implements OnInit {
     loadData(idSession : string){
         let headers 	: any		= new HttpHeaders({ 'Content-Type': 'application/json'}),
             options 	: any		= {"key" : "getUsersById", "idSession" : idSession},
-            url       : any   = this.baseURI + 'aksi.php';
+            url       : any   = this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
             {
@@ -87,7 +89,7 @@ export class AbonnementPage implements OnInit {
     addOffre(cardNumber: string, cardMonth: string, cardYear: string, cardCVV: string, amount: string, type: string, idInt: number) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'addAbo', 'cardNumber': cardNumber, 'cardMonth': cardMonth, 'cardYear': cardYear, 'cardCVV': cardCVV, 'amount' : amount, 'type' : type, 'idInt' : idInt},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.sendNotification('Votre paiement a bien été pris en compte');
             },

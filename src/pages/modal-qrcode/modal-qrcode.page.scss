@@ -40,8 +40,36 @@ ion-content{
     --padding-top : 10%;
 }
 
-h1{
+h2{
+    span{
+        color: gray;
+        font-family: "NBL";
+        font-size: 1.2rem;
+    }
     margin-top: 70px;
+    font-family: "NBL";
+    font-size: 1.2rem;
+    color: #fff;
+    padding: 0 35px;
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+h3{
+    span{
+        color: gray;
+        font-family: "NBL";
+        font-size: 1.2rem;
+    }
+    font-family: "NBL";
+    font-size: 1.2rem;
+    color: #fff;
+    margin-bottom: 35px;
+    text-align: center;
+    margin-bottom: 5%;
+}
+
+h1{
     font-family: "NBL";
     font-size: 1.2rem;
     color: #fff;

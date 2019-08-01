@@ -14,10 +14,18 @@
         <ion-input type="text" formControlName="PRO_PRENOM" class="inputFirstLetter" (focusout)="checkEmailIfExist(emailClean)"></ion-input>
       </ion-item>
 
-      <ion-item color="transparent" lines="none" no-padding>
-        <ion-label position="floating">Mot de passe :</ion-label>
-        <ion-input type="password" formControlName="PRO_PASSWORD" (focusout)="checkEmailIfExist(emailClean)"></ion-input>
-      </ion-item>
+      <div class="input_wrappah">
+        <ion-item color="transparent" lines="none" no-padding>
+            <ion-label position="floating">Mot de passe :</ion-label>
+            <ion-input [type]="inputType" formControlName="PRO_PASSWORD" (focusout)="checkEmailIfExist(emailClean)"></ion-input>
+        </ion-item>
+        <span [ngStyle]="{'display' : eyeOn}" (click)="showPass()">
+            <ion-icon name="eye" ></ion-icon>
+        </span>
+        <span [ngStyle]="{'display' : eyeOff}" (click)="hidePass()">
+          <ion-icon name="eye-off"></ion-icon>
+        </span>
+      </div>
 
       <!-- <div class="customBtn_wrapper">
           <div class="loading-spinner" [ngStyle]="{'display' : sls}"></div> -->

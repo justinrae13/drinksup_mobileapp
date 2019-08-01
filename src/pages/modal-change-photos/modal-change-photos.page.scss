@@ -1,5 +1,5 @@
 ion-content{
-    --background: #222227;
+    --background: #161616;
     h1{
         margin-top : 10px;
         margin-bottom: 40px;
@@ -44,4 +44,8 @@ ion-button{
     font-family: "NBO";
     font-size: 15px;
     --color: #fff !important;
+}
+
+ion-toolbar{
+    --background: #1d1d1d;
 }

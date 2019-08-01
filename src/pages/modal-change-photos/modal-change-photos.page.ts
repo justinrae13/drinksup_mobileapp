@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./modal-change-photos.page.scss'],
 })
 export class ModalChangePhotosPage implements OnInit {
-  uplPhotoURI = 'https://www.macfi.ch/serveur/barphotos/';
+  uplPhotoURI = 'https://www.drinksup.ch/serveur/barphotos/';
   barName : string;
   photoNUM : string;
 

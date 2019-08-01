@@ -3,6 +3,7 @@ import {ModalController, NavController, NavParams, ToastController} from '@ionic
 import {Router} from '@angular/router';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-modal',
@@ -15,8 +16,7 @@ export class ModalPage implements OnInit {
   passedEmail = null;
   passedRoles = null;
   public modifierForm: FormGroup;
-  // public baseURI = 'http://localhost/drinksupProject/serveur/';
-  public baseURI = 'https://macfi.ch/serveur/';
+  public baseURI = Global.mainURI;
   constructor(private formBuilder: FormBuilder, private route: Router, private navCtrl: NavController, private navParams: NavParams, private modalController: ModalController,  private toastCtrl: ToastController,  public http: HttpClient) {
     this.modifierForm = new FormGroup({
        prenom: new FormControl(),
@@ -51,7 +51,7 @@ export class ModalPage implements OnInit {
   updateUsers(prenom: string, email: string, id: number) {
       const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
           options: any		= { 'key' : 'updateUser','prenom': prenom, 'email': email, 'id': id},
-          url: any      	= this.baseURI + 'aksi.php';
+          url: any      	= this.baseURI;
 
       this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
               this.sendNotification('Votre modification a bien été pris en compte !');

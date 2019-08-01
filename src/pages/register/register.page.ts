@@ -4,7 +4,7 @@ import { ToastController, NavController} from '@ionic/angular';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Storage } from '@ionic/storage';
-
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-register',
@@ -14,7 +14,7 @@ import { Storage } from '@ionic/storage';
 export class RegisterPage implements OnInit {
   public enregistrerForm: FormGroup;
   public users = [];  
-  public baseURI = 'https://macfi.ch/serveur/';
+  public baseURI = Global.mainURI;
   public emailExist : boolean = false;
   public emailParam : string;
   public emailClean : string;
@@ -25,8 +25,9 @@ export class RegisterPage implements OnInit {
   roleAdmin = 'admin';
   roleProprio = 'proprio';
   //--transitions
-
-
+  eyeOn : string = "block";
+  eyeOff : string = "none";
+  inputType : string = "password";
 
   constructor(private storage: Storage, private actRout : ActivatedRoute, private formBuilder: FormBuilder, private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient) {
     this.enregistrerForm = new FormGroup({
@@ -35,6 +36,18 @@ export class RegisterPage implements OnInit {
     });
     
     this.validationForm();
+  }
+
+  showPass(){
+    this.eyeOn = "none";
+    this.eyeOff = "block";
+    this.inputType = "text";
+  }
+
+  hidePass(){
+    this.eyeOn = "block";
+    this.eyeOff = "none";
+    this.inputType = "password";
   }
 
   ngOnInit() {
@@ -98,7 +111,7 @@ export class RegisterPage implements OnInit {
     signUpOwners(nomcomplet: string, email: string, mdp: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
               options: any		= { 'key' : 'enregistrerUser', 'PRO_PRENOM': nomcomplet, 'PRO_EMAIL': email, 'PRO_PASSWORD': mdp},
-              url: any      	= this.baseURI + 'aksi.php';
+              url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 console.log(data);
@@ -113,7 +126,7 @@ export class RegisterPage implements OnInit {
         getUsers() {
             const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
                 options: any		= { 'key' : 'get_all_users'},
-                url: any      	= this.baseURI + 'aksi.php';
+                url: any      	= this.baseURI;
             this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.users = data;
             });
@@ -167,7 +180,7 @@ export class RegisterPage implements OnInit {
         LoginForUsers(PRO_EMAIL: string, PRO_PASSWORD: string) {
             const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
                 options: any		= { 'key' : 'seLoguerUser', 'PRO_EMAIL' : PRO_EMAIL, 'PRO_PASSWORD' : PRO_PASSWORD},
-                url: any      	= this.baseURI + 'aksi.php';
+                url: any      	= this.baseURI;
     
             this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
                 {

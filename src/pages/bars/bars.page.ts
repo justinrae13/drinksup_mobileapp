@@ -1,8 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonContent, NavController } from "@ionic/angular";
+import { IonContent, NavController, IonSelect } from "@ionic/angular";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { Storage } from '@ionic/storage';
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-bars',
@@ -11,13 +12,18 @@ import { Storage } from '@ionic/storage';
 })
 export class BarsPage{
   @ViewChild(IonContent) content: IonContent;
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
-  uplPhotoURI = "https://www.macfi.ch/serveur/barphotos/";
+  @ViewChild(IonSelect) selectRef: IonSelect;
+  customActionSheetOptions: any = {
+    header: 'Filtrer par catégorie',
+  };
+  baseURI = Global.mainURI;
+  uplPhotoURI = Global.photosURI;
   items : Array<any> = [];
   offers : Array<any> = [];
   offerIds : Array<any> = [];
   Filtereditems : Array<any> = [];
   faveBars : Array<any> = [];
+  allCategories = [];
   seshId : number;
   random : number;
   disBub : boolean = true;
@@ -34,49 +40,58 @@ export class BarsPage{
   activeColor1 : string = "#fff";
   activeColor2 : string = "rgb(82, 82, 82)";
   activeColor3 : string = "rgb(82, 82, 82)";
+  lastScroll : number = 0;
   hideHeader : string = "0";
+  hideSubHeader: string = "50px";
   tousClicked : boolean = false;
   toptenClicked : boolean = false;
   presdemoiClicked : boolean = false;
-  
+
+  noBarFilter : boolean = false;
 
   constructor(private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
     this.loadBar();
     this.random = Math.floor(Math.random() * 100);
   }
   
-  scrollToTop() {
-    this.content.scrollToTop(0);
-  }
+  // scrollToTop() {
+  //   this.content.scrollToTop(0);
+  // }
 
-  ionViewDidEnter(){
-    this.scrollToTop();
-  }
+  // ionViewDidEnter(){
+  //   this.scrollToTop();
+  // }
 
   ionViewDidLeave(){
     this.isSearchbarOpened = false;
+    this.hideHeader = "0px";
+    this.hideSubHeader = "50px";
   }
-
-  
-  // logScrolling(event){
-  //   let halfWay = event.detail.scrollTop; 
-   
-  //   for(let i=0; i<this.activeBarsNo; i++){
-  //     if(document.getElementById("offset_"+i).offsetTop < halfWay){
-  //       console.log("offset_"+i+" is triggered!");
-  //       document.getElementById("offset_"+i).style.transform = "scale(5)";
-  //       // this.isActive = false;
-  //     }
-  //   }
-  // }
 
 
   ionViewWillEnter(){
+    this.hideHeader = "0px";
+    this.hideSubHeader = "50px";
+    this.getCategorie();
     this.loadBar();
     this.loadOffers();
-
     this.storage.get('SessionEmailKey').then((val) => {
       this.loadFavorite(val);
+    });
+  }
+
+  getCategorie() : void{
+    let headers 	: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options 	: any		= { "key" : "get_all_categories"},
+        url       : any      	= this.baseURI;
+
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
+    {
+        this.allCategories = data;
+    },
+    (error : any) =>
+    {
+      console.log(error);
     });
   }
 
@@ -227,6 +242,28 @@ export class BarsPage{
     
   }
 
+  openSelect(){
+    this.selectRef.open();
+  }
+
+  filterByType(event){
+    console.log(event.detail.value)
+
+    if(event.detail.value=="all"){
+      this.Filtereditems = this.items;
+    }else{
+      this.Filtereditems = this.items.filter((bar) => {
+        return (bar.ENT_SECTEURACTIVITES == event.detail.value);
+      });
+    }
+
+    if(this.Filtereditems.length <= 0){
+      this.noBarFilter = true;
+    }else{
+      this.noBarFilter = false;
+    }
+  }
+
   imgLoad(){
     this.disBub = false;
     this.zoomOut = false;
@@ -234,17 +271,16 @@ export class BarsPage{
   }
 
   scrollEvent(event){
-    var position = 0;
-
-    if(position <= event.detail.deltaY){
-      this.hideHeader = "-50px";
-      position = event.detail.deltaY;
-      if(event.detail.scrollTop==0){
-        this.content.scrollToTop(0);
-      }  
+    let currentScroll = event.detail.scrollTop;
+    
+    if(currentScroll > 0 && this.lastScroll <= currentScroll){
+        this.hideHeader = "-50px";
+        this.hideSubHeader = "0px";
+        this.lastScroll = currentScroll;
     }else{
-      this.hideHeader = "0px";
-      position = event.detail.deltaY;
+        this.hideHeader = "0px";
+        this.hideSubHeader = "50px";
+        this.lastScroll = currentScroll;
     }
   }
 
@@ -274,6 +310,22 @@ export class BarsPage{
     setTimeout(() => {
       this.hideElem = "block";
     }, 500);
+    this.hideHeader = "0px";
+    this.hideSubHeader = "50px";
+  }
+
+  getAllRatings() {
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options: any		= { 'key' : 'getAllRatings'},
+        url: any      	= this.baseURI;
+  
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+        this.Filtereditems = data;
+          
+        },  
+        (error: any) => {
+            console.log(error);
+        });
   }
 
   tousLesBars(){
@@ -288,6 +340,7 @@ export class BarsPage{
     this.tousClicked = true;
     this.toptenClicked = false;
     this.presdemoiClicked = false;
+    this.noBarFilter = false;
   }
 
   topten(){
@@ -296,7 +349,7 @@ export class BarsPage{
     this.activeColor2 = "#fff";
     this.activeColor1 = "rgb(82, 82, 82)";
     this.activeColor3 = "rgb(82, 82, 82)";
-
+    this.getAllRatings();
     // this.Filtereditems = this.items.filter(function(data : any){
     //   var today = new Date().getTime();
     //   var dateStart = new Date(data.OFF_DATEDEBUT).getTime();
@@ -306,6 +359,7 @@ export class BarsPage{
     this.tousClicked = false;
     this.toptenClicked = true;
     this.presdemoiClicked = false;
+    this.noBarFilter = false;
   }
 
   presdemoi(){
@@ -324,7 +378,10 @@ export class BarsPage{
     this.tousClicked = false;
     this.toptenClicked = false;
     this.presdemoiClicked = true;
+    this.noBarFilter = false;
   }
+
+
 
 
 }

@@ -1,7 +1,8 @@
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-
+import { Storage } from '@ionic/storage';
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-qrcode',
@@ -15,10 +16,11 @@ export class QrcodePage implements OnInit {
   public codeContenu : string = "";
   ifScanned : boolean = false;
   scannedOffers : Array<any> = [];
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
+  chosenBar = {};
+  baseURI = Global.mainURI;
   
 
-  constructor(private barcode : BarcodeScanner, private http : HttpClient) { 
+  constructor(private barcode : BarcodeScanner, private http : HttpClient, private storage : Storage) { 
 
   }
 
@@ -27,6 +29,24 @@ export class QrcodePage implements OnInit {
 
   ionViewWillEnter(){
     this.getScannedCode();
+    this.storage.get('SessionIdKey').then((val) => {
+      this.getBarByUserId(val);
+    }); 
+
+  }
+
+  getBarByUserId(id_bar) {
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options: any		= { 'key' : 'getBarByProprio', 'proprio' : id_bar},
+        url: any      	= this.baseURI;
+  
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+        this.chosenBar = data.ENT_ID;
+        console.log("piwit" , this.chosenBar)
+    },  
+    (error: any) => {
+        console.log(error);
+    });
   }
 
   getScannedCode() {
@@ -78,13 +98,15 @@ export class QrcodePage implements OnInit {
         if(!this.ifScanned){
           if(desc == "" || desc === null || desc === undefined){
             alert("Scan annulé")
+          }else if(barId !== this.chosenBar){
+            alert("L'offre appartient à un autre bar !")
           }else{
             this.addToScannedCode(desc, start, end, offId, barId, userId);
-            alert("Validé !");
+            alert("Offre validé !");
             this.ionViewWillEnter();
-          }  
+          }
         }else{
-          alert("It is already scanned !");
+          alert("L'offre a été déjà utilisée !");
           this.ionViewWillEnter();
         }
       }, 100);

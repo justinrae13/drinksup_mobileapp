@@ -1,10 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { ToastController, ModalController, NavController, IonContent } from '@ionic/angular';
+import { ToastController, ModalController, NavController, IonContent, IonSelect } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { Router } from '@angular/router';
-
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-offers',
@@ -13,8 +13,13 @@ import { Router } from '@angular/router';
 })
 export class OffersPage implements OnInit {
   @ViewChild(IonContent) content: IonContent;
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
-  uplPhotoURI = 'https://www.macfi.ch/serveur/barphotos/';
+  @ViewChild(IonSelect) selectRef: IonSelect;
+  customActionSheetOptions: any = {
+    header: 'Choisissez le jour',
+    subHeader: 'Défilez vers le bas pour voir tous les jours de la semaine'
+  };
+  baseURI = Global.mainURI;
+  uplPhotoURI = Global.photosURI;
   items : Array<any> = [];
   Filtereditems : Array<any> = [];
   scannedOffers : Array<any> = [];
@@ -28,11 +33,22 @@ export class OffersPage implements OnInit {
   activeColor2 : string = "rgb(82, 82, 82)";
   activeColor3 : string = "rgb(82, 82, 82)";
   hideHeader : string = "0";
+  hideSubHeader : string = "50px";
+  lastScroll : number = 0;
   tousClicked : boolean = false;
   encoursClicked : boolean = false;
   imminentClicked : boolean = false;
   intervalInit;
-
+  joursDeLaSemaine = [
+    {num : '1', nomFr : 'Lundi'},
+    {num : '2', nomFr : 'Mardi'},
+    {num : '3', nomFr : 'Mercredi'},
+    {num : '4', nomFr : 'Jeudi'},
+    {num : '5', nomFr : 'Vendredi'},
+    {num : '6', nomFr : 'Samedi'},
+    {num : '7', nomFr : 'Dimanche'}
+  ];
+  noOffer : boolean = false;
     
   constructor(private router: Router, private navCtrl : NavController, private nativePageTransitions: NativePageTransitions, private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private toastCtrl : ToastController) { 
     this.random = Math.floor(Math.random() * 100);
@@ -49,13 +65,15 @@ export class OffersPage implements OnInit {
       this.loadBar(val);
     }); 
 
-    this.intervalInit = setInterval(() => { 
-      this.setCountDown(); 
-    }, 1000);   
+    // this.intervalInit = setInterval(() => { 
+    //   this.setCountDown(); 
+    // }, 1000);   
   }
 
   ionViewDidLeave(){
     clearInterval(this.intervalInit);
+    this.hideHeader = "0px";
+    this.hideSubHeader = "50px";
     this.tous();
   }
 
@@ -81,7 +99,11 @@ export class OffersPage implements OnInit {
     {
         // var scans = this.scannedOffers;
         // console.log(scans)
-                  
+        for(var i in data){
+            var newdate = new Date(data[i].OFF_DATEDEBUT);
+            var newformatDate = new Date(newdate.getTime() - newdate.getTimezoneOffset()*60000);
+            data[i].OFF_DATEDEBUT = newformatDate.toISOString();
+        }   
         this.items = data;
         console.log(this.items.length);
         this.Filtereditems = this.items;
@@ -93,18 +115,17 @@ export class OffersPage implements OnInit {
   }
 
   scrollEvent(event){
-    var position = 0;
-
-    if(position <= event.detail.deltaY){
-      this.hideHeader = "-50px";
-      position = event.detail.deltaY;
-      if(event.detail.scrollTop==0){
-        this.content.scrollToTop(0);
-      }  
-    }else{
-      this.hideHeader = "0px";
-      position = event.detail.deltaY;
-    }
+    let currentScroll = event.detail.scrollTop;
+    
+      if(currentScroll > 0 && this.lastScroll <= currentScroll){
+          this.hideHeader = "-50px";
+          this.hideSubHeader = "0px";
+          this.lastScroll = currentScroll;
+      }else{
+          this.hideHeader = "0px";
+          this.hideSubHeader = "50px";
+          this.lastScroll = currentScroll;
+      }
   }
 
   setCountDown(){
@@ -199,6 +220,28 @@ export class OffersPage implements OnInit {
     this.tousClicked = false;
     this.encoursClicked = false;
     this.imminentClicked = true;
+  }
+
+  openSelect(){
+    this.selectRef.open();
+  }
+
+  filterByDay(event){
+    console.log(event.detail.value)
+    if(event.detail.value=="all"){
+      this.Filtereditems = this.items;
+    }else{
+      this.Filtereditems = this.items.filter((offer) => {
+        var dateStart = new Date(offer.OFF_DATEDEBUT).getDay();
+        return (dateStart == event.detail.value);
+      });
+    }
+
+    if(this.Filtereditems.length <= 0){
+      this.noOffer = true;
+    }else{
+      this.noOffer = false;
+    }
   }
 
     

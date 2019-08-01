@@ -1,15 +1,19 @@
 <ion-content color="secondary">
+    <img src="../../assets/img/bg_login.jpg" class="bg_du">
+  <!-- <div class="bg_login">
+    <img src="../../assets/img/bg_login.jpg">
+  </div> -->
   <div class="ion-content-wrapper">
     <div class="login-content">
       <img src="../../assets/img/logo-text.png" class="login-logo" id="loginLogoId">
 
       <form [formGroup]="loginForm" (ngSubmit)="loginUsers()" [ngStyle]="{'display' : formLog}">
-          <ion-item color="transparent" lines="none" no-padding [ngStyle]="{'animation' : slideUP, 'transform' : su_t, 'opacity' : su_opac}">
+          <ion-item lines="none" no-padding [ngStyle]="{'animation' : slideUP, 'transform' : su_t, 'opacity' : su_opac}">
               <ion-label position="floating">Email :</ion-label>
               <ion-input class="inputEmailLogin" type="email" formControlName="PRO_EMAIL"></ion-input>
           </ion-item>
           
-          <ion-item color="transparent" lines="none" id="ad2" class="ad2" no-padding [ngStyle]="{'animation' : slideUP, 'transform' : su_t, 'opacity' : su_opac}">
+          <ion-item lines="none" id="ad2" class="ad2" no-padding [ngStyle]="{'animation' : slideUP, 'transform' : su_t, 'opacity' : su_opac}">
               <ion-label position="floating">Mot de passe :</ion-label>
               <ion-input type="password"  formControlName="PRO_PASSWORD" ></ion-input>
           </ion-item>
@@ -37,7 +41,7 @@
           <h1 class="formRegMainTitle" [ngStyle]="{'animation' : slideUP2, 'transform' : su_t2, 'opacity' : su_opac}">Inscrivez-vous<br>dès maintenant</h1>
           <p class="formregtitle ad2_2" id="ad2_2" [ngStyle]="{'animation' : slideUP2, 'transform' : su_t2, 'opacity' : su_opac}">Veuillez saisir votre adresse mail<br>afin de créer un compte.</p>
 
-          <ion-item color="transparent" lines="none" id="ad3_2" class="ad3_2" no-padding [ngStyle]="{'animation' : slideUP2, 'transform' : su_t2, 'opacity' : su_opac}">
+          <ion-item lines="none" id="ad3_2" class="ad3_2" no-padding [ngStyle]="{'animation' : slideUP2, 'transform' : su_t2, 'opacity' : su_opac}">
             <ion-label position="floating">Email :</ion-label>
             <ion-input type="email"  formControlName="REG_EMAIL" (focusout)="checkEmailIfExist()"></ion-input>
           </ion-item>

@@ -5,6 +5,7 @@ import { ToastController, NavController } from '@ionic/angular';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Storage } from '@ionic/storage';
 import { listenToElementOutputs } from '@angular/core/src/view/element';
+import * as Global from '../../app/global';
 
 
 @Component({
@@ -13,7 +14,7 @@ import { listenToElementOutputs } from '@angular/core/src/view/element';
   styleUrls: ['./registerthirdparty.page.scss'],
 })
 export class RegisterthirdpartyPage implements OnInit {
-  baseURI = 'https://macfi.ch/serveur/';
+  baseURI = Global.mainURI;
   regURL = 'https://www.futurae-ge.ch/ionic-phpmailer-fb-no-email.php';
   nameParam : string;
   emailParam : string;
@@ -70,7 +71,7 @@ export class RegisterthirdpartyPage implements OnInit {
   LoginForFBUser(PRO_EMAIL: string) {
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
         options: any		= { 'key' : 'seLoguerUserFacebook', 'PRO_EMAIL' : PRO_EMAIL},
-        url: any      	= this.baseURI + 'aksi.php';
+        url: any      	= this.baseURI;
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
         {
@@ -114,7 +115,7 @@ export class RegisterthirdpartyPage implements OnInit {
   registerUserFB(paramName, paramEmail, paramId){
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'registerFromFB', 'email' : paramEmail, 'name' : paramName, 'idFB' : paramId},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
         {
@@ -128,7 +129,7 @@ export class RegisterthirdpartyPage implements OnInit {
   getUsers() {
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
           options: any		= { 'key' : 'get_all_users'},
-          url: any      	= this.baseURI + 'aksi.php';
+          url: any      	= this.baseURI;
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
         this.users = data;   
     });

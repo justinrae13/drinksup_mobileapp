@@ -2,12 +2,13 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, ModalController, ToastController } from "@ionic/angular";
+import { NavController, ModalController, ToastController, AlertController } from "@ionic/angular";
 import { Storage } from '@ionic/storage';
 import { formatDate} from '@angular/common';
 import { ModalQrcodePage } from '../modal-qrcode/modal-qrcode.page';
 import { ModalRatingsPage } from '../modal-ratings/modal-ratings.page';
 import { timer } from 'rxjs';
+import * as Global from '../../app/global';
 
 
 
@@ -18,11 +19,12 @@ import { timer } from 'rxjs';
   styleUrls: ['./bar-user.page.scss'],
 })
 export class BarUserPage implements OnInit {
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
-  uplPhotoURI = 'https://www.macfi.ch/serveur/barphotos/';
-  drinksPhotoURI = 'https://www.macfi.ch/serveur/drinksphotos/';
+  baseURI = Global.mainURI;
+  uplPhotoURI = Global.photosURI;
+  // drinksPhotoURI = 'https://www.macfi.ch/serveur/drinksphotos/';
 
   myBar : any = {};
+  vipUser : any = {};
   mySchedule : Array<any> = [];
   myOffers : Array<any> = [];
   oneOffer : any = {};
@@ -30,6 +32,7 @@ export class BarUserPage implements OnInit {
   scannedUserId : any = [];
   scannedOffers : Array<any> = [];
   getRating : Array<any> = [];
+  AllRatings : Array<any> = [];
   ifUserIdScanned = null;
   ifUserIdNotScanned = null;
   ifOfferIdScanned = null;
@@ -68,7 +71,7 @@ export class BarUserPage implements OnInit {
   bar_user_countdown : string;
   offerIsActive : boolean = false;
 
-  constructor(private modalCtrl : ModalController, private toastCtrl: ToastController, private storage : Storage,private http : HttpClient, private aRoute : ActivatedRoute, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
+  constructor(private modalCtrl : ModalController, private toastCtrl: ToastController, private storage : Storage,private http : HttpClient, private aRoute : ActivatedRoute, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, public alertController: AlertController) { 
     
   }
 
@@ -78,6 +81,7 @@ export class BarUserPage implements OnInit {
     this.getScannedCode();     
     this.storage.get('SessionIdKey').then((val) => {
       this.getPaidUser(val);
+      this.getVIPUser(val);
       setTimeout(() => {
         this.user_id = val;
       }, 100);
@@ -289,6 +293,19 @@ export class BarUserPage implements OnInit {
         });
     }
 
+    getVIPUser(id : string) {
+      const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+          options: any		= { 'key' : 'getVIPUser', 'idUser': id},
+          url: any      	= this.baseURI;
+    
+      this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+            this.vipUser = data;
+          },  
+          (error: any) => {
+              console.log(error);
+          });
+      }
+
     getScannedCode() {
       const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
           options: any		= { 'key' : 'getScannedCode'},
@@ -328,7 +345,7 @@ export class BarUserPage implements OnInit {
             }else{
               this.gradeTot = 0;
             }
-            console.log(this.gradeTot)
+            console.log("Average is...",data)
           },  
           (error: any) => {
               console.log(error);
@@ -596,6 +613,21 @@ export class BarUserPage implements OnInit {
     document.getElementById("img_2").style.opacity = "0";
     document.getElementById("img_3").style.opacity = "0";
   }
+
+  async jemabonneAlert() {
+    const alert = await this.alertController.create({
+      header: "Alert",
+      message: "<h3>Abonnez-vous dès maintenant pour profiter l'offre !</h3>",
+      buttons: [{
+              text: 'OK',
+              handler: () => {
+              }
+          }
+      ]
+  });
+
+  await alert.present();
+}
  
 
 }

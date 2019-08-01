@@ -99,13 +99,13 @@ export class AppComponent {
                 this.navCtrl.navigateRoot('/tabsadmin/users');
                 setTimeout(() => {
                   this.splashScreen.hide();
-                }, 3800);
+                }, 1800);
 
             }else if(val=='Yes' && this.userSessionRole == this.roleProprio){
                 this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                 setTimeout(() => {
                   this.splashScreen.hide();
-                }, 1800);
+                }, 4000);
 
             }else if(val=='Yes' && this.userSessionRole == this.roleUser){
                 this.navCtrl.navigateRoot('/tabs/offers');

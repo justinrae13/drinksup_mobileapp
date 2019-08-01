@@ -1,0 +1,47 @@
+.header-solid{
+    background: rgb(7,7,8);
+    background: linear-gradient(0deg, rgba(7,7,8,0) 0%, rgba(7,7,8,1) 100%); 
+}
+
+ion-content{
+    --padding-top: 40px;
+}
+
+h3{
+    margin-top: 40px;
+    font-family: "NBL";
+    font-size: 1.3rem;
+    color: #860000;
+    text-transform: uppercase;
+}
+
+h4{
+    margin-top: 40px;
+    font-family: "NBL";
+    font-size: 1.1rem;
+    text-transform: uppercase;
+}
+
+h5{
+    margin-top: 15px;
+    font-family: "NBL";
+    font-size: 1rem;
+}
+
+p{
+    font-family: "NBO";
+    font-size: .9em;
+    color: rgb(167, 167, 167);
+    text-align: justify;
+    text-align-last: left;
+    span{
+        font-family: "NBO";
+        font-size: .95em;
+        color: rgb(167, 167, 167);
+        display: block;
+        width: 100%;
+        margin: 8px 0;
+        padding-left: 10px;
+
+    }
+}

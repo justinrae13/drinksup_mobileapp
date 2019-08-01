@@ -28,14 +28,18 @@
     <div class="note" id="noteSect">
       <div class="span-div">Attention :</div> Si vous modifiez les infos de votre bar, votre statut passera en <div class="span-div">inactif</div>.
       <br>
-      L'administrateur vous changera le statut une fois que vous modifications seront validées.
+      L'administrateur vous changera le statut une fois que vos modifications seront validées.
       <br>
       Cela ne s'applique pas aux modifications d'horaire.
     </div>
 
     <form [formGroup]="editBarForm" (ngSubmit)="editBar()">
       <ion-input class="barname_input" formControlName="nomEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight}"></ion-input>
-      <ion-input class="bartype_input"  formControlName="typeEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
+      <!-- <ion-input class="bartype_input"  formControlName="typeEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input> -->
+      <ion-select id="type_bar_select" formControlName="typeEnt" [ngStyle]="{'display' : typeBarSelect}" placeholder="Type de bar">
+        <ion-select-option *ngFor="let cat of allCategories" value="{{cat.CAT_DESC}}">{{cat.CAT_DESC}}</ion-select-option>
+      </ion-select>
+      <p id="type_bar"  [ngStyle]="{'display' : typeBar}">{{myBar.ENT_SECTEURACTIVITES}}</p>
       <ion-input  class="baradd_input" formControlName="adresseEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
       <div class="inputRow">
         <ion-input class="barnpa_input" formControlName="NPAEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>

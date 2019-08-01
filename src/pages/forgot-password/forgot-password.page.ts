@@ -4,6 +4,7 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Storage } from '@ionic/storage';
 import { ActivatedRoute } from '@angular/router';
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-forgot-password',
@@ -12,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ForgotPasswordPage implements OnInit {
     resetURL = 'https://www.futurae-ge.ch/ionic-phpmailer-resetpassword.php';
-    baseURI = 'https://macfi.ch/serveur/';
+    baseURI = Global.mainURI;
     users = []; 
     resetPassword: FormGroup;
     resetPasswordSecondForm: FormGroup;
@@ -72,7 +73,7 @@ export class ForgotPasswordPage implements OnInit {
   getUsers() {
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
           options: any		= { 'key' : 'get_all_users'},
-          url: any      	= this.baseURI + 'aksi.php';
+          url: any      	= this.baseURI;
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
         this.users = data;  
     });
@@ -150,7 +151,7 @@ export class ForgotPasswordPage implements OnInit {
 
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
           options: any		= { 'key' : 'resetPasswordByEmail', 'email' : this.emailParamClean , 'password' : password},
-          url: any      	= this.baseURI + 'aksi.php';
+          url: any      	= this.baseURI;
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
         {

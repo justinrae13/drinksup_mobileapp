@@ -121,12 +121,15 @@ button:focus {outline:0;}
   justify-content: center;
   align-items: center;
   background-color: #101012;
-  position: relative;
+  position: fixed;
+  left: 0;
+  top: 0;
   color: #fff;
   font-size: 1rem;
   font-family: "NBL";
   letter-spacing: 1px;
   transition: all .3s ease-in-out;
+  z-index: 999;
 
   span{
     display: flex;
@@ -139,6 +142,34 @@ button:focus {outline:0;}
     top: 0;
     right: 16px;
     font-size: 1.8rem;
+  }
+
+  .ville{
+    position: absolute;
+    top: 0;
+    left: 16px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 8px;
+    font-size: .85rem;
+    font-family: "NBL";
+    color: gray;
+  }
+
+  .filter{
+    position: absolute;
+    top: 0;
+    left: 16px;
+    height: 50px;
+    width: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+      width: 23px;
+    }
   }
 }
 
@@ -381,5 +412,120 @@ ion-modal.ratings-modal {
           margin-right: 8px;
       }
   }
+}
+
+ion-alert{
+ --background: #161616 !important;
+  h2{
+      font-family: "NBL";
+      font-size: 18px !important;
+      color: #fff !important;
+  }
+
+  .alert-sub-title{
+      font-family: "NBO" !important;
+      font-size: 13px !important;
+      color: rgb(184, 184, 184) !important;
+  }
+
+  .alert-radio-label {
+    font-family: "NBL";
+    font-size: 17px !important;
+    color: rgb(180, 180, 180) !important;
+  }
+  
+
+  h3{
+    font-family: "NBL";
+    font-size: 17px !important;
+    color: rgb(180, 180, 180) !important;
+
+    span{
+      font-family: "NBL";
+      font-size: 17px !important;
+      color: #fff !important;
+      text-transform: capitalize !important;
+    }
+    b{
+      font-weight: normal !important;
+      font-family: "NBL";
+      font-size: 17px !important;
+    }
+    .b_actif{
+      color: #1bdf5a !important;
+    }
+
+    .b_inactif{
+      color: #ecb622 !important;
+    }
+  }
+
+  
+
+  .alert-button-group{
+    background-color: #1d1d1d;
+    button{
+      span{
+        font-family: "NBO";
+        font-size: 17px !important;
+        text-transform: capitalize !important;
+        color: rgb(180, 180, 180) !important;
+      }
+    }
+    
+  }
+}
+
+ion-slides{
+  table{
+    border: none !important;
+    width: 100% !important;
+  }
+  table > thead > tr > th, 
+  table > tbody > tr > th, 
+  table > tfoot > tr > th, 
+  table > thead > tr > td, 
+  table > tbody > tr > td, 
+  table > tfoot > tr > td{
+    border: none !important;
+    font-family: "NBO" !important;
+    font-size: 12px !important;
+  }
+
+  table > thead > tr > th > small{
+    font-size: 100% !important;
+  }
+
+
+  
+  .monthview-secondary-with-event{ 
+    background-color: rgba(0, 149, 174, .1) !important;
+  }
+  
+  
+  .monthview-primary-with-event{
+    background-color: rgba(0, 149, 174, .4) !important;
+  }
+
+  .monthview-current{
+    background-color: #fff !important;
+    color:#0095ae !important;
+  }
+  
+  .monthview-selected {
+    background-color:#0095ae !important;
+    color:#fff !important;
+  }
+
+}
+
+[aria-checked="true"].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md,
+[aria-checked="true"].sc-ion-alert-ios .alert-radio-icon.sc-ion-alert-ios {
+  border-color: #c40000 !important;
+}
+
+.alert-radio-inner.sc-ion-alert-md,
+.alert-radio-inner.sc-ion-alert-ios{
+  background-color: #c40000 !important
 }
 

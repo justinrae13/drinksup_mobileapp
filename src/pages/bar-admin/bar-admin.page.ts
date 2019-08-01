@@ -1,8 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ModalController, NavController, ToastController} from '@ionic/angular';
+import {ModalController, NavController, ToastController, IonItemSliding, AlertController} from '@ionic/angular';
 import {ModalbarAdminPage} from '../modalbar-admin/modalbar-admin.page';
 import { Router, ActivatedRoute } from '@angular/router';
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-bar-admin',
@@ -16,19 +17,37 @@ export class BarAdminPage implements OnInit {
   haveBarOrNot = '';
   user = null;
   usersFilter = [];
-  // public baseURI = 'http://localhost/drinksupProject/serveur/';
-  public baseURI = 'https://macfi.ch/serveur/';
-  constructor(private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient, public modalController: ModalController, private route: Router) { }
+  public baseURI = Global.mainURI;
+  tabPosition : string = "translateX(0)";
+  leftPosition : string = "0%";
+  activeColor1 : string = "#fff";
+  activeColor2 : string = "rgb(82, 82, 82)";
+  activeColor3 : string = "rgb(82, 82, 82)";
+  lastScroll : number = 0;
+  hideHeader : string = "0";
+  hideSubHeader: string = "50px";
+  tousClicked : boolean = false;
+  actifClicked : boolean = false;
+  inactifClicked : boolean = false;
+
+  constructor(private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient, public modalController: ModalController, private route: Router, public alertController: AlertController) { }
 
     ngOnInit() {}
 
     ionViewWillEnter(): void {
         this.getProprio();
+        this.tous();
     }
+
+    ionViewDidLeave(){
+        this.hideHeader = "0px";
+        this.hideSubHeader = "50px";
+    }
+    
   public getProprio() {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'getProprio'},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.users = data;
             this.usersFilter = this.users;
@@ -36,6 +55,187 @@ export class BarAdminPage implements OnInit {
         });
 
   }
+
+  //My Stuff
+    scrollEvent(event){
+        let currentScroll = event.detail.scrollTop;
+
+        if(currentScroll > 0 && this.lastScroll <= currentScroll){
+            this.hideHeader = "-50px";
+            this.hideSubHeader = "0px";
+            this.lastScroll = currentScroll;
+        }else{
+            this.hideHeader = "0px";
+            this.hideSubHeader = "50px";
+            this.lastScroll = currentScroll;
+        }
+    }
+
+    tous(){
+        this.usersFilter = this.users;
+    
+        this.tabPosition = "translateX(0%)";
+        this.leftPosition = "0%";
+        this.activeColor1 = "#fff";
+        this.activeColor2 = "rgb(82, 82, 82)";
+        this.activeColor3 = "rgb(82, 82, 82)";
+    
+        this.tousClicked = true;
+        this.actifClicked = false;
+        this.inactifClicked = false;
+    }
+    
+    actif(){
+        this.tabPosition = "translateX(-50%)";
+        this.leftPosition = "50%";
+        this.activeColor2 = "#fff";
+        this.activeColor1 = "rgb(82, 82, 82)";
+        this.activeColor3 = "rgb(82, 82, 82)";
+        
+        this.usersFilter = this.users.filter(function(data : any){
+            return data.ENT_VALIDATION == "Oui"; 
+        });
+    
+        this.tousClicked = false;
+        this.actifClicked = true;
+        this.inactifClicked = false;
+    }
+    
+    inactif(){
+        this.tabPosition = "translateX(-100%)";
+        this.leftPosition = "100%";
+        this.activeColor3 = "#fff";
+        this.activeColor2 = "rgb(82, 82, 82)";
+        this.activeColor1 = "rgb(82, 82, 82)";
+    
+        this.usersFilter = this.users.filter(function(data : any){
+            return data.ENT_VALIDATION == "Non"; 
+        });   
+    
+        this.tousClicked = false;
+        this.actifClicked = false;
+        this.inactifClicked = true;
+    }
+
+    async delete(slidingItem: IonItemSliding, id, nom) {
+        await slidingItem.close();
+        this.presentAlert(id, nom);
+    }
+
+    async cantDelete(slidingItem: IonItemSliding, nom) {
+        await slidingItem.close();
+        this.presentAlertSub(nom);
+    }
+
+    async validate(slidingItem: IonItemSliding, id, nom, status) {
+        await slidingItem.close();
+        this.presentAlertSecond(id, nom, status);
+    }
+
+    
+
+    async presentAlert(id, nom) {
+        const alert = await this.alertController.create({
+            header: 'Attention !',
+            message: '<h3>Êtes vous sûr de vouloir supprimer le bar: <span>' + nom + '</span> ? </h3>',
+            buttons: [
+                {
+                    text: 'Non',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                    }
+                }, {
+                    text: 'Oui',
+                    handler: () => {
+                        this.deleteBar(id);
+                        this.ionViewWillEnter();
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    async presentAlertSub(nom) {
+        const alert = await this.alertController.create({
+            header: 'Attention !',
+            message: "<h3>Vous ne pouvez pas supprimer le bar: <span>" + nom + "</span> car son statut est actuellement actif</h3>",
+            buttons: [
+                {
+                    text: 'OK',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    async presentAlertSecond(id, nom, status) {
+        var msg = "";
+        var newStatus = "";
+        if(status==="Oui"){
+            msg = "<h3>Changer le status du bar: <span>" + nom + "</span> en <b class='b_inactif'>inactif</b> ?</h3>"
+            newStatus = "Non";
+        }else{
+            msg = "<h3>Changer le status du bar: <span>" + nom + "</span> en <b class='b_actif'>actif</b> ?</h3>"
+            newStatus = "Oui";
+        }
+
+        
+        const alert = await this.alertController.create({
+            header: 'Confirmer',
+            message: msg,
+            buttons: [
+                {
+                    text: 'Non',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                    }
+                }, {
+                    text: 'Oui',
+                    handler: () => {
+                        console.log(newStatus)
+                        this.validateBar(id, newStatus);
+                        this.ionViewWillEnter();
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    deleteBar(id: number) {
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' }),
+            options: any = { 'key' : 'deleteBar', 'id': id},
+            url: any = this.baseURI;
+  
+        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+            this.sendNotification('Votre suppresion a bien été prise en compte !');
+        },(error: any) => {
+            console.log(error);
+            this.sendNotification('Erreur!');
+        });
+    }
+
+    validateBar(id, status) {
+        const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' }),
+            options: any = { 'key' : 'changeStatus', 'id': id, 'status' : status},
+            url: any = this.baseURI;
+  
+        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+            this.sendNotification('Votre modification a bien été prise en compte !');
+        },(error: any) => {
+            console.log(error);
+            this.sendNotification('Erreur!');
+        });
+    }
+
+  //End of My stuff
 
     async validated(idUser, idEnt) {
         console.log('idUser : ' + idUser + ' idEnt : ' + idEnt);
@@ -73,5 +273,14 @@ export class BarAdminPage implements OnInit {
         } else {
           this.getProprio();
         }
+    }
+
+    async sendNotification(msg: string) {
+        const toast = await this.toastCtrl.create({
+            message: msg,
+            duration: 3000,
+            position: 'bottom'
+        });
+        toast.present();
     }
 }

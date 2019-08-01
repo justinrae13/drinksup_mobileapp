@@ -1,94 +1,5 @@
-<!-- <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title *ngIf="!isSearchbarOpened">bars</ion-title>
-    <ion-searchbar *ngIf="isSearchbarOpened" showCancelButton="true" (ionCancel)="isSearchbarOpened=false; hideElem='block'; Filtereditems=items" (ionChange)="searchBar($event)"></ion-searchbar>
-    <ion-button size="small" icon-only *ngIf="!isSearchbarOpened" (click)="isSearchbarOpened=true">
-      <ion-icon name="search"></ion-icon>
-    </ion-button>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content color="secondary">
-    <div class="header-buttons">
-      <div (click)="tousBtn()" [ngStyle]="{'background-color' : tous}">TOUS</div>
-      <div (click)="offresBtn()" [ngStyle]="{'background-color' : offres}">OFFRES</div>
-      <div (click)="top10Btn()" [ngStyle]="{'background-color' : top10}">TOP 10</div>
-      <div (click)="presdemoiBtn()" [ngStyle]="{'background-color' : presdemoi}">PRES DE MOI</div>
-    </div> -->
-    <!-- <div class="container" [ngStyle]="{'display' : hideElem}">
-      <h1 class="goUp"><ion-icon name="ribbon"></ion-icon>&nbsp;Top 10</h1>
-      <div class="scroll" scrollY="true">
-        <div *ngFor="let bars of Filtereditems; let i = index" class="bars goUp2">
-            <div class="bubbles-wrapper" [class.displayBubbles]="disBub" [ngStyle]="{'z-index' : zindex}">
-              <div class="bubbles"><div></div><div></div><div></div><div></div></div>
-            </div>
-            
-            <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId1_{{i}}">
-            <img *ngIf="ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-filled.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId1_{{i}}">
-
-            <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-            <img (click)="moveToBar(bars.ENT_ID)" class="bar-img zmImg" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random" alt="" (load)="imgLoad()" [class.zoomOut]="zoomOut">
-            <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
-              <p class="bar-nom">{{bars.ENT_NOM}}</p>
-              <div class="note-sec">
-                  <img class="bar-note" src="../../assets/img/grade-5.svg" alt="">
-                  <p>(5.0/5.0)</p>
-              </div>
-              <p class="bar-desc">{{bars.ENT_ADRESSE}}, {{bars.ENT_NPA}} - {{bars.ENT_LOCALITE}}</p>
-            </div> 
-        </div>
-      </div>
-    </div>
-
-    <div class="container" [ngStyle]="{'display' : hideElem}">
-        <h1 class="goUp"><ion-icon name="pin"></ion-icon>&nbsp;Bars près de toi</h1>
-        <div class="scroll" scrollY="true">
-          <div *ngFor="let bars of Filtereditems; let i = index" class="bars goUp2">
-            <div class="bubbles-wrapper" [class.displayBubbles]="disBub" [ngStyle]="{'z-index' : zindex}">
-              <div class="bubbles"><div></div><div></div><div></div><div></div></div>
-            </div>
-            
-            <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId2_{{i}}">
-            <img *ngIf="ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-filled.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId2_{{i}}">
-
-            <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-            <img (click)="moveToBar(bars.ENT_ID)" class="bar-img zmImg" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random" alt="" (load)="imgLoad()" [class.zoomOut]="zoomOut">
-            <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
-              <p class="bar-nom">{{bars.ENT_NOM}}</p>
-              <div class="note-sec">
-                  <img class="bar-note" src="../../assets/img/grade-5.svg" alt="">
-                  <p>(5.0/5.0)</p>
-              </div>
-              <p class="bar-desc">{{bars.ENT_ADRESSE}}, {{bars.ENT_NPA}} - {{bars.ENT_LOCALITE}}</p>
-            </div> 
-          </div>
-        </div>
-      </div> -->
-    <!-- <ion-list *ngFor="let bars of Filtereditems; let i = index">
-      <ion-item no-padding color="secondary" lines="none">
-          <div class="bubbles-wrapper" [class.displayBubbles]="disBub" [ngStyle]="{'z-index' : zindex}">
-            <div class="bubbles"><div></div><div></div><div></div><div></div></div>
-          </div>
-
-          <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
-          <img *ngIf="ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-filled.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
-          
-          <div class="freeDrinkTag" *ngIf="ifHasOffer(bars.ENT_ID)">
-            <img src="../../assets/img/lemonade.svg">
-          </div>
-          <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-          <img (click)="moveToBar(bars.ENT_ID)" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random" alt="" (load)="imgLoad()" [id]="'offset_'+i">
-          <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
-            <p class="bar-nom">{{bars.ENT_NOM}}</p>
-            <p class="bar-desc">{{bars.ENT_ADRESSE}}, {{bars.ENT_NPA}} - {{bars.ENT_LOCALITE}}</p>
-          </div>  
-        </ion-item>
-    </ion-list>
-
-</ion-content> -->
-
-<div class="tab_header" [ngStyle]="{'margin-top' : hideHeader}">Drinks up <span (click)="openSearch()"><ion-icon name="search"></ion-icon></span></div>
-<div class="freedrinkstab">
+<div class="tab_header" [ngStyle]="{'top' : hideHeader}"><div class="filter" (click)="openSelect()"><img src="../../assets/img/filter.svg"></div>Drinks up <span (click)="openSearch()"><ion-icon name="search"></ion-icon></span></div>
+<div class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
   <div (click)="tousLesBars()" [ngStyle]="{'color' : activeColor1}">Tous <span class="rippleEffect"></span></div>
   <div (click)="topten()" [ngStyle]="{'color' : activeColor2}">Top 10</div>
   <div (click)="presdemoi()" [ngStyle]="{'color' : activeColor3}">Près de moi</div>
@@ -100,6 +11,7 @@
       <ion-item no-padding color="secondary" lines="none">
         <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
         <img *ngIf="ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-filled.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
+        <!-- <div class="img_overlay_black" id="imgOverlay_{{i}}"></div> -->
         <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
         <img (click)="moveToBar(bars.ENT_ID)" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
         <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
@@ -108,4 +20,11 @@
         </div>  
       </ion-item>
   </ion-list>
+
+  <ion-select placeholder="Select One" [interfaceOptions]="customActionSheetOptions" style="display:none" (ionChange)="filterByType($event)">
+    <ion-select-option value="all">Tous</ion-select-option> 
+    <ion-select-option *ngFor="let cat of allCategories" value="{{cat.CAT_DESC}}">{{cat.CAT_DESC}}</ion-select-option>
+  </ion-select>
+
+  <p *ngIf="noBarFilter" class="pasDeBar">Aucun</p>
 </ion-content>

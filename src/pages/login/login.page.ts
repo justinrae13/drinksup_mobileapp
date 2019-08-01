@@ -6,6 +6,7 @@ import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Storage } from '@ionic/storage';
+import * as Global from '../../app/global';
 
 @Component({
     selector: 'app-login',
@@ -18,7 +19,7 @@ export class LoginPage implements OnInit {
     userdatafb: any;
     loginForm: FormGroup;
     registerEmail: FormGroup;
-    baseURI = 'https://macfi.ch/serveur/';
+    baseURI = Global.mainURI;
     regURL = 'https://www.futurae-ge.ch/ionic-phpmailer.php';
     userDetails : any;
     users = [];  
@@ -32,6 +33,7 @@ export class LoginPage implements OnInit {
     roleUser = 'user';
     roleAdmin = 'admin';
     roleProprio = 'proprio';
+    roleVIP = 'vip';
 
     //----------------------------
     activeSignUp = "none";
@@ -96,7 +98,7 @@ export class LoginPage implements OnInit {
     getUsers() {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
               options: any		= { 'key' : 'get_all_users'},
-              url: any      	= this.baseURI + 'aksi.php';
+              url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.users = data;   
         });
@@ -195,7 +197,7 @@ export class LoginPage implements OnInit {
     LoginForUsers(PRO_EMAIL: string, PRO_PASSWORD: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'seLoguerUser', 'PRO_EMAIL' : PRO_EMAIL, 'PRO_PASSWORD' : PRO_PASSWORD},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
             {
@@ -208,9 +210,10 @@ export class LoginPage implements OnInit {
                     
                     this.storage.set('SessionRoleKey', this.roleAdmin);
                     //transitions
-                    document.getElementById("seConnTextId").innerHTML = "OK !";
-                    document.getElementById("seConnTextId").style.color = "#4caf50";
                     this.btnAnim_1_Off();
+                    // document.getElementById("seConnTextId").innerHTML = "OK !";
+                    // document.getElementById("seConnTextId").style.color = "#4caf50";
+                    // this.btnAnim_1_Off();
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsadmin/users');
                         this.sendNotification('Bienvenue !');
@@ -219,19 +222,21 @@ export class LoginPage implements OnInit {
                     
                     this.storage.set('SessionRoleKey', this.roleProprio);
                     //transitions
-                    document.getElementById("seConnTextId").innerHTML = "OK !";
-                    document.getElementById("seConnTextId").style.color = "#4caf50";
                     this.btnAnim_1_Off();
+                    // document.getElementById("seConnTextId").innerHTML = "OK !";
+                    // document.getElementById("seConnTextId").style.color = "#4caf50";
+                    // this.btnAnim_1_Off();
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                         this.sendNotification('Bienvenue !');
                     }, 500); 
-                } else if (this.userDetails.ROLE === this.roleUser) {
+                } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
                     this.storage.set('SessionRoleKey', this.roleUser);
                     //transitions
-                    document.getElementById("seConnTextId").innerHTML = "OK !";
-                    document.getElementById("seConnTextId").style.color = "#4caf50";
                     this.btnAnim_1_Off();
+                    // document.getElementById("seConnTextId").innerHTML = "OK !";
+                    // document.getElementById("seConnTextId").style.color = "#4caf50";
+                    // this.btnAnim_1_Off();
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabs/offers');
                         this.sendNotification('Bienvenue !');
@@ -261,7 +266,7 @@ export class LoginPage implements OnInit {
     LoginForGoogleUser(PRO_EMAIL: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'seLoguerUserGoogle', 'PRO_EMAIL' : PRO_EMAIL},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
             {
@@ -279,7 +284,7 @@ export class LoginPage implements OnInit {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
                     this.sendNotification('Bienvenue !');
-                } else if (this.userDetails.ROLE === this.roleUser) {
+                } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
                     this.navCtrl.navigateRoot('/tabs/offers');
                     this.storage.set('SessionRoleKey', this.roleUser);
                     this.sendNotification('Bienvenue !'); 
@@ -298,7 +303,7 @@ export class LoginPage implements OnInit {
     LoginForFBUser(PRO_EMAIL) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'seLoguerUserFacebook', 'PRO_EMAIL' : PRO_EMAIL},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
     
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
             {
@@ -324,7 +329,7 @@ export class LoginPage implements OnInit {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
                     this.sendNotification('Bienvenue !');
-                } else if (this.userDetails.ROLE === this.roleUser) {
+                } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
                     this.navCtrl.navigateRoot('/tabs/offers');
                     this.storage.set('SessionRoleKey', this.roleUser);
                     this.sendNotification('Bienvenue !'); 
@@ -342,7 +347,7 @@ export class LoginPage implements OnInit {
     LoginForFBUserWithID(PRO_FB_ID) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'seLoguerUserFacebookID', 'PRO_FB_ID' : PRO_FB_ID},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
     
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
             {
@@ -387,7 +392,7 @@ export class LoginPage implements OnInit {
     registerFromGoogle(param_email: string, param_firstname: string, param_name: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'registerFromGoogle', 'email' : param_email, 'firstname' : param_firstname, 'name' : param_name},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
             {
@@ -401,7 +406,7 @@ export class LoginPage implements OnInit {
     registerUserFB(paramName, paramEmail){
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
                 options: any		= { 'key' : 'registerFromFB', 'email' : paramEmail, 'name' : paramName},
-                url: any      	= this.baseURI + 'aksi.php';
+                url: any      	= this.baseURI;
     
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
             {

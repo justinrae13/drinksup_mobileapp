@@ -7,8 +7,24 @@ ion-content{
     --padding-top: 40px;
 }
 
+h3{
+    margin-top: 40px;
+    font-family: "NBL";
+    font-size: 1.3rem;
+    color: #860000;
+    text-transform: uppercase;
+}
+
 h5{
     margin-top: 40px;
     font-family: "NBL";
-    font-size: 1.2rem;
+    font-size: 1.1rem;
+}
+
+p{
+    font-family: "NBO";
+    font-size: .9em;
+    color: rgb(167, 167, 167);
+    text-align: justify;
+    text-align-last: left;
 }

@@ -18,10 +18,11 @@ const routes: Routes = [
     { path: 'bar-user/:id/:idOffer', loadChildren: '../pages/bar-user/bar-user.module#BarUserPageModule'},
     { path: 'search-a-bar', loadChildren: '../pages/search-a-bar/search-a-bar.module#SearchABarPageModule'},
     { path: 'bar/:id_partenaire', loadChildren: '../pages/bar/bar.module#BarPageModule'},
+    { path: 'cgu', loadChildren: '../pages/cgu/cgu.module#CguPageModule' },
 
+  // { path: 'admin-logout', loadChildren: './admin-logout/admin-logout.module#AdminLogoutPageModule' },
+  // { path: 'offers-admin', loadChildren: './offers-admin/offers-admin.module#OffersAdminPageModule' },
 
-
- 
 
   // { path: 'tabs/offers', loadChildren: '../pages/offers/offers.module#OffersPageModule' },
   // { path: 'tabsadmin/users', loadChildren: '../pages/users/users.module#UsersPageModule' },

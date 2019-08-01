@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import {ModalController, NavParams, ToastController} from '@ionic/angular';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
-
+import * as Global from '../../app/global';
 
 @Component({
   selector: 'app-modal-schedule',
@@ -11,7 +11,7 @@ import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms'
 })
 export class ModalSchedulePage implements OnInit {
 
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
+  baseURI = Global.mainURI;
   jourId : string;
   jour : string;
 

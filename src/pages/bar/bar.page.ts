@@ -9,6 +9,7 @@ import { ModalSchedulePage } from '../modal-schedule/modal-schedule.page';
 import { ModalChangePhotosPage } from '../modal-change-photos/modal-change-photos.page';
 import { LoadingpagePage } from '../loadingpage/loadingpage.page';
 import { ActivatedRoute } from '@angular/router';
+import * as Global from '../../app/global';
 
 
 
@@ -20,8 +21,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class BarPage implements OnInit {
   @ViewChild(IonItemSliding) slidingItem: IonItemSliding;
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
-  uplPhotoURI = 'https://www.macfi.ch/serveur/barphotos/';
+  baseURI = Global.mainURI;
+  uplPhotoURI = Global.photosURI;
   myBar : any = {};
   mySchedule : Array<any> = [];
   barName : string;
@@ -47,10 +48,12 @@ export class BarPage implements OnInit {
   invalidColor : string = "#DC143C";
   preCovOpac : string = "1";
   preCovDis : string = "block";
+  typeBar : string = "block";
+  typeBarSelect : string = "none";
   //form
   editBarForm : FormGroup;
   barFromAdminSide;
-
+  allCategories = [];
 
 
   constructor(private aRoute : ActivatedRoute, private modalCtrl : ModalController, private formBuilder : FormBuilder, private http : HttpClient, private storage : Storage, private camera : Camera, private toastCtrl : ToastController) { 
@@ -80,7 +83,7 @@ export class BarPage implements OnInit {
     });
   }
 
-  imgLoad(){
+imgLoad(){
     this.preCovOpac = "0";
     setTimeout(() => {
       this.preCovDis = "none";
@@ -99,11 +102,27 @@ export class BarPage implements OnInit {
     }else{
       this.loadBar(this.barFromAdminSide);
     }
-    
+
+    this.getCategorie();
     console.log(this.barFromAdminSide)
     var jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
     var date = new Date();
     this.dayOfTheWeek = jours[date.getDay()-1];
+  }
+
+  getCategorie() : void{
+    let headers 	: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options 	: any		= { "key" : "get_all_categories"},
+        url       : any      	= this.baseURI;
+
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
+    {
+        this.allCategories = data;
+    },
+    (error : any) =>
+    {
+      console.log(error);
+    });
   }
 
   loadBar(idUserParam : string) : void{
@@ -248,10 +267,12 @@ async editPhotos() {
       },
   });
   modal.onDidDismiss().then((data) => {
-    if(data.data.uploaded == "Yes"){
+    if(data.data === undefined){
+      console.log("Just an ordinary cancellation");
+    }else if(data.data.uploaded == "Yes"){
       this.loadingModal();//open loading modal
     }else{
-      console.log("Just an oridnary cancellation");
+      console.log("Just an ordinary cancellation");
     }
   })
   modal.present();
@@ -268,6 +289,8 @@ async editPhotos() {
     this.activeHeight = "40px";
     this.activeHeightTA = "100px";
     this.activeFS = "1rem";
+    this.typeBar = "none";
+    this.typeBarSelect = "flex";
   }
 
   disableEdit(){
@@ -279,7 +302,8 @@ async editPhotos() {
     this.activeHeight = "auto";
     this.activeHeightTA = "auto";
     this.activeFS = ".9rem";
-
+    this.typeBar = "block";
+    this.typeBarSelect = "none";
     //
     this.ionViewWillEnter()
   }

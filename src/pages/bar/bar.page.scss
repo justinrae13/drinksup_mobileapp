@@ -170,10 +170,28 @@ ion-slides{
 
 }
 
-ion-input, ion-textarea{
+ion-input, ion-textarea, ion-select{
     margin-bottom: 10px;
     --padding-bottom  : 0px;
     --padding-top  : 0px;
+}
+
+ion-select{
+    --padding-start: 8px;
+    --padding-top: 4px;
+    --padding-bottom: 4px;
+    font-size: 1.1rem;
+    background-color: #1b1e27;
+    font-family: "NBO";
+    border-bottom: 1px solid rgba(255,255,255,.7);
+}
+
+#type_bar{
+    font-family: "NBO";
+    font-size: 1rem;
+    margin:0;  
+    margin-bottom: 10px;
+    padding-left: 8px;
 }
 
 .barname_input{
@@ -223,7 +241,7 @@ ion-item-sliding{
         justify-content: center;
         align-items: center;
         flex-direction: row;
-        padding: 0 30px;
+        padding: 0 16px;
         height: 45px;
         --background : #070708;
         --ion-safe-area-right: 0;
@@ -234,8 +252,8 @@ ion-item-sliding{
             font-size: 15px;
         }
         .sched_left{
-            width: 30%;
-            max-width: 30%;
+            width: 35%;
+            max-width: 35%;
             height: 100%;
             display: flex;
             justify-content: flex-start;
@@ -243,8 +261,8 @@ ion-item-sliding{
         }
 
         .sched_right{
-            width: 70%;
-            max-width: 70%;
+            width: 65%;
+            max-width: 65%;
             height: 100%;
             display: flex;
             justify-content: center;
@@ -253,7 +271,7 @@ ion-item-sliding{
             p{
                 font-family: "NBO";
                 display: inline-flex;
-                justify-content: flex-end;
+                justify-content: flex-start;
                 align-items: center;
                 width: 100%;
                 font-size: 15px;

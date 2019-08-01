@@ -1,0 +1,156 @@
+.freedrinkstab{
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  background-color: #101012;
+  position: fixed;
+  top: 50px;
+  left: 0;
+  transition: all .3s ease-in-out;
+  z-index: 999;
+
+  div{
+      width: 33.3333%;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: rgb(82, 82, 82);
+      font-size: .85rem;
+      font-family: "NBO";
+      transition: all 0.3s linear;
+      position: relative;
+      z-index: 1;
+  }
+}
+
+.outline_bar{
+  display: block;
+  content: "";
+  position: absolute;
+  width: 33.3333%;
+  height: 3px;
+  bottom: 0;
+  left: 0;
+  background-color: rgb(196, 0, 0);
+  transition: all 0.3s linear;
+}
+
+
+ion-list{
+    background-color: #070708;
+    padding: 0 8px;
+  }
+  
+  ion-item-sliding{
+    margin-bottom: 8px;
+    position: relative;
+    z-index: 1;
+  }
+  
+  ion-item{
+    --background: #202021;
+    --ion-safe-area-right: 0;
+    --ion-safe-area-left: 0;
+    width: 100%;
+  
+    .content{
+      height: 100%;
+      width: 100%;
+      padding: 16px;
+  
+      h1{
+        width: 100%;
+        margin: 0;
+        text-align: left;
+        font-family: "NBL";
+        text-transform: capitalize;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
+        font-size: 1.3rem;
+        color: #fff;
+        span{
+          font-family: "NBO";
+          color: rgb(185, 185, 185);
+          font-size: .9rem;
+          text-transform: lowercase;
+        }
+      }
+
+      h3{
+        width: 100%;
+        margin: 0;
+        font-family: "NBO";
+        color: rgb(99, 99, 99);
+        font-size: .9rem;
+        text-align: left;
+        margin: 12px 0;
+        display: flex;
+        width: 100%;
+
+        ion-datetime{
+          padding: 0;
+          font-family: "NBO";
+          font-size: .9rem;
+          margin: 0;
+          color: rgb(185, 185, 185);
+        }
+      }
+
+      .validspan{
+        background-color: rgba(27, 223, 90, .5);
+        border: 1px solid #1bdf5a;
+        font-size: .7rem;
+        color: #fff;
+        padding: 1px 16px;
+        font-family: "NBL";
+        text-transform: uppercase;
+        border-radius: 20px;
+      }
+
+      .notvalidspan{
+        background-color: rgba(128,128,128, .5);
+        border: 1px solid #C0C0C0;
+        font-size: .7rem;
+        color: #fff;
+        padding: 1px 16px;
+        font-family: "NBL";
+        text-transform: uppercase;
+        border-radius: 20px;
+      }
+    }
+   
+  }
+
+  .deleteOpt{
+    background-color: #202021;
+    padding: 0 13px;
+    ion-icon{
+     color: rgb(192, 0, 0);
+     font-size: 20px;
+   }
+  }
+
+  .validateOpt{
+    background-color: #202021;
+    padding: 0 13px;
+    ion-icon{
+     color: rgb(27, 223, 90);
+     font-size: 20px;
+   }
+
+   .invalid{
+    color: #fc6d26 !important;
+    font-size: 20px !important;
+   }
+  }
+
+
+  ion-content{
+    --padding-top: 108px;
+  }

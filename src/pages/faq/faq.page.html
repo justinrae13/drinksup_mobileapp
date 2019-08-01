@@ -4,53 +4,81 @@
 
 
 <ion-content padding color="secondary">
-  <h5>Comment devenir membre ?</h5>
-  <p style="font-size: 12px">L’app est gratuite à télécharger, vous pouvez alors découvrir notre sélection des bars les plus cools de Genève...<br/>
-  Si vous avez envie d’être privilégiés dans ces bars (et on n’en doute pas), il vous suffira de vous abonner pour XX,XX CHF par mois et vous bénéficierez d’un verre offert à chaque sortie.
-  </p>
-  <h5>Quel type de boisson puis-je avoir avec Drinks up ? 🍸  </h5>
-  <p style="font-size: 12px">
-    Nos bars partenaires vous proposent uniquement des produits de qualité.
-    Selon la spécialité de chaque établissement, vous pourrez bénéficier de cocktails, bières, vins, jus frais ou cafés.
-    Découvrez les boissons proposées sur le profil de chaque établissement dans l’onglet Offres.
-  </p>
-  <h5>Dois-je consommer après le verre offert ? </h5>
-  <p style="font-size: 12px">
-    Notre objectif chez Drinks up est de vous offrir une délicieuse boisson par jour tout en satisfaisant nos établissements partenaires.
-    Pour profiter de la boisson offerte, une de ces conditions doit être respectée : <br/>
-    - inviter un ami non-membre qui paye sa première boisson<br/>
-    - .........<br/>
-    - .........<br/>
-    - .........<br/>
-  </p>
-  <h5>Comment les bars sont sélectionnés ? </h5>
-  <p style="font-size: 12px">
-    Nous choisissons uniquement des bars et restaurants de qualité, où vous vous sentirez accueilli comme des rois,
-    avec un service impeccable et surtout vous pourrez y goûter des produits de qualité.
-    Pour l’instant, nous sommes à Genève, mais nous arriverons très prochainement dans d’autres villes où il fait bon vivre.
-  </p>
-  <h5>Puis-je profiter de plusieurs verres offerts par jour ? </h5>
-  <p style="font-size: 12px">
-    Vous pouvez déguster un seul verre offert chaque jour, dans le bar partenaire de votre choix.
-    Vous pouvez retourner dans le même établissement une fois par semaine.
-  </p>
-  <h5>À qui est destiné le verre offert ? </h5>
-  <p style="font-size: 12px">
-    Le verre offert peut vous être destiné ou vous pouvez l’offrir à la personne vous accompagnant.
-    Nous vous invitons à inciter vos amis à télécharger l’application, ainsi vous pourrez bénéficier d’une tournée offerte !
-  </p>
-  <h5>Combien de temps après m’être abonné puis-je commander ma première boisson ? </h5>
-  <p style="font-size: 12px">
-    Dès que vous vous êtes abonnés, vous pouvez immédiatement commander votre première boisson offerte dans un de nos bars partenaires.
-  </p>
-  <h5>Est-ce qu’il y a un engagement ? </h5>
-  <p style="font-size: 12px">
-    Si vous n’aimez plus les verres offerts, nous ne vous retiendrons pas, bien évidemment.
-    C’est TOTALEMENT sans engagement, dès que vous vous voulez partir, vous pouvez le faire.
-    Et si découvrir les meilleurs bars avec vos copains vous manque, c’est également très simple de se réabonner !
-  </p>
-  <h5>Made with LOVE in Genève ! </h5>
-  <p style="font-size: 12px">
-    Drinks up vous encourage à découvrir des lieux et à consommer de bons produits avec modération. L’abus d’alcool est dangereux pour la santé, soyez responsables !
-  </p>
+  <div class="faqClient" *ngIf="role === 'user' || role === 'vip'">
+      <!-- <h3>FAQ Client</h3> -->
+        <h5>Comment devenir membre ?</h5>
+        <p>
+            Pour devenir membre de Drinks up, il vous suffit de télécharger l’application et de vous inscrire. Vous pourrez ensuite avoir accès à l’application. Il vous faudra cependant vous abonner pour une durée de votre choix afin de pouvoir bénéficier des offres quotidiennes.
+        </p>
+      
+        <h5>Comment obtenir mon verre offert ?</h5>
+        <p>
+            Pour bénéficier de l’offre auprès d’un de nos partenaires il vous suffira de vous rendre sur place de montrer le QR-code de l’offre au barman et de lui indiquer la boisson de votre choix. Très important il vous faut acheter un verre selon les détails de l’offre afin de bénéficier de celle-ci.
+        </p>
+      
+        <h5>Quel type de boisson puis-je avoir avec Drinks up ? </h5>
+        <p>
+            Les boissons offertes par nos partenaires sont spécialement préparées par leurs soins. Vous pourrez bénéficier de plusieurs types de boissons comme des bières, du vin ou encore diverses boissons non-alcoolisées. A noter que les bars pourront vous offrir des boissons fermentées seulement entre 17h et 20h et ce pendant 2h maximum. Vous pouvez voir le détail des offres de chacun de nos partenaires sous l’onglet « Offre ».
+        </p>
+    
+        <h5>Comment devenir membre ?</h5>
+        <p>
+            Pour devenir membre de Drinks up, il vous suffit de télécharger l’application et de vous inscrire. Vous pourrez ensuite avoir accès à l’application. Il vous faudra cependant vous abonner pour une durée de votre choix afin de pouvoir bénéficier des offres quotidiennes.
+        </p>
+      
+        <h5>Comment obtenir mon verre offert ?</h5>
+        <p>
+            Pour bénéficier de l’offre auprès d’un de nos partenaires il vous suffira de vous rendre sur place de montrer le QR-code de l’offre au barman et de lui indiquer la boisson de votre choix. Très important il vous faut acheter un verre selon les détails de l’offre afin de bénéficier de celle-ci.
+        </p>
+      
+        <h5>Quel type de boisson puis-je avoir avec Drinks up ? </h5>
+        <p>
+            Les boissons offertes par nos partenaires sont spécialement préparées par leurs soins. Vous pourrez bénéficier de plusieurs types de boissons comme des bières, du vin ou encore diverses boissons non-alcoolisées. A noter que les bars pourront vous offrir des boissons fermentées seulement entre 17h et 20h et ce pendant 2h maximum. Vous pouvez voir le détail des offres de chacun de nos partenaires sous l’onglet « Offre ».
+        </p>
+      
+        <h5>Comment les bars sont sélectionnés ?</h5>
+        <p>
+            Nous avons fait une sélection d’excellent bars, pub, café, etc... Une offre diversifiée d’établissement vous est proposée afin de correspondre aux gouts de chacun. Nous nous sommes assurés que vous bénéficierez d’un service et de boissons de grande qualité.
+        </p>
+      
+        <h5>Puis-je profiter de plusieurs verres offerts par jour ? </h5>
+        <p>
+            L’offre quotidienne de nos partenaires est unique. Il vous sera donc possible de profiter d’un seul verre offert par jour et par établissement.
+        </p>
+      
+        <h5>À qui est destiné le verre offert ?</h5>
+        <p>
+            Le verre qui vous est offert par notre partenaire peut aussi bien être pour vous que pour la personne qui vous accompagne. Si plusieurs de vos amis ont l’application cela peut vous permettre de faire de grosses économies sur une soirée.
+        </p>
+      
+        <h5>Combien de temps après m’être abonné puis-je commander ma première boisson ?</h5>
+        <p>
+            Une fois le paiement validé et l’abonnement activé vous pourrez tout de suite profiter des offres de nos partenaires.
+        </p>
+  </div>
+
+
+  <div class="faqPartenaire" *ngIf="role === 'proprio'">
+      <!-- <h3>FAQ Partenaire</h3> -->
+      <h5>Comment passer de membre à partenaire ?</h5>
+      <p>
+          L’établissement doit télécharger l’application puis s’inscrire de manière régulière comme un client. Un administrateur fera ensuite passer le compte de « Client » à « Partenaire ». L’établissement aura ensuite la possibilité de modifier ses informations, d’ajouter ses offres, de les scanner et de voir les statistiques.
+      </p>
+    
+      <h5>Comment publier une offre ?</h5>
+      <p>
+          Pour publier une offre le partenaire doit cliquer sur l’onglet « Offres ». Ensuite, il suffit de définir la date de début et de fin et d’ajouter dans la description les détails de l’offre. Cliquer pour finir sur « Ajouter l’offre », vérifier les informations, glisser l’offre sur la droite et confirmer pour l’activer.
+      </p>
+    
+      <h5>Comment modifier les informations de mon établissement ?</h5>
+      <p>
+          Pour modifier les informations de son établissement il suffit de cliquer sur l’onglet « Bar ». Vous pourrez y définir le nom de votre commerce, l’adresse, vos horaires et y ajouter une courte description. Vous pourrez aussi ajoutez quelques photos afin que les clients puissent se faire une idée.
+      </p>
+    
+      <h5>Comment voir ses statistiques ?</h5>
+      <p>
+          Afin de consulter les statistiques de votre commerce, il vous faut cliquer sur l’onglet « Stats », puis sur « PLUS » pour voir le détail du mois qui vous intéresse. Il est aussi possible de changer l’année.
+      </p>
+  </div>
+  
 </ion-content>

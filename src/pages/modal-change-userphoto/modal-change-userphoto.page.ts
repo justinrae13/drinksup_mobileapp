@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class ModalChangeUserphotoPage implements OnInit {
   user_email : string;
-  userPhotoURI = 'https://www.macfi.ch/serveur/userphotos/';
+  userPhotoURI = 'https://www.drinksup.ch/serveur/userphotos/';
 
   constructor(private modalCtrl : ModalController, private navParam : NavParams, private http : HttpClient, private camera : Camera) { }
 
@@ -27,7 +27,7 @@ export class ModalChangeUserphotoPage implements OnInit {
 
   upl(){
     const options: CameraOptions = {
-      quality: 60,
+      quality: 40,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
@@ -55,7 +55,7 @@ export class ModalChangeUserphotoPage implements OnInit {
 
   gal(){
     const options: CameraOptions = {
-      quality: 60,
+      quality: 40,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,

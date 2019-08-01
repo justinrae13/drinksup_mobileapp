@@ -1,23 +1,69 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar color="primary">
     <ion-title>Validation d'un bar</ion-title>
   </ion-toolbar>
-</ion-header>
+</ion-header> -->
+<div class="tab_header" [ngStyle]="{'top' : hideHeader}">Gestion des partenaires</div>
+<div class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
+  <div (click)="tous()" [ngStyle]="{'color' : activeColor1}">Tous <span class="rippleEffect"></span></div>
+  <div (click)="actif()" [ngStyle]="{'color' : activeColor2}">Actif</div>
+  <div (click)="inactif()" [ngStyle]="{'color' : activeColor3}">Inactif</div>
+  <span class="outline_bar" [ngStyle]="{'transform' : tabPosition, 'left' : leftPosition}"></span>
+</div>
 
-<ion-content padding color="secondary">
+<!-- <ion-content padding color="secondary">
   <ion-searchbar animated color="primary" placeholder="Cherchez un bar" (ionInput)="search($event)"></ion-searchbar>
   <ion-card *ngFor="let user of usersFilter" (click)="checkPartenaireBar(user.INT_ID)">
-      <!-- (click)="validated(user.INT_ID, user.ENT_ID)" -->
+
     <ion-card-header>
       <ion-card-title>{{user.ENT_NOM}}</ion-card-title>
       <ion-card-subtitle>Propriétaire : {{user.INT_PRENOM}} {{user.INT_NOM}}</ion-card-subtitle>
     </ion-card-header>
-
-    <!-- <ion-card-content>
-      {{user.ENT_DESCRIPTION | slice:0:15}}...
-    </ion-card-content> -->
   </ion-card>
 
   <p>{{haveBarOrNot}} </p>
 
+</ion-content> -->
+
+<ion-content color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)">
+  <ion-searchbar animated color="primary" placeholder="Rechercher un bar" (ionInput)="search($event)"></ion-searchbar>
+  
+  <ion-list>
+    <ion-item-sliding *ngFor="let user of usersFilter; let i = index" #slidingItem>
+      <!-- <span class="voirPlus" (click)="expand(i)"><ion-icon name="arrow-dropdown"></ion-icon></span> -->
+      <ion-item lines="none" no-padding>
+        <div class="content">
+            <h1>{{user.ENT_NOM}}</h1>
+            <h3>Propriétaire:&nbsp;{{user.INT_PRENOM}} {{user.INT_NOM}}</h3>
+            <span class="actif_span" *ngIf="(user.ENT_VALIDATION == 'Oui')">Actif</span>
+            <span class="inactif_span" *ngIf="(user.ENT_VALIDATION == 'Non')">Inactif</span>
+            <!-- <span class="ab-t" *ngIf="(user.ABO_DATEDEBUT !== null || user.ABO_DATEFIN !== null) && today > user.ABO_DATEFIN">abonnement terminé</span> -->
+            <!-- <div class="sub_content" id="sub_content_{{i}}">
+                <h2 *ngIf="user.INT_THIRD_PARTY_LOGIN!==null">Type&nbsp;d'inscription: {{user.INT_THIRD_PARTY_LOGIN}}</h2>
+                <h2 *ngIf="user.INT_THIRD_PARTY_LOGIN===null">Type&nbsp;d'inscription: NATIVE</h2>
+                <p>Date&nbsp;d'inscription:&nbsp;<ion-datetime [readonly]="true" [value]="user.INT_DATEINSCRIPTION" displayFormat="DD MMMM YYYY" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+                <hr>
+                <p *ngIf="user.ABO_TYPE!==null">Type&nbsp;d'abonnement:&nbsp;{{user.ABO_TYPE}}</p>
+                <p *ngIf="user.ABO_TYPE===null">Type&nbsp;d'abonnement:&nbsp;<i>non-abonné</i></p>
+
+                <p *ngIf="user.ABO_DATEDEBUT!==null">Début:&nbsp;<ion-datetime [readonly]="true" [value]="user.ABO_DATEDEBUT" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+                <p *ngIf="user.ABO_DATEDEBUT===null">Début:&nbsp;<i>non-abonné</i></p>
+
+                <p *ngIf="user.ABO_DATEFIN!==null">Fin:&nbsp;<ion-datetime [readonly]="true" [value]="user.ABO_DATEFIN" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+                <p *ngIf="user.ABO_DATEFIN===null">Fin:&nbsp;<i>non-abonné</i></p>
+              </div>-->
+        </div>
+      </ion-item>
+      <ion-item-options side="start">
+        <!-- <ion-item-option  (click)="edit(slidingItem,user.INT_ID, user.INT_PRENOM, user.INT_NOM, user.INT_EMAIL, user.ROL_TYPES)"><ion-icon class="ion-edit" name="settings"></ion-icon></ion-item-option> -->
+        <ion-item-option  (click)="checkPartenaireBar(user.INT_ID)" class="ContactOpt"><ion-icon name="eye"></ion-icon></ion-item-option>
+
+        <ion-item-option *ngIf="(user.ENT_VALIDATION == 'Non')"  (click)="delete(slidingItem, user.ENT_ID, user.ENT_NOM)" class="deleteOpt"><ion-icon class="ion-delete" name="trash"></ion-icon></ion-item-option>
+        <ion-item-option *ngIf="(user.ENT_VALIDATION == 'Oui')"  (click)="cantDelete(slidingItem, user.ENT_NOM)" class="deleteOpt"><ion-icon class="ion-delete" name="trash"></ion-icon></ion-item-option>
+
+        <ion-item-option  (click)="validate(slidingItem, user.ENT_ID, user.ENT_NOM, user.ENT_VALIDATION)" class="assignPartnerOpt"><ion-icon *ngIf="(user.ENT_VALIDATION == 'Non')" class="actif_icon" name="checkmark-circle-outline"></ion-icon><ion-icon *ngIf="(user.ENT_VALIDATION == 'Oui')" class="inactif_icon" name="checkmark-circle-outline"></ion-icon></ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+  <p>{{haveBarOrNot}}</p>
 </ion-content>

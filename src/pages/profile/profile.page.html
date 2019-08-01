@@ -6,18 +6,97 @@
       </div>
     </div> -->
 </div>
-<div class="tab_header">Profil</div>
+<div class="tab_header"><div class="ville" (click)="openSelect()">Genève&nbsp;&nbsp;<ion-icon name="arrow-dropdown"></ion-icon></div> Profil<span (click)="logoutFromApp()"><ion-icon name="log-out"></ion-icon></span></div>
+
+<div class="custom_backdrop" id="bckdrop"></div>
+<div class="custom_modal_wrapper" id="cmw">
+  <div class="custom_modal" id="cm">
+    <header>Mon abonnement</header>
+    <section>
+        <p><span>Type d'abonnement :</span>&nbsp;{{abonneDetail.ABO_TYPE}}</p>
+        <p><span>Date début :</span>&nbsp;<ion-datetime [readonly]="true" [value]="abonneDetail.ABO_DATEDEBUT" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+        <p><span>Date fin :</span>&nbsp;<ion-datetime [readonly]="true" [value]="abonneDetail.ABO_DATEFIN" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+    </section>
+    <footer (click)="closeModal()">OK</footer>
+  </div>
+</div>
+
 
 <ion-content color="secondary">
   <div class="profile_header">
-    <h1 (click)="logoutFromApp()">Se déloguer</h1>
-    <div class="profile_pic_frame">
-      <img class="profpic" [src]="profilePic">
-      <img class="defpic" [src]="defaultPic">
+    <div class="profile_pic_frame_bg" (click)="changerPhoto(loggedUser.INT_EMAIL)">
+        <div class="profile_pic_frame">
+          <img class="profpic" [src]="profilePic">
+          <img class="defpic" [src]="defaultPic">
+        </div>
     </div>
+    <h1>{{loggedUser.INT_PRENOM}}</h1>
+    <h2>{{loggedUser.INT_EMAIL}}</h2>
+    <p>Membre {{dateInscription}}</p>
+
+    <!-- <div class="progress_bar">
+      <span></span>
+    </div> -->
+    <legend class="niveau" *ngIf="loggedUser.Roles_ROL_ID!==4 && loggedUser.Roles_ROL_ID!==2">Débutant</legend>
+    <legend class="vip" *ngIf="loggedUser.Roles_ROL_ID===4"><img src="../../assets/img/crown.svg"> V.I.P</legend>
+    <legend class="partenaire" *ngIf="loggedUser.Roles_ROL_ID===2"><ion-icon name="contacts"></ion-icon> Partenaire</legend>
+
   </div>
 
-  <div class="profile_content">
+  <div class="four_buttons">
+
+    <div class="button_ins" (click)="monAbonnement()" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser =='good'">
+      <div class="bg_round">
+          <div class="img_wrapper">
+              <img src="../../assets/img/profil_abonne_icon-01.svg">
+          </div>
+      </div>
+      <p>ABONNEMENT</p>
+    </div>
+
+    <div class="button_ins" (click)="goAbonnement()" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser !='good'">
+      <div class="bg_round">
+          <div class="img_wrapper">
+              <img src="../../assets/img/profil_abonne_icon-01.svg">
+          </div>
+      </div>
+      <p>ABONNEMENT</p>
+    </div>
+
+    <div class="button_ins" (click)="sendEmail()">
+      <div class="bg_round">
+        <div class="img_wrapper">
+          <img src="../../assets/img/profil_contact_icon-02.svg">
+        </div>
+      </div>
+      <p>CONTACT</p>
+    </div>
+
+    <div class="button_ins" (click)="goFaq()">
+      <div class="bg_round">
+          <div class="img_wrapper">
+              <img src="../../assets/img/profil_faq_icon-03.svg">
+          </div>
+      </div>
+      <p>FAQ</p>
+    </div>
+
+    <div class="button_ins" (click)="goCgu()">
+      <div class="bg_round">
+          <div class="img_wrapper">
+              <img src="../../assets/img/profil_cgu_icon-04.svg">
+          </div>
+      </div>
+      <p>CGU</p>
+    </div>
+
+  </div>
+
+  <ion-select [interfaceOptions]="customActionSheetOptions" style="display:none">
+      <ion-select-option *ngFor="let ville of allVille" value="">{{ville.VI_VILLE}}</ion-select-option>
+  </ion-select>
+
+  <!-- <div class="profile_content">
     <h1>{{loggedUser.INT_PRENOM}}</h1>
     <h2>{{loggedUser.INT_EMAIL}}</h2>
     <p>Membre {{dateInscription}}</p>
@@ -27,6 +106,6 @@
     <div class="otherStuff" (click)="goFaq()"><ion-icon name="arrow-forward"></ion-icon>&nbsp;Foire aux questions</div>
     <div class="otherStuff" (click)="changerPhoto(loggedUser.INT_EMAIL)"><ion-icon name="arrow-forward"></ion-icon>&nbsp;Changer photo de profil</div>
     <div class="otherStuff"><ion-icon name="arrow-forward"></ion-icon>&nbsp;Conditions Générales d'Utilisation</div>
-  </div>
+  </div> -->
 
 </ion-content>

@@ -3,6 +3,8 @@ import { IonContent, NavController, IonSearchbar } from "@ionic/angular";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { Storage } from '@ionic/storage';
+import * as Global from '../../app/global';
+
 
 @Component({
   selector: 'app-search-a-bar',
@@ -11,7 +13,7 @@ import { Storage } from '@ionic/storage';
 })
 export class SearchABarPage implements OnInit {
   @ViewChild(IonSearchbar) searchBarInput: IonSearchbar;
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
+  baseURI = Global.mainURI;
   items : Array<any> = [];
   Filtereditems : Array<any> = [];
   showItems : string = "none";
@@ -88,7 +90,7 @@ export class SearchABarPage implements OnInit {
       androiddelay: 150
      }
     this.nativePageTransitions.slide(options); 
-    this.navCtrl.navigateForward('/tabs/bar-user/'+id);
+    this.navCtrl.navigateForward('/bar-user/'+id);
     setTimeout(() => {
       this.showItems = "none";
     }, 500);

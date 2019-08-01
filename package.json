@@ -70,6 +70,7 @@
     "rxjs": "^6.4.0",
     "rxjs-compat": "^6.4.0",
     "serve": "10.1.2",
+    "uk.co.workingedge.phonegap.plugin.launchnavigator": "5.0.4",
     "zone.js": "~0.8.29"
   },
   "devDependencies": {

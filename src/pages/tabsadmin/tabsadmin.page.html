@@ -10,14 +10,24 @@
       <ion-label>Partenaires</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="offers-management">
+    <ion-tab-button tab="offers-admin">
+      <ion-icon src="../../assets/img/offres_icon.svg" [ngStyle]="{'opacity' : offres_icon}"></ion-icon>
+      <ion-label>Offres</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="logout-admin" (click)="logoutadmin()">
+      <ion-icon name="log-out"></ion-icon>
+      <ion-label>Logout</ion-label>
+    </ion-tab-button>
+
+    <!-- <ion-tab-button tab="offers-management">
       <ion-icon name="calendar"></ion-icon>
       <ion-label>Gestion offres</ion-label>
-    </ion-tab-button>
+    </ion-tab-button> -->
   
-    <ion-tab-button tab="profile">
+    <!-- <ion-tab-button tab="profile">
       <ion-icon name="person"></ion-icon>
       <ion-label>Profil</ion-label>
-    </ion-tab-button>
+    </ion-tab-button> -->
   </ion-tab-bar>
 </ion-tabs>

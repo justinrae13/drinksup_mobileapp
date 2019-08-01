@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import {ModalController, NavParams, ToastController} from '@ionic/angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import * as Global from '../../app/global';
+
 
 @Component({
   selector: 'app-modalbar-admin',
@@ -19,8 +21,8 @@ export class ModalbarAdminPage implements OnInit {
   localiteEnt = '';
   adresseEnt = '';
   idEnt = '';
-  // public baseURI = 'http://localhost/drinksupProject/serveur/';
-  public baseURI = 'https://macfi.ch/serveur/';
+
+  public baseURI = Global.mainURI;
   public modifierForm: FormGroup;
   constructor(private formBuilder: FormBuilder, private navParams: NavParams,  public http: HttpClient, private toastCtrl: ToastController, private modalController: ModalController) {
       this.modifierForm = new FormGroup({
@@ -55,7 +57,7 @@ export class ModalbarAdminPage implements OnInit {
     public getBar(idUser: number, idEnt: number) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'getBar', 'idUser': idUser, 'idEnt': idEnt},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.bars = data;
             this.nomEnt = this.bars[0].ENT_NOM;
@@ -85,7 +87,7 @@ export class ModalbarAdminPage implements OnInit {
     updateBar(nomEnt: string, descEnt: string, adresseEnt: string, localiteEnt: string, npaEnt: number, secteurEnt: string, idEnt: number) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'updateBar', 'nomEnt': nomEnt, 'descEnt': descEnt, 'adresseEnt': adresseEnt, 'localiteEnt': localiteEnt, 'npaEnt': npaEnt, 'secteurEnt': secteurEnt, 'idEnt': idEnt},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.sendNotification('Votre modification a bien été pris en compte !');

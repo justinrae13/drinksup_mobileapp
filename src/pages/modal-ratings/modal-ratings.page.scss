@@ -1,6 +1,24 @@
+ion-content{
+    --background: #161616;
+}
+
+ion-toolbar{
+    --background: #1d1d1d;
+    ion-button{
+        font-family: "NBO";
+        font-size: 17px !important;
+        text-transform: capitalize !important;
+        color: rgb(180, 180, 180) !important;
+    }
+}
+
 .close-header{
     width: 100%;
     text-align: right;
+    ion-icon{
+        color: #fff;
+        font-size: 1rem;
+    }
 
 }
 
@@ -14,13 +32,17 @@
     justify-content: space-between;
     align-items: center;
     .beer-wrapper{
-        width: 18%;
+        width: 16%;
         height: 30px;
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
         z-index: 1;
+
+        img{
+            width: 80%;
+        }
     }
     .empty-beer{
         width: 30px;
@@ -48,16 +70,13 @@
 }
 
 h1{
-    text-align: center;
-    font-size: .9rem;
-    font-family: "PNB";
+    font-family: "NBL";
+    font-size: 18px !important;
+    color: #fff !important;
 }
 
 p{
-    text-align: center;
-    font-size: .8rem
-}
-
-ion-button{
-    --background: #f80638;
+    font-family: "NBO" !important;
+    font-size: 15px !important;
+    color: rgb(184, 184, 184) !important;
 }

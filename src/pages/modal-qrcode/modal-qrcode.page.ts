@@ -1,7 +1,8 @@
 import { ModalController, NavParams } from '@ionic/angular';
 import { Component, OnInit } from '@angular/core';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
-
+import { HttpHeaders, HttpClient } from '@angular/common/http';
+import * as Global from '../../app/global';
 
 
 @Component({
@@ -17,8 +18,11 @@ export class ModalQrcodePage implements OnInit {
   idOff = null;
   idUser = null;
   codeContent = null;
+  baseURI = Global.mainURI;
+  chosenBar = {};
 
-  constructor(private navParams : NavParams, private modalCtrl : ModalController, private barcode : BarcodeScanner) { }
+
+  constructor(private http : HttpClient, private navParams : NavParams, private modalCtrl : ModalController, private barcode : BarcodeScanner) { }
 
   ngOnInit() {
     this.description = this.navParams.get("description");
@@ -27,6 +31,7 @@ export class ModalQrcodePage implements OnInit {
     this.idOff = this.navParams.get("idOff");
     this.idEnt = this.navParams.get("idEnt");
     this.idUser = this.navParams.get("idUser");
+    this.getBarById(this.navParams.get("idEnt"));
 
 
     if(this.description !== null){
@@ -37,6 +42,19 @@ export class ModalQrcodePage implements OnInit {
 
   ionViewWillEnter(){
     
+  }
+
+  getBarById(id_bar) {
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options: any		= { 'key' : 'fetchABarById', 'idBar' : id_bar},
+        url: any      	= this.baseURI;
+  
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+        this.chosenBar = data;
+    },  
+    (error: any) => {
+        console.log(error);
+    });
   }
 
   annuler(){

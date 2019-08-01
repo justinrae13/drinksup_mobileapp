@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AlertController, IonItemSliding, ModalController, NavParams, ToastController} from '@ionic/angular';
+import * as Global from '../../app/global';
+
 
 @Component({
   selector: 'app-offers-addbar',
@@ -17,8 +19,7 @@ export class OffersAddbarPage implements OnInit {
     bar2  = [];
     barJour2  = [];
     idJour: number;
-    // public baseURI = 'http://localhost/drinksupProject/serveur/';
-    public baseURI = 'https://macfi.ch/serveur/';
+    public baseURI = Global.mainURI;
   constructor(public http: HttpClient, private navParams: NavParams, private modalController: ModalController, public alertController: AlertController, private toastCtrl: ToastController) { }
 
   ngOnInit() {
@@ -39,7 +40,7 @@ export class OffersAddbarPage implements OnInit {
   public getBar(jour: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'getAddBarByDay', 'jour': jour},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.bars = data;
 
@@ -65,7 +66,7 @@ export class OffersAddbarPage implements OnInit {
     public getBarJour(jour: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'getBarJour', 'jour': jour},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.barJour = data;
             if (this.barJour == null ) {this.haveBarOrNot = 'Aucun Bar ne fait d\'offres le ' + jour; } else {this.haveBarOrNot = ''; }
@@ -103,7 +104,7 @@ export class OffersAddbarPage implements OnInit {
     addOffer(id: number, idJour: number) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any		= { 'key' : 'insertOffers', 'id': id, 'idJour': idJour},
-            url: any      	= this.baseURI + 'aksi.php';
+            url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.sendNotification('L\'ajout de l\'offre a bien été pris en compte!');

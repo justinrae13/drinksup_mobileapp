@@ -3,8 +3,11 @@
 </div>
 
 <ion-content>
-  <h1>Veuillez présenter le Qrcode au barman</h1>
+  
+  <h2><span>Offre : </span>{{description}}</h2>
+  <h3><span>Bar : </span>{{chosenBar.ENT_NOM}}</h3>
   <ion-card *ngIf="codeContent">
-      <ngx-qrcode [(qrc-value)]="codeContent" ></ngx-qrcode>
-    </ion-card>
+    <ngx-qrcode [(qrc-value)]="codeContent" ></ngx-qrcode>
+  </ion-card>
+  <h1>Veuillez présenter le Qrcode au barman</h1>
 </ion-content>

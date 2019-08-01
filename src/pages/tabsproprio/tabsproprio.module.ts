@@ -10,6 +10,7 @@ import {BarPageModule} from '../bar/bar.module';
 import {StatsPageModule} from '../stats/stats.module';
 import {QrcodePageModule} from '../qrcode/qrcode.module';
 import {ProfilePageModule} from '../profile/profile.module';
+import {OffersManagementPageModule} from '../offers-management/offers-management.module';
 
 
 const routes: Routes = [
@@ -22,6 +23,12 @@ const routes: Routes = [
                 path: 'bar',
                 children: [
                     { path: '', loadChildren: '../bar/bar.module#BarPageModule' },
+                ]
+            },
+            {
+                path: 'offers-management',
+                children: [
+                    { path: '', loadChildren: '../offers-management/offers-management.module#OffersManagementPageModule' },
                 ]
             },
             {
@@ -56,6 +63,7 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
+    OffersManagementPageModule,
     BarPageModule,
     StatsPageModule,
     QrcodePageModule,

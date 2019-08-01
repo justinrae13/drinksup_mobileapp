@@ -33,6 +33,7 @@ ion-content{
 
     ion-item{
         --ion-safe-area-right: 0;
+        position: relative;
     }
     
     ion-label{
@@ -42,10 +43,28 @@ ion-content{
         text-transform: uppercase;
         font-size: .75rem;
     }
+
+    .input_wrappah{
+        position: relative;
+        background-color: yellow;
+
+        span{
+            position: absolute;
+            right: 0;
+            top: 65%;
+            transform: translateY(-35%);
+            z-index: 1000;
+            padding: 15px;
+            ion-icon{
+                font-size: 1.2rem;            
+            }
+        }
+        
+    }
     
     ion-input{
         --padding-start : 1rem;
-        --padding-end : 1rem;
+        --padding-end : 30px;
         color: #fff;
         font-family: "NLI";
         font-size: .9rem;

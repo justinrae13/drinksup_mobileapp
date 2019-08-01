@@ -1,12 +1,12 @@
-<ion-content padding color="secondary">
+<ion-content padding>
   <div class="close-header">
       <ion-icon name="close" (click)="close()"></ion-icon>
   </div>
-  <h1>Vous avez passé une bonne soirée ?</h1>
-  <p>Donnez votre note</p>
+  <h1>L'etablissement vous a plu ?</h1>
+  <p>Veuillez donner votre note.</p>
   <div class="star-row-wrapper">
     <div class="star-row">
-      <div class="beer-wrapper" (click)="firstGlass()">
+      <!-- <div class="beer-wrapper" (click)="firstGlass()">
           <img src="../../assets/img/beer-ratings/empty-glass.svg" class="empty-beer">
           <img src="../../assets/img/beer-ratings/mousse.svg" class="mousse" [ngStyle]="{'bottom' : firstmousse}">
           <div class="liquid" [ngStyle]="{'height' : firstliquid}"></div>
@@ -34,10 +34,29 @@
           <img src="../../assets/img/beer-ratings/empty-glass.svg" class="empty-beer">
           <img src="../../assets/img/beer-ratings/mousse.svg" class="mousse" [ngStyle]="{'bottom' : fifthmousse}">
           <div class="liquid" [ngStyle]="{'height' : fifthliquid}"></div>
+      </div> -->
+      <div class="beer-wrapper" (click)="firstGlass()">
+        <img [src]="imgRating1">
       </div>
-      
+      <div class="beer-wrapper" (click)="secondGlass()">
+        <img [src]="imgRating2">
+      </div>
+      <div class="beer-wrapper" (click)="thirdGlass()">
+        <img [src]="imgRating3">
+      </div>
+      <div class="beer-wrapper" (click)="fourthGlass()">
+        <img [src]="imgRating4">
+      </div>
+      <div class="beer-wrapper" (click)="fifthGlass()">
+        <img [src]="imgRating5">
+      </div>
     </div>
   </div>
 
-  <ion-button expand="full" shape="round" (click)="rate()">Confirmer</ion-button>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+      <ion-button expand="full" fill="clear" id="close" (click)="rate()">Confirmer</ion-button>
+    </ion-toolbar>
+</ion-footer>

@@ -1,0 +1,31 @@
+<div class="tab_header" [ngStyle]="{'top' : hideHeader}">Gestion des offres</div>
+<div class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
+  <div (click)="tous()" [ngStyle]="{'color' : activeColor1}">Tous</div>
+  <div (click)="valide()" [ngStyle]="{'color' : activeColor2}">Validée</div>
+  <div (click)="nonvalide()" [ngStyle]="{'color' : activeColor3}">Non-validée</div>
+  <span class="outline_bar" [ngStyle]="{'transform' : tabPosition, 'left' : leftPosition}"></span>
+</div>
+
+
+<ion-content color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)">
+  <ion-list>
+    <ion-item-sliding *ngFor="let off of filteredOffres; let i = index" #slidingItem>
+      <ion-item lines="none" no-padding>
+        <div class="content">
+            <h1>{{off.OFF_DESCRIPTION}}</h1>
+            <h3>Date&nbsp;debut:&nbsp;&nbsp;<ion-datetime [readonly]="true" [value]="off.OFF_DATEDEBUT" displayFormat="DD MMMM YYYY à HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></h3>
+            <h3>Date&nbsp;fin:&nbsp;&nbsp;<ion-datetime [readonly]="true" [value]="off.OFF_DATEFIN" displayFormat="DD MMMM YYYY à HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></h3>
+            <span class="validspan" *ngIf="off.OFF_ACTIF === 'Oui'">Validée</span>
+            <span class="notvalidspan" *ngIf="off.OFF_ACTIF === 'Non'">Non-validée</span>
+        </div>
+      </ion-item>
+      <ion-item-options side="start">
+        <ion-item-option  (click)="deleteOffer(slidingItem,off.OFF_ID,off.OFF_DESCRIPTION)" class="deleteOpt"><ion-icon name="trash"></ion-icon></ion-item-option>
+        <ion-item-option (click)="makeValid(slidingItem,off.OFF_ID,off.OFF_DESCRIPTION,off.OFF_ACTIF)" class="validateOpt">
+          <ion-icon *ngIf="off.OFF_ACTIF === 'Non'" name="checkmark-circle"></ion-icon>
+          <ion-icon *ngIf="off.OFF_ACTIF === 'Oui'" name="close-circle" class="invalid"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+</ion-content>

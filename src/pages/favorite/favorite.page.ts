@@ -4,6 +4,7 @@ import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/na
 import { NavController, ModalController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { LoadingpagePage } from '../loadingpage/loadingpage.page';
+import * as Global from '../../app/global';
 
 
 
@@ -13,8 +14,8 @@ import { LoadingpagePage } from '../loadingpage/loadingpage.page';
   styleUrls: ['./favorite.page.scss'],
 })
 export class FavoritePage implements OnInit{
-  baseURI = 'https://macfi.ch/serveur/aksi.php';
-  uplPhotoURI = "https://www.macfi.ch/serveur/barphotos/";
+  baseURI = Global.mainURI;
+  uplPhotoURI = Global.photosURI;
   items : Array<any> = [];
   log : string;
   faveBarNo;

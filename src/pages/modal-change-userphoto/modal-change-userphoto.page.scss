@@ -1,5 +1,5 @@
 ion-content{
-    --background: #222227;
+    --background: #161616;
 
     hr{
         height: 1px;
@@ -36,4 +36,8 @@ ion-button{
     font-family: "NBO";
     font-size: 15px;
     --color: #fff !important;
+}
+
+ion-toolbar{
+    --background: #1d1d1d;
 }
