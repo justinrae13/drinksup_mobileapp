@@ -35,7 +35,7 @@
       <img [src]="imgLink3" alt="Photo n° 3" id="third_pic">
     </div>
     <div class="bot_overlay">
-      <h1>{{myBar.ENT_NOM}}</h1>
+      <h1 class="bar_name">{{myBar.ENT_NOM}}</h1>
     </div>
   </div>
 
@@ -48,7 +48,7 @@
         </div> 
         <p class="addressBar">{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} - {{myBar.ENT_LOCALITE}}</p>
         <div class="button_find_bar">
-            <ion-button>
+            <ion-button (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)">
                 <img src="../../assets/img/map-icon.svg">
             </ion-button>
         </div>
@@ -125,7 +125,13 @@
     </div>
   </div>
 
-  <ion-button *ngIf="payed=='good'" (click)="rate(myBar.ENT_ID, user_id)" class="commentButton" shape="round"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
+ 
+  <div class="map_wrapper" (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)">
+    <div id="map"></div>
+  </div>
+  
+  <ion-button *ngIf="payed!=='good' && vipUser.Roles_ROL_ID!==4" (click)="rateNotSubscriber()" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
+  <ion-button *ngIf="payed==='good' || vipUser.Roles_ROL_ID===4" (click)="rate(myBar.ENT_ID, user_id)" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
   <!-- <ion-button  class="geoLocalButton" shape="round"><ion-icon name="navigate"></ion-icon>&nbsp;Localiser ce bar</ion-button> -->
 
 </ion-content>

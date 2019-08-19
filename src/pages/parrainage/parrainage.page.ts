@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 
 @Component({
-  selector: 'app-cgu',
-  templateUrl: './cgu.page.html',
-  styleUrls: ['./cgu.page.scss'],
+  selector: 'app-parrainage',
+  templateUrl: './parrainage.page.html',
+  styleUrls: ['./parrainage.page.scss'],
 })
-export class CguPage implements OnInit {
+export class ParrainagePage implements OnInit {
 
   constructor(private navCtrl : NavController) { }
 

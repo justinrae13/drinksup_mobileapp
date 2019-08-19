@@ -336,6 +336,7 @@ export class LoginPage implements OnInit {
                 } else {
                     // console.log(JSON.stringify(options));
                     this.sendNotification('Votre compte Facebook a été déjà utilisé');
+                    this.fb.logout();
                 }
             },
             (error: any) => {
@@ -380,6 +381,7 @@ export class LoginPage implements OnInit {
                 } else {
                     // console.log(JSON.stringify(options));
                     this.sendNotification('Votre compte Facebook a été déjà utilisé');
+                    this.fb.logout();
                 }
             },
             (error: any) => {

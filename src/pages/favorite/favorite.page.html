@@ -29,15 +29,16 @@
   <ion-list *ngFor="let bars of items; let i = index">
       <ion-item no-padding color="secondary" lines="none">
         <img src="../../assets/img/star-icon-filled.svg" class="star" alt="" (click)="removeToFave(bars.ENT_ID)">
+        <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlreadyFave}"></div>
         <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-        <img (click)="moveToBar(bars.ENT_ID)" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
+        <img (click)="moveToBar(bars.ENT_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
         <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
         <p class="off_desc">{{bars.ENT_NOM}}</p>
         <p class="ent_nom">{{bars.ENT_ADRESSE}}</p>
         </div>  
       </ion-item>
   </ion-list>
-<div *ngIf="items == null">
+<div *ngIf="items == null" class="empty_fave_wrapper">
   <div class="empty_fave">
     <img src="../../assets/img/empty_favorite.svg">
     <h1>Votre boîte de favoris est vide</h1>

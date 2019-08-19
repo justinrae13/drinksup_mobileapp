@@ -22,13 +22,17 @@ import { OffersAddbarPageModule } from '../pages/offers-addbar/offers-addbar.mod
 import { ModalRatingsPageModule } from '../pages/modal-ratings/modal-ratings.module';
 import { ModalChangePhotosPageModule } from '../pages/modal-change-photos/modal-change-photos.module';
 import { ModalChangeUserphotoPageModule } from '../pages/modal-change-userphoto/modal-change-userphoto.module';
-
+import { LaunchNavigator } from '@ionic-native/launch-navigator/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 
 import { Calendar } from '@ionic-native/calendar/ngx';
 import {EmailComposer} from '@ionic-native/email-composer/ngx';
 import {Stripe} from '@ionic-native/stripe/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
+import { SocialSharing } from '@ionic-native/social-sharing/ngx'
+import { Clipboard } from '@ionic-native/clipboard/ngx';
 // import { HideHeaderDirective } from './hide-header.directive';
 
 
@@ -47,6 +51,11 @@ import { NgxQRCodeModule } from 'ngx-qrcode2';
         EmailComposer,
         Stripe,
         BarcodeScanner,
+        LaunchNavigator,
+        Geolocation,
+        NativeGeocoder,
+        SocialSharing,
+        Clipboard,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent]

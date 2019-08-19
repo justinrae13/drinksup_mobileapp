@@ -19,6 +19,8 @@ export class FavoritePage implements OnInit{
   items : Array<any> = [];
   log : string;
   faveBarNo;
+  ifLoadedAlreadyFave : string = "block";
+
 
   constructor(private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
     
@@ -80,11 +82,15 @@ export class FavoritePage implements OnInit{
   }
 
   moveToBar(id : string){
-    let options: NativeTransitionOptions = {
-      duration: 250,
-     }
-    this.nativePageTransitions.fade(options); 
-    this.navCtrl.navigateRoot('/tabs/bar-user/'+id);
+    // let options: NativeTransitionOptions = {
+    //   direction: 'left',
+    //   duration: 150,
+    //   slowdownfactor: 3,
+    //   iosdelay: 100,
+    //   androiddelay: 150
+    //  }
+    this.nativePageTransitions.fade(null); 
+    this.navCtrl.navigateForward('/bar-user/'+id);
   }
 
   async loadingModal() {
@@ -98,6 +104,12 @@ export class FavoritePage implements OnInit{
         this.ionViewWillEnter();
     })
     modal.present();
+  }
+
+  displayNone(){
+    setTimeout(() => {
+      this.ifLoadedAlreadyFave = "none"
+    }, 1200);
   }
 
 }

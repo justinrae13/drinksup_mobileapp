@@ -21,7 +21,7 @@ ion-list{
     position: fixed;
     top: 50px;
     left: 0;
-    transition: all .3s ease-in-out;
+    transition: all .3s;
     z-index: 999;
 
   div{
@@ -95,17 +95,7 @@ ion-item{
   }
   
 
-  .img_overlay_black{
-      position: absolute;
-      background: #070708;
-      height: 100%;
-      width: 100%;
-      left: 0;
-      bottom: 0;
-      z-index: 8;
-      border-radius: 0;
-      transition: opacity .6s ease-out;
-  }
+  
   
   .img-overlay{
         position: absolute;
@@ -213,9 +203,35 @@ ion-content{
 .pasDeBar{
     width: 100%;
     font-family: "NBL";
-    font-size: 1rem;
-    color: #fff;
+    font-size: .8rem;
+    color: gray;
     text-align: center;
     padding: 0 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    ion-icon{
+        font-size: 1.8em;
+        color: gray;
+        transform: rotate(180deg);
+    }
+}
+
+.img_curtain_black{
+    position: absolute;
+    background: #070708;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    z-index: 8;
+    border-radius: 0;
+    transition: opacity .6s ease-out;
+    opacity: 1;
+}
+
+.isLoaded{
+    opacity: 0 !important;
 }
 

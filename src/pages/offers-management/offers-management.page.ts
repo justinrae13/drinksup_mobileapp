@@ -47,9 +47,12 @@ export class OffersManagementPage implements OnInit {
         allDay: false
     };
     loggedEnt : any = {};
-    invalidColor : string = "rgb(192, 0, 0)";
-    validColor : string = "#0095ae";
+    invalidColor : string = "gray";
+    validColor : string = "#4caf50";
+    mostInvalidColor: string = "#505050";
     entreprise_id : string = "";
+    
+    ojd = new Date();
     @ViewChild(CalendarComponent) myCal: CalendarComponent;
     constructor(public dp: DatePipe, public alertCtrl: AlertController, @Inject(LOCALE_ID)private locale: string, public http: HttpClient, public toastCtrl: ToastController, public alertController: AlertController, public storage: Storage, public navCtrl : NavController) { }
     ngOnInit() {
@@ -63,6 +66,7 @@ export class OffersManagementPage implements OnInit {
         this.storage.get('SessionIdKey').then((val) => {
             this.getProprio(val);
         });
+        this.disactivateAllPassedOffers();
     }
 
     resetEvents() {
@@ -164,6 +168,22 @@ export class OffersManagementPage implements OnInit {
                 this.sendNotification('Erreur!');
             });
     }
+
+    disactivateAllPassedOffers() {
+        const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+            options: any		= { 'key' : 'disactivateAllPassedOffers'},
+            url: any      	= this.baseURI;
+
+        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+                console.log("nice =>", data)
+        },
+        (error: any) => {
+            console.log(error);
+            this.sendNotification('Erreur!');
+        });
+    }
+
+
     changeMode(mode) {
         this.calendar.mode = mode;
     }
@@ -184,10 +204,20 @@ export class OffersManagementPage implements OnInit {
         const start = formatDate(event.startTime, 'dd/MM/yyyy HH:mm', this.locale);
         const end = formatDate(event.endTime, 'dd/MM/yyyy HH:mm', this.locale);
 
+        var status = event.actif;
+        var txt = "";
+        if(status === "Non" && event.endTime > this.ojd){
+            txt = "Cette offre est à ce moment <span style='color: rgb(196,0,0)'> inactive.</span>"
+        }else if(status === "Non" && event.endTime < this.ojd){
+            txt = "La date de fin de cette offre est déjà <span style='color: #e59400'> dépassée.</span> <br> Vous pouvez la suprimmer si vous le souhaiter."
+        }else{
+            txt = "Cette offre est <span style='color: #4caf50'> active.</span>"
+        }
+
         const alert = await this.alertCtrl.create({
-            header: event.entreprise,
-            subHeader: event.description,
-            message: 'De : ' + start + '<br><br> à ' + end,
+            header: "L'offre : "+event.description,
+            message: "<h3 style='font-family : NBO !important; font-size: .9em !important'> De "+start+"<br><br>à "+end+"</h3> <p style='font-style: italic'>"+txt+"</p>",
+            // message: 'De : ' + start + '<br>à ' + end,
             buttons: ['OK']
         });
         alert.present();
@@ -256,21 +286,19 @@ export class OffersManagementPage implements OnInit {
     }
     async presentAlert(id, nom) {
         const alert = await this.alertController.create({
-            header: 'Êtes vous sûr de supprimer l\'offre de ' + nom,
+            header: 'Êtes vous sûr de vouloir supprimer l\'offre : ' + nom,
             buttons: [
                 {
                     text: 'Non',
                     role: 'cancel',
                     cssClass: 'secondary',
                     handler: (blah) => {
-                        console.log('Confirm Cancel: blah');
                     }
                 }, {
                     text: 'Oui',
                     handler: () => {
                         this.deleteOffre(id);
                         this.ionViewWillEnter();
-                        console.log('Confirm Okay');
                     }
                 }
             ]

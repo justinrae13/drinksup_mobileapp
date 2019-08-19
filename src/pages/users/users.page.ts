@@ -159,7 +159,6 @@ public ionViewWillEnter(): void {
                 handler: () => {
                     this.makeVipUser(id);
                     this.ionViewWillEnter();
-                    console.log('Confirm Okay');
                 }
             }
         ]
@@ -185,7 +184,6 @@ async alertBoxMakeUnVip(id, nom) {
                 handler: () => {
                     this.makeUnVipUser(id);
                     this.ionViewWillEnter();
-                    console.log('Confirm Okay');
                 }
             }
         ]
@@ -211,9 +209,7 @@ async alertBoxMakeUnVip(id, nom) {
                     handler: () => {
                         this.updateRole(id);
                         this.createEntreprise(id);
-                        // this.createHoraire(id);
                         this.ionViewWillEnter();
-                        console.log('Confirm Okay');
                     }
                 }
             ]
@@ -239,7 +235,6 @@ async alertBoxMakeUnVip(id, nom) {
                     handler: () => {
                         this.deleteUser(id);
                         this.ionViewWillEnter();
-                        console.log('Confirm Okay');
                     }
                 }
             ]
@@ -269,7 +264,7 @@ async alertBoxMakeUnVip(id, nom) {
       const toast = await this.toastCtrl.create({
           message: msg,
           duration: 3000,
-          position: 'bottom'
+          position: 'top'
       });
       toast.present();
   }
@@ -280,7 +275,6 @@ async alertBoxMakeUnVip(id, nom) {
           url: any      	= this.baseURI;
 
       this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-              this.sendNotification('Votre modification a bien été pris en compte !');
 
           },
           (error: any) => {
@@ -295,7 +289,6 @@ async alertBoxMakeUnVip(id, nom) {
           url: any      	= this.baseURI;
 
       this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-              this.sendNotification('Votre modification a bien été pris en compte !');
 
           },
           (error: any) => {
@@ -312,7 +305,6 @@ async alertBoxMakeUnVip(id, nom) {
           url: any      	= this.baseURI;
 
       this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-              this.sendNotification('Votre suppresion a bien été pris en compte !');
 
           },
           (error: any) => {
@@ -327,7 +319,6 @@ async alertBoxMakeUnVip(id, nom) {
           url: any      	= this.baseURI;
 
       this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-              this.sendNotification('Le changement de rôle a bien été pris en compte !');
 
           },
           (error: any) => {

@@ -60,6 +60,7 @@ ion-list{
   --border-color: rgb(168, 168, 168);
   --background: rgb(168, 168, 168);
   --color: #fff;
+  --border-radius: 0px;
   text-transform: none;
   font-size: 15px;
   font-family: "NBL" !important;
@@ -71,14 +72,16 @@ ion-list{
   --border-color: rgb(32, 32, 33);
   --background: rgb(32, 32, 33);
   --color: rgb(71, 71, 71);
+  --border-radius: 0px;
   text-transform: none;
   font-size: 15px;
   font-family: "NBL" !important;
 }
 
 .add_event_button_valid{
-  --background: #0095ae;
-  --border-color: #0095ae;
+  --background: rgb(185, 3, 3);
+  --border-color: rgb(185, 3, 3);
+  --border-radius: 0px;
 }
 
 .descriptInput{

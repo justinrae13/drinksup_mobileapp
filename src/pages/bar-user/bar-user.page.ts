@@ -1,16 +1,17 @@
+import { Facebook } from '@ionic-native/facebook/ngx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ModalController, ToastController, AlertController } from "@ionic/angular";
 import { Storage } from '@ionic/storage';
-import { formatDate} from '@angular/common';
 import { ModalQrcodePage } from '../modal-qrcode/modal-qrcode.page';
 import { ModalRatingsPage } from '../modal-ratings/modal-ratings.page';
 import { timer } from 'rxjs';
+import { LaunchNavigator } from '@ionic-native/launch-navigator/ngx';
+import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import * as Global from '../../app/global';
-
-
+declare var google;
 
 
 @Component({
@@ -71,11 +72,34 @@ export class BarUserPage implements OnInit {
   bar_user_countdown : string;
   offerIsActive : boolean = false;
 
-  constructor(private modalCtrl : ModalController, private toastCtrl: ToastController, private storage : Storage,private http : HttpClient, private aRoute : ActivatedRoute, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, public alertController: AlertController) { 
+  //Navigator
+  directionApp = null;
+  //Google maps;
+  mapRef = null;
+  barAdresse : string = "";
+  barNPA : string = "";
+  barLocalite : string = "";
+  
+  if_user_already_rated : boolean = false;
+
+  constructor(private nativeGeocoder: NativeGeocoder, private launchNav: LaunchNavigator, private modalCtrl : ModalController, private toastCtrl: ToastController, private storage : Storage,private http : HttpClient, private aRoute : ActivatedRoute, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, public alertController: AlertController) { 
     
   }
 
-  ngOnInit() {}
+  directMe(adresse,npa,localite){
+
+    this.launchNav.isAppAvailable(this.launchNav.APP.GOOGLE_MAPS).then((isAvailable)=>{
+       if(isAvailable){
+          this.directionApp = this.launchNav.APP.GOOGLE_MAPS;
+       }else{
+          this.directionApp = this.launchNav.APP.USER_SELECT;
+       }
+       this.launchNav.navigate(adresse+" "+npa+" "+localite,{
+          app: this.directionApp
+       });
+    });
+ 
+  }
 
   ionViewWillEnter(){
     this.getScannedCode();     
@@ -95,6 +119,8 @@ export class BarUserPage implements OnInit {
 
     //SlideShow Styles
     this.initStyle();
+
+
     //
     var jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
     var date = new Date();
@@ -118,6 +144,36 @@ export class BarUserPage implements OnInit {
     }
     
   }
+
+  ngOnInit() {}
+
+  //*************************************************************************** */
+  
+
+  async loadMap(latitide: number, longitude: number) {
+    
+    const mapEle: HTMLElement = document.getElementById('map');
+    this.mapRef = new google.maps.Map(mapEle, {
+      center: {lat : latitide, lng : longitude},
+      zoom: 15,
+      disableDefaultUI: true
+    });
+    google.maps.event
+    .addListenerOnce(this.mapRef, 'idle', () => {
+      this.addMaker(latitide, longitude);
+    });
+  }
+
+  private addMaker(lat: number, lng: number) {
+    const marker = new google.maps.Marker({
+      position: { lat, lng },
+      map: this.mapRef,
+      animation: google.maps.Animation.DROP,  
+      title: 'Hello World!'
+    });
+  }
+
+  //*************************************************************************** */
 
   ionViewDidLeave(){
     clearInterval(this.interval);
@@ -159,7 +215,20 @@ export class BarUserPage implements OnInit {
         this.imgLink1 = this.uplPhotoURI+this.barName+"_1?ran="+random;
         this.imgLink2 = this.uplPhotoURI+this.barName+"_2?ran="+random;
         this.imgLink3 = this.uplPhotoURI+this.barName+"_3?ran="+random;
-               
+
+        //Get address and convert to Latitude and Longitude
+        this.barAdresse = data.ENT_ADRESSE;
+        this.barNPA = data.ENT_NPA;
+        this.barLocalite = data.ENT_LOCALITE;
+        //
+        this.storage.get('SessionIdKey').then((myId) => {
+          this.checkIfUserAlreadyRated(myId,data.ENT_ID);
+        }); 
+        
+        this.nativeGeocoder.forwardGeocode(this.barAdresse+" "+this.barNPA+" "+this.barLocalite, { useLocale: false, maxResults: 1 })
+        .then((result) => this.loadMap(parseFloat(result[0].latitude), parseFloat(result[0].longitude)))
+        .catch((error: any) => console.log(error));
+      
     },
     (error : any) =>
     {
@@ -553,9 +622,13 @@ export class BarUserPage implements OnInit {
           },
       });
       modal.onDidDismiss().then(() => {
-        
+        this.ionViewWillEnter();
       });
-      modal.present();
+      if(this.if_user_already_rated){
+        this.sendNotification("Vous avez déjà donné votre avis sur ce bar.");
+      }else{
+        modal.present();
+      }
   }
 
     jemabonne(){
@@ -571,7 +644,6 @@ export class BarUserPage implements OnInit {
       }, 800);
 
       this.interval = setInterval(() => { this.slideShow() }, 5000);    
-      
     }
 
 
@@ -581,14 +653,8 @@ export class BarUserPage implements OnInit {
     document.getElementById("first_pic").classList.remove("firstimgscale");
     document.getElementById("second_pic").classList.remove("secondimgscale");
     document.getElementById("third_pic").classList.remove("thirdimgscale");
-    let options: NativeTransitionOptions = {
-      direction: 'right',
-      duration: 150,
-      slowdownfactor: 3,
-      iosdelay: 100,
-      androiddelay: 150
-     }
-    this.nativePageTransitions.slide(options); 
+
+    this.nativePageTransitions.fade(null); 
     this.navCtrl.back();
   }
 
@@ -614,9 +680,28 @@ export class BarUserPage implements OnInit {
     document.getElementById("img_3").style.opacity = "0";
   }
 
+  // getDirection(){
+  //   this.launchNavigator.navigate("Chemin des Coquelicots 9, 1214 Vernier");
+  // }
+
+  async rateNotSubscriber(){
+    const alert = await this.alertController.create({
+      header: "Oops !",
+      message: "<h3>Abonnez-vous dès maintenant pour pouvoir donner votre avis/note sur le bar !</h3>",
+      buttons: [{
+              text: 'OK',
+              handler: () => {
+              }
+          }
+      ]
+  });
+
+  await alert.present();
+  }
+
   async jemabonneAlert() {
     const alert = await this.alertController.create({
-      header: "Alert",
+      header: "Oops !",
       message: "<h3>Abonnez-vous dès maintenant pour profiter l'offre !</h3>",
       buttons: [{
               text: 'OK',
@@ -627,6 +712,25 @@ export class BarUserPage implements OnInit {
   });
 
   await alert.present();
+}
+
+checkIfUserAlreadyRated(my_id : number, bar_id : number) {
+  const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+      options: any		= { 'key' : 'checkIfUserAlreadyRated', 'iduser': my_id, 'idbar' : bar_id},
+      url: any      	= this.baseURI;
+
+  this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+      if(data.num > 0){
+          this.if_user_already_rated = true;
+          console.log("Already Rated !")
+      }else{
+          this.if_user_already_rated = false;
+          console.log("Not yet Rated !")
+      }
+  },  
+  (error: any) => {
+      console.log(error);
+  });
 }
  
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
-import { ModalController, ToastController, IonItemSliding } from '@ionic/angular';
+import { ModalController, ToastController, IonItemSliding, NavController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Observable } from 'rxjs';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
@@ -10,6 +10,7 @@ import { ModalChangePhotosPage } from '../modal-change-photos/modal-change-photo
 import { LoadingpagePage } from '../loadingpage/loadingpage.page';
 import { ActivatedRoute } from '@angular/router';
 import * as Global from '../../app/global';
+import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 
 
 
@@ -55,8 +56,10 @@ export class BarPage implements OnInit {
   barFromAdminSide;
   allCategories = [];
 
+  roleLogged : string = "";
 
-  constructor(private aRoute : ActivatedRoute, private modalCtrl : ModalController, private formBuilder : FormBuilder, private http : HttpClient, private storage : Storage, private camera : Camera, private toastCtrl : ToastController) { 
+
+  constructor(private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, private aRoute : ActivatedRoute, private modalCtrl : ModalController, private formBuilder : FormBuilder, private http : HttpClient, private storage : Storage, private camera : Camera, private toastCtrl : ToastController) { 
     // this.storage.get('SessionIdKey').then((val) => {
     //   this.loadBar(val);
     // });
@@ -95,10 +98,15 @@ imgLoad(){
   }
 
   ionViewWillEnter(){ 
+    
+    this.storage.get('SessionRoleKey').then((role) => {
+      this.roleLogged = role;
+    });
+  
     if(this.barFromAdminSide === null || this.barFromAdminSide === undefined || this.barFromAdminSide === ""){
       this.storage.get('SessionIdKey').then((val) => {
-        this.loadBar(val);
-    }); 
+          this.loadBar(val);
+      }); 
     }else{
       this.loadBar(this.barFromAdminSide);
     }
@@ -331,6 +339,11 @@ async loadingModal() {
   modal.onDidDismiss().then(() => {
       this.ionViewWillEnter();
   });
+}
+
+retour(){
+  this.nativePageTransitions.fade(null);  
+  this.navCtrl.back();
 }
 
 

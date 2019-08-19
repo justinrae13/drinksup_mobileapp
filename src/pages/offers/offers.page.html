@@ -12,14 +12,15 @@
 </div> -->
 
 <ion-content color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)">
+  <p *ngIf="Filtereditems===null" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour le moment</p>
   <ion-list *ngFor="let bars of Filtereditems; let i = index">
     <ion-item no-padding color="secondary" lines="none">
         <div class="bubbles-wrapper" [class.displayBubbles]="disBub" [ngStyle]="{'z-index' : zindex}">
           <div class="bubbles"><div></div><div></div><div></div><div></div></div>
         </div>
-        <!-- <div class="img_overlay_black" id="imgOverlay_{{i}}"></div> -->
+        <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlready}"></div>
         <div (click)="moveToBar(bars.ENT_ID, bars.OFF_ID)" class="img-overlay"></div>
-        <img (click)="moveToBar(bars.ENT_ID, bars.OFF_ID)" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_'+ randomImgNo +'.jpg?ran=' + random"  [id]="'offset_'+i">
+        <img (click)="moveToBar(bars.ENT_ID, bars.OFF_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_'+ randomImgNo +'.jpg?ran=' + random"  [id]="'offset_'+i">
         <div (click)="moveToBar(bars.ENT_ID, bars.OFF_ID)" class="bar-details">
           <ion-ripple-effect></ion-ripple-effect>
           <p class="off_desc"><ion-icon src="../../assets/img/offres_icon.svg"></ion-icon>&nbsp;{{bars.OFF_DESCRIPTION}}</p>
@@ -31,10 +32,10 @@
   </ion-list>
 
   <ion-select placeholder="Select One" [interfaceOptions]="customActionSheetOptions" style="display:none" (ionChange)="filterByDay($event)">
-      <ion-select-option value="all">Tous</ion-select-option>
+      <ion-select-option [selected]="true" value="all">Tous</ion-select-option>
       <ion-select-option *ngFor="let jour of joursDeLaSemaine" value="{{jour.num}}">{{jour.nomFr}}</ion-select-option>
   </ion-select>
 
-  <p *ngIf="noOffer" class="pasDoffre">Aucune</p>
+  <!-- <p *ngIf="noOffer" class="pasDoffre">Aucune</p> -->
 
 </ion-content>

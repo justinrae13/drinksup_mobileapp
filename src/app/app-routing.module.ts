@@ -19,6 +19,9 @@ const routes: Routes = [
     { path: 'search-a-bar', loadChildren: '../pages/search-a-bar/search-a-bar.module#SearchABarPageModule'},
     { path: 'bar/:id_partenaire', loadChildren: '../pages/bar/bar.module#BarPageModule'},
     { path: 'cgu', loadChildren: '../pages/cgu/cgu.module#CguPageModule' },
+    { path: 'parrainage', loadChildren: '../pages/parrainage/parrainage.module#ParrainagePageModule' },
+
+
 
   // { path: 'admin-logout', loadChildren: './admin-logout/admin-logout.module#AdminLogoutPageModule' },
   // { path: 'offers-admin', loadChildren: './offers-admin/offers-admin.module#OffersAdminPageModule' },

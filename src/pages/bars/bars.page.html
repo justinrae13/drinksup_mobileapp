@@ -7,13 +7,13 @@
 </div>
 <!-- (ionScroll)="scrollEvent($event)" -->
 <ion-content color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)">
-  <ion-list *ngFor="let bars of Filtereditems; let i = index">
+  <ion-list *ngFor="let bars of Filtereditems; let i = index; let number = index">
       <ion-item no-padding color="secondary" lines="none">
         <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
         <img *ngIf="ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-filled.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
-        <!-- <div class="img_overlay_black" id="imgOverlay_{{i}}"></div> -->
+        <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlready}"></div>
         <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-        <img (click)="moveToBar(bars.ENT_ID)" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
+        <img (click)="moveToBar(bars.ENT_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
         <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
         <p class="off_desc"><ion-icon src="../../assets/img/bars_icon.svg"></ion-icon>&nbsp;{{bars.ENT_NOM}}</p>
         <p class="ent_nom">{{bars.ENT_ADRESSE}}</p>
@@ -22,9 +22,10 @@
   </ion-list>
 
   <ion-select placeholder="Select One" [interfaceOptions]="customActionSheetOptions" style="display:none" (ionChange)="filterByType($event)">
-    <ion-select-option value="all">Tous</ion-select-option> 
+    <ion-select-option [selected]="true" value="all">Tous</ion-select-option> 
     <ion-select-option *ngFor="let cat of allCategories" value="{{cat.CAT_DESC}}">{{cat.CAT_DESC}}</ion-select-option>
   </ion-select>
 
-  <p *ngIf="noBarFilter" class="pasDeBar">Aucun</p>
+  <p *ngIf="noBarFilter" class="pasDeBar"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Pas de bar dans cette catégorie</p>
+
 </ion-content>

@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { NavParams, ModalController } from '@ionic/angular';
+import { NavParams, ModalController, ToastController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import * as Global from '../../app/global';
+import { Storage } from '@ionic/storage';
+
 
 @Component({
   selector: 'app-modal-change-userphoto',
@@ -12,8 +15,9 @@ import { Observable } from 'rxjs';
 export class ModalChangeUserphotoPage implements OnInit {
   user_email : string;
   userPhotoURI = 'https://www.drinksup.ch/serveur/userphotos/';
+  baseURI = Global.mainURI;
 
-  constructor(private modalCtrl : ModalController, private navParam : NavParams, private http : HttpClient, private camera : Camera) { }
+  constructor(public storage: Storage, private toastCtrl: ToastController, private modalCtrl : ModalController, private navParam : NavParams, private http : HttpClient, private camera : Camera) { }
 
   ngOnInit() {}
 

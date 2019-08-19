@@ -159,13 +159,13 @@ export class OffersAdminPage implements OnInit {
     });
   }
 
+
   validateOffer(id: number, status : string) {
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
         options: any		= { 'key' : 'validateOffre', 'id': id, 'status' : status},
         url: any      	= this.baseURI;
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            this.sendNotification('Votre Modification a bien été pris en compte !');
         },
         (error: any) => {
             console.log(error);
@@ -179,8 +179,6 @@ export class OffersAdminPage implements OnInit {
         url: any      	= this.baseURI;
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            this.sendNotification('Votre suppresion a bien été pris en compte !');
-            console.log('ouais bien');
         },
         (error: any) => {
             console.log(error);
@@ -253,7 +251,7 @@ nonvalide(){
     const toast = await this.toastCtrl.create({
         message: msg,
         duration: 3000,
-        position: 'bottom'
+        position: 'top'
     });
     toast.present();
 }

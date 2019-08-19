@@ -128,7 +128,7 @@ button:focus {outline:0;}
   font-size: 1rem;
   font-family: "NBL";
   letter-spacing: 1px;
-  transition: all .3s ease-in-out;
+  transition: all .3s;
   z-index: 999;
 
   span{
@@ -416,40 +416,88 @@ ion-modal.ratings-modal {
 
 ion-alert{
  --background: #161616 !important;
+
+ .alert-head{
+    background: #161616;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+ }
+
+ .alert-message.sc-ion-alert-md{
+   padding-top: 20px !important;
+ }
   h2{
       font-family: "NBL";
-      font-size: 18px !important;
-      color: #fff !important;
+      font-size: 1.05em !important;
+      color: rgba(255, 255, 255, 0.8) !important;
   }
 
   .alert-sub-title{
       font-family: "NBO" !important;
-      font-size: 13px !important;
-      color: rgb(184, 184, 184) !important;
+      font-size: .95em !important;
+      color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .alert-checkbox-group.sc-ion-alert-md, .alert-radio-group.sc-ion-alert-md{
+    border-top: none !important;
+    border-bottom: none !important;
   }
 
   .alert-radio-label {
     font-family: "NBL";
-    font-size: 17px !important;
-    color: rgb(180, 180, 180) !important;
+    font-size: .95em !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+  }
+
+  .alert_btn{
+    --border-radius: 0px 0px 5px 5px;
+    margin: 0;
+    height: 30px;
+    --background: rgba(255, 255, 255, 0.6);
+    font-family: "NBO";
+    text-transform: none;
+    font-size: .8em;
+    color: #0d0d0d;
+  }
+
+  .share_code{
+    background-color: rgba(0,0,0,.4);
+    padding: 8px;
+    font-family: "NBL";
+    color: rgba(255, 255, 255, 0.6);
+    font-size: .9em;
+    border-radius: 5px 5px 0px 0px ;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    p{
+      font-size: .7em;
+      font-family: "NLI";
+      text-transform: uppercase;
+      width: 100%;
+      text-align: left;
+      margin-top: 0;
+    }
+  }
+
+  .share_code.sc{
+    border-radius: 5px !important;
   }
   
 
   h3{
     font-family: "NBL";
-    font-size: 17px !important;
-    color: rgb(180, 180, 180) !important;
+    font-size: .85em !important;
+    color: rgba(255, 255, 255, 0.6) !important;
 
     span{
       font-family: "NBL";
-      font-size: 17px !important;
+      font-size: .85em !important;
       color: #fff !important;
       text-transform: capitalize !important;
     }
     b{
       font-weight: normal !important;
       font-family: "NBL";
-      font-size: 17px !important;
+      font-size: .85em !important;
     }
     .b_actif{
       color: #1bdf5a !important;
@@ -463,13 +511,14 @@ ion-alert{
   
 
   .alert-button-group{
-    background-color: #1d1d1d;
+    background-color: #161616;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     button{
       span{
-        font-family: "NBO";
-        font-size: 17px !important;
+        font-family: "NBL";
+        font-size: .95em !important;
         text-transform: capitalize !important;
-        color: rgb(180, 180, 180) !important;
+        color: rgba(255, 255, 255, 0.8) !important;
       }
     }
     
@@ -496,24 +545,23 @@ ion-slides{
     font-size: 100% !important;
   }
 
-
   
   .monthview-secondary-with-event{ 
-    background-color: rgba(0, 149, 174, .1) !important;
+    background-color: rgba(185, 3, 3, .1) !important;
   }
   
   
   .monthview-primary-with-event{
-    background-color: rgba(0, 149, 174, .4) !important;
+    background-color: rgba(185, 3, 3, .4) !important;
   }
 
   .monthview-current{
     background-color: #fff !important;
-    color:#0095ae !important;
+    color:rgb(185, 3, 3) !important;
   }
   
   .monthview-selected {
-    background-color:#0095ae !important;
+    background-color:rgb(185, 3, 3) !important;
     color:#fff !important;
   }
 

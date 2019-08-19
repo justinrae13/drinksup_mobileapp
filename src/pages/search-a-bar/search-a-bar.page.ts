@@ -82,14 +82,14 @@ export class SearchABarPage implements OnInit {
   }
 
   moveToBar(id : string){
-    let options: NativeTransitionOptions = {
-      direction: 'left',
-      duration: 150,
-      slowdownfactor: 3,
-      iosdelay: 100,
-      androiddelay: 150
-     }
-    this.nativePageTransitions.slide(options); 
+    // let options: NativeTransitionOptions = {
+    //   direction: 'left',
+    //   duration: 150,
+    //   slowdownfactor: 3,
+    //   iosdelay: 100,
+    //   androiddelay: 150
+    //  }
+    this.nativePageTransitions.fade(null); 
     this.navCtrl.navigateForward('/bar-user/'+id);
     setTimeout(() => {
       this.showItems = "none";

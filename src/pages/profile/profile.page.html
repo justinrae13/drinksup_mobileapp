@@ -1,111 +1,149 @@
-<div class="profile_overlay" [ngStyle]="{'height' : loadHeight}">
-    <!-- <div class="loader_wrapper">
-      <div class="loader" [ngStyle]="{'transform' : loadSlide}">
-        <div class="spinner"></div>
-        <h1>Chargement de page</h1>
-      </div>
-    </div> -->
-</div>
+<div class="fade_curtain" [ngStyle]="{'opacity' : curtain_fade, 'display' : curtain_hide}"></div>
+
 <div class="tab_header"><div class="ville" (click)="openSelect()">Genève&nbsp;&nbsp;<ion-icon name="arrow-dropdown"></ion-icon></div> Profil<span (click)="logoutFromApp()"><ion-icon name="log-out"></ion-icon></span></div>
 
-<div class="custom_backdrop" id="bckdrop"></div>
-<div class="custom_modal_wrapper" id="cmw">
-  <div class="custom_modal" id="cm">
-    <header>Mon abonnement</header>
-    <section>
-        <p><span>Type d'abonnement :</span>&nbsp;{{abonneDetail.ABO_TYPE}}</p>
-        <p><span>Date début :</span>&nbsp;<ion-datetime [readonly]="true" [value]="abonneDetail.ABO_DATEDEBUT" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
-        <p><span>Date fin :</span>&nbsp;<ion-datetime [readonly]="true" [value]="abonneDetail.ABO_DATEFIN" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
-    </section>
-    <footer (click)="closeModal()">OK</footer>
-  </div>
+<!-- Custom modals -->
+<!-- Backdrop -->
+<div class="custom_backdrop" id="bckdrop" (click)="closeModal()"></div>
+
+<!-- Mon abonnement modal -->
+<div class="custom_modal" id="cm">
+  <header>Mon abonnement</header>
+  <section>
+      <p><span>Type d'abonnement :</span>&nbsp;{{abonneDetail.ABO_TYPE}}</p>
+      <p><span>Date début :</span>&nbsp;<ion-datetime [readonly]="true" [value]="abonneDetail.ABO_DATEDEBUT" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+      <p><span>Date fin :</span>&nbsp;<ion-datetime [readonly]="true" [value]="abonneDetail.ABO_DATEFIN" displayFormat="DD MMMM YYYY HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+  </section>
+  <footer><span (click)="closeModal()">OK</span></footer>
+</div>
+
+<!-- Parrainage/Partage modal -->
+<div class="parrainage_modal" id="pm">
+  <header id="pm_header_text"></header>
+  <section>
+    <div id="pm_body_text"></div>
+    <ion-button expand="block" id="pm_copy_btn" (click)="copyMyCode()">Copier votre code</ion-button>
+  </section>
+  <footer>
+    <span id="pm_btn_text" (click)="shareCode(loggedUser.Roles_ROL_ID)"></span>
+    <span (click)="closeModal()">Annuler</span>
+  </footer>
+</div>
+
+<!-- Save Code modal -->
+<div class="save_code_modal" id="scm">
+  <header>Collez le code en cliquant sur le bouton "Coller le code" puis appuyez sur le bouton "Confirmer".</header>
+  <section>
+    <div>
+      <p>VOTRE CODE</p>
+      <h1>{{the_pasted_code}}</h1>
+    </div>
+    <ion-button expand="block" (click)="pasteTheCode(loggedUser.INT_ID)">Coller le code</ion-button>
+  </section>
+  <footer>
+    <span (click)="saveCode(loggedUser.INT_CODE, loggedUser.INT_ID)">Confirmer</span>
+    <span (click)="closeModal()">Annuler</span>
+  </footer>
 </div>
 
 
+
+<!-- Ion Content -->
 <ion-content color="secondary">
-  <div class="profile_header">
-    <div class="profile_pic_frame_bg" (click)="changerPhoto(loggedUser.INT_EMAIL)">
-        <div class="profile_pic_frame">
-          <img class="profpic" [src]="profilePic">
-          <img class="defpic" [src]="defaultPic">
+  <div class="inner_content_wrapper">
+    <div class="upper_content">
+        <div class="upper_content_over">
+            <div class="profile_pic_frame_bg" (click)="changerPhoto(loggedUser.INT_EMAIL)">
+                <div class="profile_pic_frame">
+                  <img class="profpic" [src]="profilePic">
+                  <img class="defpic" [src]="defaultPic">
+                </div>
+            </div>
+            <div class="user_info_sect">
+                <h1>{{loggedUser.INT_PRENOM}}</h1>
+                <h2>{{loggedUser.INT_EMAIL}}</h2>
+                <p>Membre {{dateInscription}}</p>
+            
+                <legend class="niveau" *ngIf="loggedUser.Roles_ROL_ID!==2" (click)="parrainageInfo()">{{loggedUser.INT_LEVEL}}&nbsp;&nbsp;<ion-icon name="information-circle-outline"></ion-icon></legend>
+                <!-- <legend class="vip" *ngIf="loggedUser.Roles_ROL_ID===4"><img src="../../assets/img/crown.svg"> V.I.P</legend> -->
+                <legend class="partenaire" *ngIf="loggedUser.Roles_ROL_ID===2"><ion-icon name="contacts"></ion-icon>Partenaire</legend>
+            </div>
         </div>
+        <div class="upper_content_below">
+            <div *ngIf="loggedUser.Roles_ROL_ID!=2" class="shareCode" (click)="parrainer('user', loggedUser.INT_CODE)">Parrainer</div>
+            <div *ngIf="loggedUser.Roles_ROL_ID!=2" class="saveCode" (click)="saisirCode()">As-tu&nbsp;un&nbsp;code&nbsp;?</div>
+            <div *ngIf="loggedUser.Roles_ROL_ID==2" class="shareApp" (click)="parrainer('proprio', loggedUser.INT_CODE)">Partager&nbsp;Drinks&nbsp;Up</div>
+          </div>
     </div>
-    <h1>{{loggedUser.INT_PRENOM}}</h1>
-    <h2>{{loggedUser.INT_EMAIL}}</h2>
-    <p>Membre {{dateInscription}}</p>
+    <div class="lower_content">
 
-    <!-- <div class="progress_bar">
-      <span></span>
-    </div> -->
-    <legend class="niveau" *ngIf="loggedUser.Roles_ROL_ID!==4 && loggedUser.Roles_ROL_ID!==2">Débutant</legend>
-    <legend class="vip" *ngIf="loggedUser.Roles_ROL_ID===4"><img src="../../assets/img/crown.svg"> V.I.P</legend>
-    <legend class="partenaire" *ngIf="loggedUser.Roles_ROL_ID===2"><ion-icon name="contacts"></ion-icon> Partenaire</legend>
+      <div class="btns_col ripple_effect" *ngIf="loggedUser.Roles_ROL_ID==2" (click)="proprioBar()">
+        <div class="bg_round">
+          <div class="img_wrapper">
+              <img src="../../assets/img/profil_proprio_icon-05.svg">
+          </div>
+        </div>
+        <p>Propriétaire de bar</p>
+      </div>
 
-  </div>
+      <div class="btns_col ripple_effect" *ngIf="loggedUser.Roles_ROL_ID==4" (click)="vip()">
+        <div class="bg_round">
+          <div class="img_wrapper">
+              <img src="../../assets/img/profil_vip_icon-05.svg">
+          </div>
+        </div>
+        <p>V.I.P</p>
+      </div>
 
-  <div class="four_buttons">
-
-    <div class="button_ins" (click)="monAbonnement()" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser =='good'">
-      <div class="bg_round">
+      <div class="btns_col ripple_effect" (click)="monAbonnement()" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser =='good'">
+        <div class="bg_round">
           <div class="img_wrapper">
               <img src="../../assets/img/profil_abonne_icon-01.svg">
           </div>
-      </div>
-      <p>ABONNEMENT</p>
-    </div>
-
-    <div class="button_ins" (click)="goAbonnement()" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser !='good'">
-      <div class="bg_round">
-          <div class="img_wrapper">
-              <img src="../../assets/img/profil_abonne_icon-01.svg">
-          </div>
-      </div>
-      <p>ABONNEMENT</p>
-    </div>
-
-    <div class="button_ins" (click)="sendEmail()">
-      <div class="bg_round">
-        <div class="img_wrapper">
-          <img src="../../assets/img/profil_contact_icon-02.svg">
         </div>
+        <p>Mon abonnement</p>
       </div>
-      <p>CONTACT</p>
-    </div>
 
-    <div class="button_ins" (click)="goFaq()">
-      <div class="bg_round">
-          <div class="img_wrapper">
-              <img src="../../assets/img/profil_faq_icon-03.svg">
+      <div class="btns_col ripple_effect" (click)="goAbonnement()" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser !='good'">
+          <div class="bg_round">
+            <div class="img_wrapper">
+                <img src="../../assets/img/profil_abonne_icon-01.svg">
+            </div>
           </div>
+          <p>Mon abonnement</p>
       </div>
-      <p>FAQ</p>
-    </div>
 
-    <div class="button_ins" (click)="goCgu()">
-      <div class="bg_round">
+      <div class="btns_col ripple_effect" (click)="sendEmail()">
+        <div class="bg_round">
           <div class="img_wrapper">
-              <img src="../../assets/img/profil_cgu_icon-04.svg">
+            <img src="../../assets/img/profil_contact_icon-02.svg">
           </div>
+        </div>
+        <p>Contactez-nous</p>
       </div>
-      <p>CGU</p>
+      <div class="btns_col ripple_effect" (click)="goFaq()">
+        <div class="bg_round">
+          <div class="img_wrapper">
+            <img src="../../assets/img/profil_faq_icon-03.svg">
+          </div>
+        </div>
+        <p>F A Q</p>
+      </div>
+      <div class="btns_col ripple_effect" (click)="goCgu()">
+        <div class="bg_round">
+          <div class="img_wrapper">
+            <img src="../../assets/img/profil_cgu_icon-04.svg">
+          </div>
+        </div>
+        <p>Condition générales</p>
+      </div>
     </div>
-
   </div>
 
+  
+  
   <ion-select [interfaceOptions]="customActionSheetOptions" style="display:none">
       <ion-select-option *ngFor="let ville of allVille" value="">{{ville.VI_VILLE}}</ion-select-option>
   </ion-select>
-
-  <!-- <div class="profile_content">
-    <h1>{{loggedUser.INT_PRENOM}}</h1>
-    <h2>{{loggedUser.INT_EMAIL}}</h2>
-    <p>Membre {{dateInscription}}</p>
-
-    <div *ngIf="loggedUser.Roles_ROL_ID != 2 && loggedUser.Roles_ROL_ID != 1 && paidUser !='good'" class="otherStuff" (click)="goAbonnement()"><ion-icon name="arrow-forward"></ion-icon>&nbsp;S'abonner</div>
-    <div class="otherStuff" (click)="sendEmail()"><ion-icon name="arrow-forward"></ion-icon>&nbsp;Contactez-nous</div>
-    <div class="otherStuff" (click)="goFaq()"><ion-icon name="arrow-forward"></ion-icon>&nbsp;Foire aux questions</div>
-    <div class="otherStuff" (click)="changerPhoto(loggedUser.INT_EMAIL)"><ion-icon name="arrow-forward"></ion-icon>&nbsp;Changer photo de profil</div>
-    <div class="otherStuff"><ion-icon name="arrow-forward"></ion-icon>&nbsp;Conditions Générales d'Utilisation</div>
-  </div> -->
-
+  
 </ion-content>

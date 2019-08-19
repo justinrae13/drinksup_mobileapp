@@ -37,7 +37,7 @@
                 <p *ngIf="user.ABO_DATEDEBUT!==null">Début:&nbsp;<ion-datetime [readonly]="true" [value]="user.ABO_DATEDEBUT" displayFormat="DD MMMM YYYY à HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
                 <p *ngIf="user.ABO_DATEDEBUT===null">Début:&nbsp;<i>non-abonné</i></p>
 
-                <p *ngIf="user.ABO_DATEFIN!==null">Fin:&nbsp;<ion-datetime [readonly]="true" [value]="user.ABO_DATEFIN" displayFormat="DD MMMM YYYY à HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
+                <p *ngIf="user.ABO_DATEFIN!==null">Fin:&nbsp;<ion-datetime [readonly]="true" [value]="user.ABO_DATEFIN" displayFormat="DD MMMM YYYY à HH: mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></p>
                 <p *ngIf="user.ABO_DATEFIN===null">Fin:&nbsp;<i>non-abonné</i></p>
               </div>
         </div>
@@ -50,7 +50,7 @@
         <ion-item-option *ngIf="(user.ABO_DATEDEBUT !== null || user.ABO_DATEFIN !== null) && today > user.ABO_DATEFIN" (click)="delete(slidingItem,user.INT_ID, user.INT_PRENOM)" class="deleteOpt"><ion-icon class="ion-delete" name="trash"></ion-icon></ion-item-option>
         <ion-item-option *ngIf="(user.ABO_DATEDEBUT !== null || user.ABO_DATEFIN !== null) && today < user.ABO_DATEFIN" (click)="cantDelete(slidingItem, user.INT_PRENOM)" class="deleteOpt"><ion-icon class="ion-delete" name="trash"></ion-icon></ion-item-option>
         <!--  -->
-        <ion-item-option  (click)="editRole(slidingItem,user.INT_ID, user.INT_PRENOM)" class="assignPartnerOpt"><ion-icon class="ion-role" name="contacts"></ion-icon></ion-item-option>
+        <ion-item-option *ngIf="user.Roles_ROL_ID !== 4" (click)="editRole(slidingItem,user.INT_ID, user.INT_PRENOM)" class="assignPartnerOpt"><ion-icon class="ion-role" name="contacts"></ion-icon></ion-item-option>
         <ion-item-option *ngIf="user.Roles_ROL_ID !== 4" (click)="makeVip(slidingItem,user.INT_ID, user.INT_PRENOM)" class="assignVipOpt"> <img src="../../assets/img/crown.svg"></ion-item-option>
         <ion-item-option *ngIf="user.Roles_ROL_ID === 4" (click)="makeUnVip(slidingItem,user.INT_ID, user.INT_PRENOM)" class="assignVipOpt"> <img src="../../assets/img/uncrown.svg"></ion-item-option>
       </ion-item-options>

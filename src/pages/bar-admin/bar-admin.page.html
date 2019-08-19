@@ -56,12 +56,13 @@
       </ion-item>
       <ion-item-options side="start">
         <!-- <ion-item-option  (click)="edit(slidingItem,user.INT_ID, user.INT_PRENOM, user.INT_NOM, user.INT_EMAIL, user.ROL_TYPES)"><ion-icon class="ion-edit" name="settings"></ion-icon></ion-item-option> -->
-        <ion-item-option  (click)="checkPartenaireBar(user.INT_ID)" class="ContactOpt"><ion-icon name="eye"></ion-icon></ion-item-option>
+        <ion-item-option  (click)="checkPartenaireBar(slidingItem, user.INT_ID)" class="ContactOpt"><ion-icon name="eye"></ion-icon></ion-item-option>
 
         <ion-item-option *ngIf="(user.ENT_VALIDATION == 'Non')"  (click)="delete(slidingItem, user.ENT_ID, user.ENT_NOM)" class="deleteOpt"><ion-icon class="ion-delete" name="trash"></ion-icon></ion-item-option>
         <ion-item-option *ngIf="(user.ENT_VALIDATION == 'Oui')"  (click)="cantDelete(slidingItem, user.ENT_NOM)" class="deleteOpt"><ion-icon class="ion-delete" name="trash"></ion-icon></ion-item-option>
 
-        <ion-item-option  (click)="validate(slidingItem, user.ENT_ID, user.ENT_NOM, user.ENT_VALIDATION)" class="assignPartnerOpt"><ion-icon *ngIf="(user.ENT_VALIDATION == 'Non')" class="actif_icon" name="checkmark-circle-outline"></ion-icon><ion-icon *ngIf="(user.ENT_VALIDATION == 'Oui')" class="inactif_icon" name="checkmark-circle-outline"></ion-icon></ion-item-option>
+        <ion-item-option  (click)="validate(slidingItem, user.ENT_ID, user.ENT_NOM)" *ngIf="(user.ENT_VALIDATION == 'Non')" class="assignPartnerOpt"><ion-icon *ngIf="(user.ENT_VALIDATION == 'Non')" class="actif_icon" name="checkmark-circle-outline"></ion-icon></ion-item-option>
+        <ion-item-option  (click)="invalidate(slidingItem, user.ENT_ID, user.ENT_NOM)" *ngIf="(user.ENT_VALIDATION == 'Oui')" class="assignPartnerOpt"><ion-icon *ngIf="(user.ENT_VALIDATION == 'Oui')" class="inactif_icon" name="checkmark-circle-outline"></ion-icon></ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
   </ion-list>

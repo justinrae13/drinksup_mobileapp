@@ -1,19 +1,22 @@
+<div class="header_bar" *ngIf="roleLogged!=='proprio'" >
+    <div class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
+</div>
 <ion-content color="secondary">
   <div class="img-slide">
     <ion-slides pager="true" [options]="slideOpts">
         <ion-slide>
-            <div class="pho_number">Photo n° 1</div>
+            <div *ngIf="roleLogged==='proprio'" class="pho_number">Photo n° 1</div>
             <div class="pre_cover" [ngStyle]="{'opacity' : preCovOpac, 'display' : preCovDis}"></div>
             <img [src]="imgLink1" alt="Photo n° 1" (load)="imgLoad()">
         </ion-slide>
 
         <ion-slide>
-            <div class="pho_number">Photo n° 2</div>
+            <div *ngIf="roleLogged==='proprio'" class="pho_number">Photo n° 2</div>
             <img [src]="imgLink2" alt="Photo n° 2">
       </ion-slide>
 
       <ion-slide>
-            <div class="pho_number">Photo n° 3</div>
+            <div *ngIf="roleLogged==='proprio'" class="pho_number">Photo n° 3</div>
             <img [src]="imgLink3" alt="Photo n° 3">
       </ion-slide>
     </ion-slides>

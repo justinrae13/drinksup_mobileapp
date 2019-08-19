@@ -34,6 +34,7 @@ export class BarsPage{
   hideElem : string = "block";
   emptyVal : string;
   zindex : string = "5";
+  ifLoadedAlready : string = "block";
 
   tabPosition : string = "translateX(0)";
   leftPosition : string = "0%";
@@ -48,6 +49,7 @@ export class BarsPage{
   presdemoiClicked : boolean = false;
 
   noBarFilter : boolean = false;
+  // loaded : boolean = false;
 
   constructor(private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
     this.loadBar();
@@ -66,6 +68,8 @@ export class BarsPage{
     this.isSearchbarOpened = false;
     this.hideHeader = "0px";
     this.hideSubHeader = "50px";
+    
+    this.selectRef.value = "all";
   }
 
 
@@ -120,10 +124,15 @@ export class BarsPage{
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
     {
+      if(data === null){
+        return false;
+      }else{
         this.offers = data;
         for(var i = 0; i<data.length; i++){
           this.offerIds.push(data[i].Entreprises_ENT_ID);
         }
+      }
+        
 
     },
     (error : any) =>
@@ -247,14 +256,16 @@ export class BarsPage{
   }
 
   filterByType(event){
-    console.log(event.detail.value)
-
-    if(event.detail.value=="all"){
-      this.Filtereditems = this.items;
+    if(this.Filtereditems === null){
+      return false;
     }else{
-      this.Filtereditems = this.items.filter((bar) => {
-        return (bar.ENT_SECTEURACTIVITES == event.detail.value);
-      });
+      if(event.detail.value=="all"){
+        this.Filtereditems = this.items;
+      }else{
+        this.Filtereditems = this.items.filter((bar) => {
+          return (bar.ENT_SECTEURACTIVITES == event.detail.value);
+        });
+      }
     }
 
     if(this.Filtereditems.length <= 0){
@@ -286,26 +297,27 @@ export class BarsPage{
 
 
   openSearch(){
-    let options: NativeTransitionOptions = {
-      direction: 'left',
-      duration: 150,
-      slowdownfactor: 3,
-      iosdelay: 100,
-      androiddelay: 150
-     }
-    this.nativePageTransitions.slide(options); 
+    // let options: NativeTransitionOptions = {
+    //   direction: 'left',
+    //   duration: 150,
+    //   slowdownfactor: 3,
+    //   iosdelay: 100,
+    //   androiddelay: 150
+    //  }
+    this.nativePageTransitions.fade(null); 
     this.navCtrl.navigateForward("/search-a-bar");
   }
 
   moveToBar(id : string){
-    let options: NativeTransitionOptions = {
-      direction: 'left',
-      duration: 150,
-      slowdownfactor: 3,
-      iosdelay: 100,
-      androiddelay: 150
-     }
-    this.nativePageTransitions.slide(options); 
+    // let options: NativeTransitionOptions = {
+    //   direction: 'left',
+    //   duration: 150,
+    //   slowdownfactor: 3,
+    //   iosdelay: 100,
+    //   androiddelay: 150
+    //  }
+     this.nativePageTransitions.fade(null); 
+    //  this.nativePageTransitions.slide(options); 
     this.navCtrl.navigateForward('/bar-user/'+id);
     setTimeout(() => {
       this.hideElem = "block";
@@ -382,6 +394,11 @@ export class BarsPage{
   }
 
 
+  displayNone(){
+    setTimeout(() => {
+      this.ifLoadedAlready = "none"
+    }, 1200);
+  }
 
 
 }

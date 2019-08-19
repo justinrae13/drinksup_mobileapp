@@ -49,6 +49,7 @@ export class OffersPage implements OnInit {
     {num : '7', nomFr : 'Dimanche'}
   ];
   noOffer : boolean = false;
+  ifLoadedAlready : string = "block";
     
   constructor(private router: Router, private navCtrl : NavController, private nativePageTransitions: NativePageTransitions, private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private toastCtrl : ToastController) { 
     this.random = Math.floor(Math.random() * 100);
@@ -75,6 +76,8 @@ export class OffersPage implements OnInit {
     this.hideHeader = "0px";
     this.hideSubHeader = "50px";
     this.tous();
+
+    this.selectRef.value = "all";
   }
 
   getPaidUser(id : string) {
@@ -97,15 +100,12 @@ export class OffersPage implements OnInit {
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
     {
-        // var scans = this.scannedOffers;
-        // console.log(scans)
         for(var i in data){
             var newdate = new Date(data[i].OFF_DATEDEBUT);
             var newformatDate = new Date(newdate.getTime() - newdate.getTimezoneOffset()*60000);
             data[i].OFF_DATEDEBUT = newformatDate.toISOString();
         }   
         this.items = data;
-        console.log(this.items.length);
         this.Filtereditems = this.items;
     },
     (error : any) =>
@@ -227,14 +227,18 @@ export class OffersPage implements OnInit {
   }
 
   filterByDay(event){
-    console.log(event.detail.value)
-    if(event.detail.value=="all"){
-      this.Filtereditems = this.items;
+
+    if(this.Filtereditems === null){
+      return false;
     }else{
-      this.Filtereditems = this.items.filter((offer) => {
-        var dateStart = new Date(offer.OFF_DATEDEBUT).getDay();
-        return (dateStart == event.detail.value);
-      });
+      if(event.detail.value=="all"){
+        this.Filtereditems = this.items;
+      }else{
+        this.Filtereditems = this.items.filter((offer) => {
+          var dateStart = new Date(offer.OFF_DATEDEBUT).getDay();
+          return (dateStart == event.detail.value);
+        });
+      }
     }
 
     if(this.Filtereditems.length <= 0){
@@ -242,21 +246,29 @@ export class OffersPage implements OnInit {
     }else{
       this.noOffer = false;
     }
+    
+    
   }
 
     
 
   moveToBar(id : string, id_offer : string){
-    let options: NativeTransitionOptions = {
-      direction: 'left',
-      duration: 150,
-      slowdownfactor: 1,
-      iosdelay: 50,
-      androiddelay: 150
-     }
-    this.nativePageTransitions.slide(options); 
+    // let options: NativeTransitionOptions = {
+    //   direction: 'left',
+    //   duration: 150,
+    //   slowdownfactor: 1,
+    //   iosdelay: 50,
+    //   androiddelay: 150
+    //  }
+    this.nativePageTransitions.fade(null); 
     this.navCtrl.navigateForward("/bar-user/"+id+"/"+id_offer);
     // this.navCtrl.navigateForward();
+  }
+
+  displayNone(){
+    setTimeout(() => {
+      this.ifLoadedAlready = "none"
+    }, 1200);
   }
 
 }

@@ -117,6 +117,11 @@ export class BarAdminPage implements OnInit {
         this.inactifClicked = true;
     }
 
+    async checkPartenaireBar(slidingItem: IonItemSliding, userId){
+        await slidingItem.close();
+        this.navTabs("bar/"+userId);
+    }
+
     async delete(slidingItem: IonItemSliding, id, nom) {
         await slidingItem.close();
         this.presentAlert(id, nom);
@@ -127,9 +132,60 @@ export class BarAdminPage implements OnInit {
         this.presentAlertSub(nom);
     }
 
-    async validate(slidingItem: IonItemSliding, id, nom, status) {
+    async validate(slidingItem: IonItemSliding, id, nom) {
         await slidingItem.close();
-        this.presentAlertSecond(id, nom, status);
+        this.alertValidate(id, nom);
+    }
+
+    async invalidate(slidingItem: IonItemSliding, id, nom) {
+        await slidingItem.close();
+        this.alertInvalidate(id, nom);
+    }
+
+    async alertInvalidate(id, nom) {
+        const alert = await this.alertController.create({
+            header: 'Confirmer',
+            message: "<h3>Changer le status du bar: <span>" + nom + "</span> en <b class='b_inactif'>inactif</b> ?</h3>",
+            buttons: [
+                {
+                    text: 'Non',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                    }
+                }, {
+                    text: 'Oui',
+                    handler: () => {
+                        this.validateBar(id, "Non");
+                        this.ionViewWillEnter();
+                    }
+                }
+            ]
+        });
+        await alert.present();
+    }
+
+    async alertValidate(id, nom) {
+        const alert = await this.alertController.create({
+            header: 'Confirmer',
+            message: "<h3>Changer le status du bar: <span>" + nom + "</span> en <b class='b_actif'>actif</b> ?</h3>",
+            buttons: [
+                {
+                    text: 'Non',
+                    role: 'cancel',
+                    cssClass: 'secondary',
+                    handler: () => {
+                    }
+                }, {
+                    text: 'Oui',
+                    handler: () => {
+                        this.validateBar(id, "Oui");
+                        this.ionViewWillEnter();
+                    }
+                }
+            ]
+        });
+        await alert.present();
     }
 
     
@@ -174,48 +230,12 @@ export class BarAdminPage implements OnInit {
         await alert.present();
     }
 
-    async presentAlertSecond(id, nom, status) {
-        var msg = "";
-        var newStatus = "";
-        if(status==="Oui"){
-            msg = "<h3>Changer le status du bar: <span>" + nom + "</span> en <b class='b_inactif'>inactif</b> ?</h3>"
-            newStatus = "Non";
-        }else{
-            msg = "<h3>Changer le status du bar: <span>" + nom + "</span> en <b class='b_actif'>actif</b> ?</h3>"
-            newStatus = "Oui";
-        }
-
-        
-        const alert = await this.alertController.create({
-            header: 'Confirmer',
-            message: msg,
-            buttons: [
-                {
-                    text: 'Non',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                    handler: () => {
-                    }
-                }, {
-                    text: 'Oui',
-                    handler: () => {
-                        console.log(newStatus)
-                        this.validateBar(id, newStatus);
-                        this.ionViewWillEnter();
-                    }
-                }
-            ]
-        });
-        await alert.present();
-    }
-
     deleteBar(id: number) {
         const headers: any = new HttpHeaders({ 'Content-Type': 'application/json' }),
             options: any = { 'key' : 'deleteBar', 'id': id},
             url: any = this.baseURI;
   
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            this.sendNotification('Votre suppresion a bien été prise en compte !');
         },(error: any) => {
             console.log(error);
             this.sendNotification('Erreur!');
@@ -228,7 +248,6 @@ export class BarAdminPage implements OnInit {
             url: any = this.baseURI;
   
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            this.sendNotification('Votre modification a bien été prise en compte !');
         },(error: any) => {
             console.log(error);
             this.sendNotification('Erreur!');
@@ -254,10 +273,6 @@ export class BarAdminPage implements OnInit {
 
     }
 
-    checkPartenaireBar(userId){
-        // this.navCtrl.navigateForward("/tabsadmin/bar/"+userId)
-        this.navTabs("bar/"+userId);
-    }
 
     async navTabs(msg: string) {
         this.route.navigateByUrl(msg);
@@ -279,7 +294,7 @@ export class BarAdminPage implements OnInit {
         const toast = await this.toastCtrl.create({
             message: msg,
             duration: 3000,
-            position: 'bottom'
+            position: 'top'
         });
         toast.present();
     }
