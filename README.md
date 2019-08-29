@@ -1,10 +1,8 @@
 <p align="center"><img width="300px" src="https://thumbs.gfycat.com/ImpracticalDistortedFeline-small.gif"></p>
 
-<h1 align="center">PROJET PGM</h1>
+<h1 align="center">Drinks Up Mobile Application</h1>
 
-## Drinksup Mobile App
-
-<h4>First step, clone the project :</h4>
+<h4><img width="60px" src="https://justinrae.ch/git_icons/step1.svg"> Clone the project :</h4>
 
 ```
 $ git clone https://github.com/omarLiibaan/drinksup.git
