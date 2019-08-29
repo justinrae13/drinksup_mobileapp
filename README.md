@@ -33,7 +33,7 @@ $ ionic cordova build android
 $ ionic cordova build ios
 ```
 
-<h4><img width="60px" src="https://justinrae.ch/git_icons/step1.svg"> Check if the facebookconnect.xml file exists in path :</h4>
+<h4><img width="60px" src="https://justinrae.ch/git_icons/step4.svg"> Check if the facebookconnect.xml file exists in path :</h4>
 
 ```
 \platform\android\app\src\main\res\values\
@@ -73,7 +73,7 @@ Execution failed for task ':app:processDebugResources'.
 ```
 \platform\android\app\src\main\res\values\
 ```
-##### Step 2, Add these lines in the new style.xml file.
+##### <img width="60px" src="https://justinrae.ch/git_icons/step2.svg"> Add these lines in the new style.xml file.
 ```
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
@@ -82,7 +82,7 @@ Execution failed for task ':app:processDebugResources'.
   </style>
 </resources>
 ```
-##### Step 3, Update theme in AndroidManifest.xml
+##### <img width="60px" src="https://justinrae.ch/git_icons/step3.svg"> Update theme in AndroidManifest.xml
 ```
  <activity ... android:theme="@style/Theme.Transparent" ... >
 ```
