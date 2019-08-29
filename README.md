@@ -1,4 +1,8 @@
-# Drinksup Mobile App
+<p align="center"><img width="300px" src="https://thumbs.gfycat.com/ImpracticalDistortedFeline-small.gif"></p>
+
+<h1 align="center">PROJET PGM</h1>
+
+## Drinksup Mobile App
 
 <h4>First step, clone the project :</h4>
 
@@ -64,7 +68,7 @@ Execution failed for task ':app:processDebugResources'.
 <br>
 <hr>
 
-# Fixing the gray screen before splash screen [Cordova]
+## Fixing the gray screen before splash screen [Cordova]
 <br>
 
 ##### Step 1, Create a new style file in path :
