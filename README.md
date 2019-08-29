@@ -69,7 +69,7 @@ Execution failed for task ':app:processDebugResources'.
 ## Fixing the gray screen before splash screen [Cordova]
 <br>
 
-##### Step 1, Create a new style file in path :
+##### <img width="60px" src="https://justinrae.ch/git_icons/step1.svg"> Create a new style file in path :
 ```
 \platform\android\app\src\main\res\values\
 ```
