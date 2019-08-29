@@ -15,13 +15,13 @@ $ git clone https://github.com/omarLiibaan/drinksup.git
 $ git clone -b name_of_the_branch https://github.com/omarLiibaan/drinksup.git
 ```
 
-<h4>Second step, install all dependencies :</h4>
+<h4><img width="60px" src="https://justinrae.ch/git_icons/step2.svg"> Install all dependencies :</h4>
 
 ```
 $ npm install
 ```
 
-<h4>Third step, build platforms :</h4>
+<h4><img width="60px" src="https://justinrae.ch/git_icons/step3.svg"> Build platforms :</h4>
 
 ```
 $ ionic cordova build android
@@ -33,7 +33,7 @@ $ ionic cordova build android
 $ ionic cordova build ios
 ```
 
-<h4>Fourth step, Check if the facebookconnect.xml file exists in path :</h4>
+<h4><img width="60px" src="https://justinrae.ch/git_icons/step1.svg"> Check if the facebookconnect.xml file exists in path :</h4>
 
 ```
 \platform\android\app\src\main\res\values\
