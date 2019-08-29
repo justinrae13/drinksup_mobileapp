@@ -134,7 +134,8 @@ export class OffersManagementPage implements OnInit {
         }
         const dateDebut = this.dp.transform(eventCopy.startTime, 'yyyy-MM-dd HH:mm', 'GMT+0000');
         const dateFin = this.dp.transform(eventCopy.endTime, 'yyyy-MM-dd  HH:mm', 'GMT+0000');
-        this.addOffer(eventCopy.description, dateDebut, dateFin,eventCopy.actif, eventCopy.title);
+        const capitalizeDesc = eventCopy.description.charAt(0).toUpperCase()+eventCopy.description.substring(1);
+        this.addOffer(capitalizeDesc, dateDebut, dateFin,eventCopy.actif, eventCopy.title);
         this.eventSource.push(eventCopy);
         this.ionViewWillEnter();
 
@@ -334,10 +335,11 @@ export class OffersManagementPage implements OnInit {
 
     async activeBar() {
         const alert = await this.alertController.create({
-            header: 'Le status de votre bar est acuellement inactif. Vous ne pouvez pas ajouter une offre.',
+            header: "Alerte !",
+            message: "<h3>Le status de votre bar est acuellement inactif. Vous ne pouvez pas ajouter une offre.</h3>",
             buttons: [
                 {
-                    text: 'Ok',
+                    text: 'OK',
                     handler: () => {
                         this.navCtrl.navigateForward("/tabsproprio/qrcode");
                     }
@@ -346,6 +348,10 @@ export class OffersManagementPage implements OnInit {
         });
 
         await alert.present();
+
+        alert.onDidDismiss().then(() => {
+            this.navCtrl.navigateForward("/tabsproprio/qrcode");            
+        });
     }
     async sendNotification(msg: string) {
         const toast = await this.toastCtrl.create({

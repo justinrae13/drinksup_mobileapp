@@ -153,43 +153,81 @@ ion-item{
       }
 
       .off_desc{
-          font-family: "NBL";
-          font-size: 1.4rem;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          position: relative;
-      }
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        position: relative;
+        
+        ion-icon{
+            width: 23px;
+            min-width: 23px;
+            font-family: "NBL";
+            font-size: 1.4rem;
+        }
+        p{
+            width: calc(100% - 23px);
+            font-family: "NBL";
+            font-size: 1.4rem;
+            margin: 0;
+        }
+    }
 
-      .row_off{
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          flex-direction: row;
-          margin-top: 5px;
-      }
 
-      .ent_nom{
-          font-size: 16px;
-          color: rgb(134, 134, 134);
-          font-family: "NBO";
-          
-      }
 
-      .countdown{
-          margin-top: 3px;
-          font-size: 12px;
-          width: 170px;
-          height: 20px;
-          background-color: transparent;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          color: rgb(134, 134, 134);
-          border: 1px solid rgb(134, 134, 134);
-          border-radius: 20px;
-      }
+    .row_off{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        flex-direction: row;
+        margin-top: 5px;
+    }
+
+    .ent_nom{
+        font-size: 16px;
+        color: rgb(134, 134, 134);
+        font-family: "NBO";
+        display: flex;
+        align-items: center;
+        
+    }
+
+    .ent_rank{
+        font-size: 16px;
+        font-family: "NBO";
+        display: flex;
+        align-items: center;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        span{
+            font-size: 13px;
+            font-family: "NBO";
+        }
+    }
+
+    .ent_distance{
+        font-size: 13px;
+        font-family: "NBO";
+        padding-left: 1px;
+        display: flex;
+        align-items: center;
+    }
+
+    .countdown{
+        margin-top: 3px;
+        font-size: 12px;
+        width: 170px;
+        height: 20px;
+        background-color: transparent;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: rgb(134, 134, 134);
+        border: 1px solid rgb(134, 134, 134);
+        border-radius: 20px;
+    }
      
   }
 
@@ -197,6 +235,8 @@ ion-item{
 }
 
 ion-content{
+    width: 100%;
+    height: 100%;
     --padding-top: 100px;
 }
 

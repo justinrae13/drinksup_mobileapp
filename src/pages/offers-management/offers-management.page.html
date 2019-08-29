@@ -62,8 +62,8 @@
   <ng-template #template let-showEventDetail="showEventDetail" let-selectedDate="selectedDate" let-noEventsLabel="noEventsLabel">
     <div style="margin: 20px 0 8px 0">
       <p style="font-family: 'NBL'; font-size: 1em; color: rgb(189, 189, 189); margin-top: 0; margin-bottom: 10px">Vos offres : </p>
-      <p style="font-family: 'NLI'; font-size: .8em; color: gray; margin-top: 0; margin-bottom: 5px"><ion-icon name="information-circle-outline"></ion-icon>&nbsp;Glissez l'offre vers à droite pour suprimmer.</p>
-      <p style="font-family: 'NLI'; font-size: .8em; color: gray; margin-top: 0; margin-bottom: 0"><ion-icon name="information-circle-outline"></ion-icon>&nbsp;Cliquez sur l'offre pour plus d'info.</p>
+      <p style="font-family: 'NLI'; font-size: .8em; color: gray; margin-top: 0; margin-bottom: 5px"><ion-icon name="information-circle-outline"></ion-icon>&nbsp;Glissez l'offre vers la droite pour suprimmer.</p>
+      <p style="font-family: 'NLI'; font-size: .8em; color: gray; margin-top: 0; margin-bottom: 0"><ion-icon name="information-circle-outline"></ion-icon>&nbsp;Cliquez sur l'offre pour plus d'informations.</p>
     </div>
     <ion-list>
       <ion-item-sliding *ngFor="let event of selectedDate?.events" #slidingItem>

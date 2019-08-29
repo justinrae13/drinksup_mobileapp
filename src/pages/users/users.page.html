@@ -1,8 +1,3 @@
-<!-- <ion-header #elasticHeader>
-  <ion-toolbar color="primary">
-    <ion-title>Gestion des utilisateurs</ion-title>
-  </ion-toolbar>
-</ion-header> -->
 <div class="tab_header" [ngStyle]="{'top' : hideHeader}">Gestion des utilisateurs</div>
 <div class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
   <div (click)="tous()" [ngStyle]="{'color' : activeColor1}">Tous <span class="rippleEffect"></span></div>
@@ -12,7 +7,17 @@
   <span class="outline_bar" [ngStyle]="{'transform' : tabPosition, 'left' : leftPosition}"></span>
 </div>
 
-<ion-content color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)">
+<!-- Custom Refresher Start -->
+<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
+  <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
+    <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
+  </svg>
+  <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+</div>
+<div class="mcr_backdrop twoHeads" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
+<!-- Custom Refresher End -->
+
+<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
   <ion-searchbar animated color="primary" placeholder="Rechercher un utilisateur" (ionInput)="search($event)"></ion-searchbar>
   
   <ion-list>
@@ -57,4 +62,12 @@
     </ion-item-sliding>
   </ion-list>
   <p>{{haveUserOrNot}} </p>
+</ion-content>
+
+
+<ion-content *ngIf="!ifHasConnection" [ngStyle]="{'transform': !ifHasConnection ? 'translateY(50px)' : 'translateY(100px)'}" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
+  <div class="no_connection">
+    <img src="../../assets/img/no_connection.svg">
+    <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
+  </div>
 </ion-content>

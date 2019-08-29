@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ToastController, NavController } from '@ionic/angular';
+import { ToastController, NavController, ModalController } from '@ionic/angular';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Storage } from '@ionic/storage';
-import { listenToElementOutputs } from '@angular/core/src/view/element';
+import { Device } from '@ionic-native/device/ngx';
+import { LoadingpagePage } from '../loadingpage/loadingpage.page';
 import * as Global from '../../app/global';
 
 
@@ -33,7 +34,9 @@ export class RegisterthirdpartyPage implements OnInit {
   roleAdmin = 'admin';
   roleProprio = 'proprio';
 
-  constructor(private navCtrl: NavController, private storage: Storage, private actRout : ActivatedRoute, private toastCtrl: ToastController, public http: HttpClient, private formBuilder: FormBuilder) { 
+  uuid : string = "";
+
+  constructor(private modalCtrl : ModalController, private device: Device, private navCtrl: NavController, private storage: Storage, private actRout : ActivatedRoute, private toastCtrl: ToastController, public http: HttpClient, private formBuilder: FormBuilder) { 
     this.registerEmailForFB = new FormGroup({
       REG_EMAIL_FOR_FB : new FormControl()
     });
@@ -48,24 +51,39 @@ export class RegisterthirdpartyPage implements OnInit {
 }
 
   ionViewWillEnter(){
+    this.uuid = this.device.uuid;
     this.getUsers();
     this.idParam = this.actRout.snapshot.paramMap.get("id");
     this.nameParam = this.actRout.snapshot.paramMap.get("name");
     this.emailParam = this.actRout.snapshot.paramMap.get("email");
 
     if(this.emailParam!="no-email"){
+      this.loadingModal();
       this.idParamClean = this.idParam.substring(1, this.idParam.length -1);//remove double quotes
       this.nameParamClean = this.nameParam.substring(1, this.nameParam.length -1);//remove double quotes
       this.emailParamClean = this.emailParam.substring(1, this.emailParam.length -1);//remove double quotes
-      this.registerUserFB(this.nameParamClean, this.emailParamClean, this.idParamClean);
+      setTimeout(() => {
+        this.registerUserFB(this.nameParamClean, this.emailParamClean, this.idParamClean, this.uuid );
+      }, 500);
       setTimeout(() => {
           this.LoginForFBUser(this.emailParamClean);
-      }, 1500);   
+      }, 2500);   
     }
   }
 
-  ngOnInit() {
-    
+  ngOnInit() {}
+
+  async loadingModal(){
+    const modal = await this.modalCtrl.create( {
+      component: LoadingpagePage,
+      cssClass: "loading-modal",
+      showBackdrop : true,
+      componentProps: {},
+    });
+    modal.present();
+    setTimeout(() => {
+      modal.dismiss();
+    }, 2000);
   }
 
   LoginForFBUser(PRO_EMAIL: string) {
@@ -112,9 +130,9 @@ export class RegisterthirdpartyPage implements OnInit {
         });
 }
 
-  registerUserFB(paramName, paramEmail, paramId){
+  registerUserFB(paramName, paramEmail, paramId, uuid){
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'registerFromFB', 'email' : paramEmail, 'name' : paramName, 'idFB' : paramId},
+            options: any		= { 'key' : 'registerFromFB', 'email' : paramEmail, 'name' : paramName, 'idFB' : paramId, 'uuid' : uuid},
             url: any      	= this.baseURI;
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>

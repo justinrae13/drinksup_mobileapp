@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
-import {NavController, ToastController} from '@ionic/angular';
+import {NavController, ToastController, AlertController} from '@ionic/angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { Device } from '@ionic-native/device/ngx';
 import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
+import { Network } from '@ionic-native/network/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
 @Component({
     selector: 'app-login',
@@ -48,7 +51,9 @@ export class LoginPage implements OnInit {
     su_opac = "0";
     formReg = "none";
 
-    constructor(private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
+    uuid : string = "";
+    
+    constructor(private splashScreen: SplashScreen, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
         this.loginForm = new FormGroup({
             PRO_EMAIL: new FormControl(),
             PRO_PASSWORD: new FormControl(),
@@ -59,7 +64,23 @@ export class LoginPage implements OnInit {
         });
 
         this.validationForm();
-         
+
+        this.network.onDisconnect().subscribe(() => {
+            alert('network was disconnected :-(');
+        });
+
+        this.network.onConnect().subscribe(() => {
+            alert('network connected!');
+        // We just got a connection but we need to wait briefly
+            // before we determine the connection type. Might need to wait.
+        // prior to doing any api requests as well.
+        setTimeout(() => {
+            if (this.network.type === 'wifi') {
+                alert('we got a wifi connection, woohoo!');
+            }
+        }, 3000);
+        });
+
         
     }
 
@@ -67,12 +88,20 @@ export class LoginPage implements OnInit {
         this.getUsers();
     }
 
-    ionViewWillEnter(){
+    ngAfterViewInit(){
         setTimeout(() => {
             this.formLog = "block";
-        }, 2100);
+        }, 1750);
+    }
+
+    ionViewWillEnter(){
+   
+        setTimeout(() => {
+            this.formLog = "block";
+        }, 1750);       
         this.loginForm.controls['PRO_EMAIL'].setValue("");
         this.loginForm.controls['PRO_PASSWORD'].setValue("");
+        this.uuid = this.device.uuid;
     }
 
     ionViewDidLeave(){
@@ -105,93 +134,110 @@ export class LoginPage implements OnInit {
     }
 
     loginWithFB(){
-        this.fb.login(['public_profile','email']).then((res : FacebookLoginResponse)=>{
-            if(res.status==='connected'){
-                this.userfb.img = 'https://graph.facebook.com/'+res.authResponse.userID+'/picture?type=large';
-                this.fb.api('me?fields=id,name,first_name,last_name,email',[]).then(profile =>{
-                    this.userdatafb = {email : profile['email'], id : profile['id'], name : profile['name']};
-                    //Check if email from fb is obtainable
-                    if(this.userdatafb.email===undefined || this.userdatafb.email === null || this.userdatafb.email === ""){
-                        //Check if fb without email is already registered
-                        for(var i = 0; i < this.users.length; i++) {
-                            this.pushedIdFbArray.push(this.users[i].INT_FB_ID);
-                        }
-                        if(this.pushedIdFbArray.indexOf(this.userdatafb.id) > -1){
-                            this.fbIdExist = true;
-                            console.log("Facebook Id is already used!");
+        //Check if user has internet connection
+        if(navigator.onLine){
+            //If user has connection
+            this.fb.login(['public_profile','email']).then((res : FacebookLoginResponse)=>{
+                if(res.status==='connected'){
+                    this.userfb.img = 'https://graph.facebook.com/'+res.authResponse.userID+'/picture?type=large';
+                    this.fb.api('me?fields=id,name,first_name,last_name,email',[]).then(profile =>{
+                        this.userdatafb = {email : profile['email'], id : profile['id'], name : profile['name']};
+                        //Check if email from fb is obtainable
+                        if(this.userdatafb.email===undefined || this.userdatafb.email === null || this.userdatafb.email === ""){
+                            //Check if fb without email is already registered
+                            for(var i = 0; i < this.users.length; i++) {
+                                this.pushedIdFbArray.push(this.users[i].INT_FB_ID);
+                            }
+                            if(this.pushedIdFbArray.indexOf(this.userdatafb.id) > -1){
+                                this.fbIdExist = true;
+                                console.log("Facebook Id is already used!");
+                            }else{
+                                this.fbIdExist = false;
+                                console.log("Facebook Id ready!");
+                            }
+    
+                            //If fb id exists then user is accepted and must be logged in
+                            if(this.fbIdExist){
+                                this.LoginForFBUserWithID(this.userdatafb.id);
+                                this.sendNotification("Bienvenue à bord !");
+                            }else{
+                            // else it should be registered
+                                this.navCtrl.navigateForward("registerthirdparty/"+this.userdatafb.name+"/no-email/"+this.userdatafb.id);
+                            }
                         }else{
-                            this.fbIdExist = false;
-                            console.log("Facebook Id ready!");
-                        }
-
-                        //If fb id exists then user is accepted and must be logged in
-                        if(this.fbIdExist){
-                            this.LoginForFBUserWithID(this.userdatafb.id);
-                        }else{
-                        // else it should be registered
-                            this.navCtrl.navigateForward("registerthirdparty/"+this.userdatafb.name+"/no-email/"+this.userdatafb.id);
-                        }
-                    }else{
-                        //Check if address mail logged from facebook exist in the database
-                        for(var i = 0; i < this.users.length; i++) {
-                            this.pushedUserArray.push(this.users[i].INT_EMAIL);
-                        }
-
-                        if(this.pushedUserArray.indexOf(this.userdatafb.email) > -1){
-                            this.emailExist = true;
-                            console.log("address mail exist already!");
-                        }else{
-                            this.emailExist = false;
-                            console.log("address mail ready!");
-                        }
-                        //If email exists then user is accepted and must be logged in
-                        if(this.emailExist){
-                            this.LoginForFBUser(this.userdatafb.email);
-                        }else{
-                        // else it should be registered
-                            this.registerUserFB(this.userdatafb.name, this.userdatafb.email);
-                            setTimeout(() => {
+                            //Check if address mail logged from facebook exist in the database
+                            for(var i = 0; i < this.users.length; i++) {
+                                this.pushedUserArray.push(this.users[i].INT_EMAIL);
+                            }
+    
+                            if(this.pushedUserArray.indexOf(this.userdatafb.email) > -1){
+                                this.emailExist = true;
+                                console.log("address mail exist already!");
+                            }else{
+                                this.emailExist = false;
+                                console.log("address mail ready!");
+                            }
+                            //If email exists then user is accepted and must be logged in
+                            if(this.emailExist){
                                 this.LoginForFBUser(this.userdatafb.email);
-                            }, 500);   
+                                this.sendNotification("Bienvenue à bord !");
+                            }else{
+                            // else it should be registered
+                                this.registerUserFB(this.userdatafb.name, this.userdatafb.email);
+                                setTimeout(() => {
+                                    this.LoginForFBUser(this.userdatafb.email);
+                                    this.sendNotification("Bienvenue à bord !");
+                                }, 500);   
+                            }
                         }
-                    }
-                });
-            }else{
-                this.sendNotification("Échec de connexion Facebook");
-            }
-            console.log("login fb successful !", res);
-        }).catch(e=> console.log("Error logging into Facebook", e));
+                    });
+                }else{
+                    this.sendNotification("Échec de connexion Facebook");
+                }
+                console.log("login fb successful !", res);
+            }).catch(e=> console.log("Error logging into Facebook", e));
+                       
+        }else{
+            //If user has connection
+            this.alertNoConnection();
+        }
     }
 
     loginWithGoogle() {
-        this.googlePlus.login({})
-        .then(res => {
-
-          //Check if address mail logged from google exist in the database
-            for(var i = 0; i < this.users.length; i++) {
-                this.pushedUserArray.push(this.users[i].INT_EMAIL);
-            }
-        
-            if(this.pushedUserArray.indexOf(res.email) > -1){
-                this.emailExist = true;
-                console.log("address mail exist already!");
-            }else{
-                this.emailExist = false;
-                console.log("address mail ready!");
-            }
-            //If email exists then user is accepted and must be logged in
-            if(this.emailExist){
-                this.LoginForGoogleUser(res.email);
-            }else{
-            // else it should be registered
-                this.registerFromGoogle(res.email, res.givenName, res.familyName);
-                setTimeout(() => {
-                    this.LoginForGoogleUser(res.email);
-                }, 500);   
-            }
-
-          })
-        .catch(err => console.error(err));    
+        //Check if user has internet connection
+        if(navigator.onLine){
+            //If user has connection
+            this.googlePlus.login({}).then(res => {
+                //Check if address mail logged from google exist in the database
+                  for(var i = 0; i < this.users.length; i++) {
+                      this.pushedUserArray.push(this.users[i].INT_EMAIL);
+                  }
+              
+                  if(this.pushedUserArray.indexOf(res.email) > -1){
+                      this.emailExist = true;
+                      console.log("address mail exist already!");
+                  }else{
+                      this.emailExist = false;
+                      console.log("address mail ready!");
+                  }
+                  //If email exists then user is accepted and must be logged in
+                  if(this.emailExist){
+                      this.LoginForGoogleUser(res.email);
+                      this.sendNotification("Bienvenue à bord !");
+                    }else{
+                  // else it should be registered
+                      this.registerFromGoogle(res.email, res.givenName, res.familyName);
+                      setTimeout(() => {
+                          this.LoginForGoogleUser(res.email);
+                          this.sendNotification("Bienvenue à bord !");
+                      }, 500);   
+                  }
+      
+                }).catch(err => console.error(err)); 
+        }else{
+            //If user has connection
+            this.alertNoConnection();
+        }   
     }
 
     LoginForUsers(PRO_EMAIL: string, PRO_PASSWORD: string) {
@@ -216,7 +262,6 @@ export class LoginPage implements OnInit {
                     // this.btnAnim_1_Off();
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsadmin/users');
-                        this.sendNotification('Bienvenue !');
                     }, 500);
                 } else if (this.userDetails.ROLE === this.roleProprio) {
                     
@@ -228,7 +273,6 @@ export class LoginPage implements OnInit {
                     // this.btnAnim_1_Off();
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsproprio/qrcode');
-                        this.sendNotification('Bienvenue !');
                     }, 500); 
                 } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
                     this.storage.set('SessionRoleKey', this.roleUser);
@@ -239,7 +283,6 @@ export class LoginPage implements OnInit {
                     // this.btnAnim_1_Off();
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabs/offers');
-                        this.sendNotification('Bienvenue !');
                     }, 500);
                 } else {
                     
@@ -279,15 +322,12 @@ export class LoginPage implements OnInit {
                 if (this.userDetails.ROLE === this.roleAdmin) {
                     this.navCtrl.navigateRoot('/tabsadmin/users');
                     this.storage.set('SessionRoleKey', this.roleAdmin);
-                    this.sendNotification('Bienvenue !');
                 } else if (this.userDetails.ROLE === this.roleProprio) {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
-                    this.sendNotification('Bienvenue !');
                 } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
                     this.navCtrl.navigateRoot('/tabs/offers');
                     this.storage.set('SessionRoleKey', this.roleUser);
-                    this.sendNotification('Bienvenue !'); 
                 } else {
                     // console.log(JSON.stringify(options));
                     this.googlePlus.logout().then(res => {console.log(res);}).catch(err => console.error(err));
@@ -324,15 +364,12 @@ export class LoginPage implements OnInit {
                               this.storage.set('firstLogin', 'Yes');
                         }
                     });
-                    this.sendNotification('Bienvenue !');
                 } else if (this.userDetails.ROLE === this.roleProprio) {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
-                    this.sendNotification('Bienvenue !');
                 } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
                     this.navCtrl.navigateRoot('/tabs/offers');
                     this.storage.set('SessionRoleKey', this.roleUser);
-                    this.sendNotification('Bienvenue !'); 
                 } else {
                     // console.log(JSON.stringify(options));
                     this.sendNotification('Votre compte Facebook a été déjà utilisé');
@@ -369,15 +406,12 @@ export class LoginPage implements OnInit {
                               this.storage.set('firstLogin', 'Yes');
                         }
                     });
-                    this.sendNotification('Bienvenue !');
                 } else if (this.userDetails.ROLE === this.roleProprio) {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
-                    this.sendNotification('Bienvenue !');
                 } else if (this.userDetails.ROLE === this.roleUser) {
                     this.navCtrl.navigateRoot('/tabs/offers');
                     this.storage.set('SessionRoleKey', this.roleUser);
-                    this.sendNotification('Bienvenue !'); 
                 } else {
                     // console.log(JSON.stringify(options));
                     this.sendNotification('Votre compte Facebook a été déjà utilisé');
@@ -393,7 +427,7 @@ export class LoginPage implements OnInit {
 
     registerFromGoogle(param_email: string, param_firstname: string, param_name: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'registerFromGoogle', 'email' : param_email, 'firstname' : param_firstname, 'name' : param_name},
+            options: any		= { 'key' : 'registerFromGoogle', 'email' : param_email, 'firstname' : param_firstname, 'name' : param_name, 'uuid' : this.uuid},
             url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
@@ -407,7 +441,7 @@ export class LoginPage implements OnInit {
 
     registerUserFB(paramName, paramEmail){
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-                options: any		= { 'key' : 'registerFromFB', 'email' : paramEmail, 'name' : paramName},
+                options: any		= { 'key' : 'registerFromFB', 'email' : paramEmail, 'name' : paramName, 'uuid' : this.uuid},
                 url: any      	= this.baseURI;
     
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
@@ -480,47 +514,62 @@ export class LoginPage implements OnInit {
     seConnecter(){
         const PRO_EMAIL: string = this.loginForm.controls['PRO_EMAIL'].value,
               PRO_PASSWORD: string = this.loginForm.controls['PRO_PASSWORD'].value;
-              
-        
-        if(PRO_EMAIL=="" && PRO_PASSWORD==""){
-            this.sendNotification("Veuillez remplir tous les champs pour pouvoir vous connectez")
+            
+        //Check if user has internet connection
+        if(navigator.onLine){
+
+            if(PRO_EMAIL=="" && PRO_PASSWORD==""){
+                this.sendNotification("Veuillez remplir tous les champs pour pouvoir vous connectez")
+            }else{
+                this.btnAnim_1_on();
+                setTimeout(() => {
+                    this.loginUsers();
+                    this.sendNotification("Bienvenue à bord !");
+                }, 2000);
+            }            
         }else{
-            this.btnAnim_1_on();
-            setTimeout(() => {
-                this.loginUsers();
-            }, 2000);
+            this.alertNoConnection();
         }
+        
     }
 
     sendToRegister(){
         this.checkEmailIfExist();
-
-        if(!this.registerEmail.valid){
-            this.sendNotification("L'adresse e-mail est invalide !")
-        }else if(this.emailExistReg && this.registerEmail.valid){
-            //transitions
-            setTimeout(() => {
-                this.btnAnim_2_on();
-            }, 300);
-            setTimeout(() => {
-                this.btnAnim_2_Off();
-                this.sendNotification("Cette adresse e-mail a été déjà utilisée");
-            }, 2000);
-        
+        //Check if user has internet connection
+        if(navigator.onLine){
+            //if user has connection
+            if(!this.registerEmail.valid){
+                this.sendNotification("L'adresse e-mail est invalide !")
+            }else if(this.emailExistReg && this.registerEmail.valid){
+                //transitions
+                setTimeout(() => {
+                    this.btnAnim_2_on();
+                }, 300);
+                setTimeout(() => {
+                    this.btnAnim_2_Off();
+                    this.sendNotification("Cette adresse e-mail a été déjà utilisée");
+                }, 2000);
+            
+            }else{
+                //transitions
+                setTimeout(() => {
+                    this.btnAnim_2_on();
+                }, 300);
+    
+                setTimeout(() => {
+                    document.getElementById("regTextId").innerHTML = "validé&nbsp;!";
+                    document.getElementById("regTextId").style.color = "#4caf50";
+                    this.btnAnim_2_Off();
+                    this.confirmThenRegister();
+                    this.sendNotification("Un mail de confirmation vous a été envoyé");
+                }, 2000);         
+            }                
         }else{
-            //transitions
-            setTimeout(() => {
-                this.btnAnim_2_on();
-            }, 300);
+            //if user has no connection
+            this.alertNoConnection();
+        }
 
-            setTimeout(() => {
-                document.getElementById("regTextId").innerHTML = "validé&nbsp;!";
-                document.getElementById("regTextId").style.color = "#4caf50";
-                this.btnAnim_2_Off();
-                this.confirmThenRegister();
-                this.sendNotification("Un mail de confirmation vous a été envoyé");
-            }, 2000);         
-        }    
+        
     }
 
     
@@ -646,6 +695,21 @@ export class LoginPage implements OnInit {
         document.getElementById("regTextId").style.opacity = "1";
         document.getElementById("regTextId").style.transition = "all .3s linear";
         document.getElementById("regTextId").style.transitionDelay = "0s"; 
+    }
+
+    async alertNoConnection(){
+        const alert = await this.alertCtrl.create({
+            header: "Alerte !",
+            message: "<h3>Veuillez vous assurer que votre appareil est connecté au réseau.</h3>",
+            buttons: [
+                {
+                    text: 'OK',
+                    role: 'cancel'
+                }
+            ]
+        });
+
+        await alert.present();
     }
 
 }

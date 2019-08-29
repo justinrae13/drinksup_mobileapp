@@ -7,6 +7,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import * as moment from 'moment';
+import 'moment/locale/fr';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { ModalChangeUserphotoPage } from '../modal-change-userphoto/modal-change-userphoto.page'
 import { LoadingpagePage } from '../loadingpage/loadingpage.page'
@@ -14,7 +15,6 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx';
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import * as Global from '../../app/global';
 import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
-
 
 @Component({
     selector: 'app-profile',
@@ -62,36 +62,97 @@ export class ProfilePage implements OnInit {
     the_pasted_code : string = "- - - - - - -";
     the_code_exists : boolean = false;
     if_already_sponsored : boolean = false;
+    //
+    ifHasConnection : boolean = true;
+    //Custom Refresher Made By Jutin Rae
+    scrollOffsetTop : number = 0;
+    scrollCounter : number = 0;
+    highCounter : number = 227;
+    mcr_scale : string = "scale(0)";
+    mcr_dashoffset : string = "227";
+    mcr_trans: string = "0s";
+    mcr_svgDisplay : string = "block";
+    mcr_circleDivDisplay : string = "none";
+    mcr_bdDisplay : string = "none";
+    lastY : number = 0;
     constructor(private nativePageTransitions: NativePageTransitions, private clipboard: Clipboard, private socialSharing: SocialSharing, public alertCtrl: AlertController, private toastCtrl : ToastController,private modalCtrl : ModalController,private emailComposer: EmailComposer,private fb: Facebook, private googlePlus : GooglePlus, private route: Router, public navCtrl : NavController, public storage: Storage, private http : HttpClient, private platform : Platform) {
 
+    }
+
+    ngOnInit() {}
+
+    ngAfterViewInit(){
         setTimeout(() => {
             this.curtain_fade = "0";
         }, 1000);
         setTimeout(() => {
             this.curtain_hide = "none";
         }, 1600);
+    }
 
-        // let btn = document.getElementById("alert_button");
-        // btn.addEventListener("click", (e:Event) => this.copyMyCode());
+    
+    touchmove(event){
+        var currentY = event.touches[0].screenY;
+
+        if(currentY > this.lastY){
+        this.scrollCounter++;
+        }else if(currentY < this.lastY){
+        this.scrollCounter--;
+        }
+
+        this.lastY = currentY;
+        var slowedCounter = this.scrollCounter/45;
+        var doffSet = 227;
+
+        if(slowedCounter <= 1 && slowedCounter > 0){
+        this.mcr_scale = "scale("+slowedCounter+")";
+        doffSet-=(this.scrollCounter*Math.PI);
+        this.mcr_dashoffset = doffSet.toString();
+        }
+
+        if(slowedCounter == 1){
+        this.mcr_trans = ".2s ease 1.5s";
+        this.mcr_svgDisplay = "none";
+        this.mcr_circleDivDisplay = "block";
+        this.mcr_bdDisplay = "block";
+        setTimeout(() => {
+            this.mcr_trans = "0s ease 0s";
+        }, 1800);
+        setTimeout(() => {
+            this.mcr_svgDisplay = "block";
+            this.mcr_circleDivDisplay = "none";
+        }, 2100);
+        setTimeout(() => {
+            this.ionViewWillEnter();
+            this.mcr_bdDisplay = "none";        
+        }, 2200);
+        }
         
     }
-    ngOnInit() {}
+
+    touchend(){
+    this.scrollCounter = 0;
+    this.mcr_scale = "scale("+this.scrollCounter+")";
+    }
 
     ionViewWillEnter(){
         this.getVille();
-        moment.locale('fr');
+        
         this.storage.get('SessionIdKey').then((val) => {
             this.loadData(val);
             this.getPaidUser(val);
             this.getDetailAbonnement(val);
             this.getUserNumOffers(parseInt(val));
             this.getUserNumRatings(parseInt(val));
-            
         });
-         
-        setTimeout(() => {
-            
-        }, 500);
+        //Check if user has internet connection
+        if(navigator.onLine){
+            //If user has connection
+            this.ifHasConnection = true;
+        }else{
+            //If user has no connection
+            this.ifHasConnection = false;
+        }
     }
 
     loadData(idSession : string){
@@ -411,6 +472,24 @@ export class ProfilePage implements OnInit {
         await alert.present();
     }
 
+    async monAbonnementDetail(type,debut,fin){
+        moment.locale('fr');
+
+        const alert = await this.alertCtrl.create({
+            header: "Mon abonnement",
+            message: "<div class='table'> <div class='col'>Type :</div> <div class='col'>"+type+"</div> <div class='col'>Début :</div> <div class='col'>"+moment(debut).format('LLL')+"</div> <div class='col'>Fin :</div> <div class='col'>"+moment(fin).format('LLL')+"</div> </div>",
+            cssClass: "alertTables",
+            buttons: [
+                {
+                    text: 'OK',
+                    role: 'cancel'
+                }
+            ]
+        });
+
+        await alert.present();
+    }
+
     //Custom modals
     parrainer(role : string, user_code : string){
         document.getElementById("bckdrop").style.display = "block";
@@ -442,14 +521,13 @@ export class ProfilePage implements OnInit {
         this.the_pasted_code = "- - - - - - -";   
     }
 
-    monAbonnement(){
-        document.getElementById("bckdrop").style.display = "block";
-        document.getElementById("cm").style.display = "block";
-    }
+    // monAbonnement(){
+    //     document.getElementById("bckdrop").style.display = "block";
+    //     document.getElementById("cm").style.display = "block";
+    // }
 
     closeModal(){
         document.getElementById("bckdrop").style.display = "none";
-        document.getElementById("cm").style.display = "none";
         document.getElementById("pm").style.display = "none";
         document.getElementById("scm").style.display = "none";
     }
@@ -501,8 +579,9 @@ export class ProfilePage implements OnInit {
                     //
                     this.checkIfCodeExists(nowhitespaces);
                     this.checkIfAlreadySponsored(nowhitespaces, myId);
+ 
                 }else{
-                    this.sendNotification("Veuillez assurer que vous avez copié message en entier ou le bon code.");
+                    this.sendNotification("Veuillez assurer que vous avez copié le message en entier ou le bon code.");
                 }
 
              },
@@ -581,9 +660,30 @@ export class ProfilePage implements OnInit {
         });
     }
 
-    parrainageInfo(){
-        this.nativePageTransitions.fade(null); 
-        this.navCtrl.navigateForward('/parrainage');
+    async parrainageInfo(){
+        var fixedMonthNum = this.userNumberOfMonthsRegistered.toFixed(1);
+        var msg = "<div class='table'> <div class='col xl'>Nombre de personnes parrainé :</div> <div class='col xs'>"+this.userNumberOfSponsors+"</div> <div class='col xl'>Membre depuis (mois) :</div> <div class='col xs'>"+fixedMonthNum+"</div> <div class='col xl'>Nombre d'avis laissé :</div> <div class='col xs'>"+this.userNumberOfGivenRatings+"</div> <div class='col xl'>Nombre d'avis laissé :</div> <div class='col xs'>"+this.userNumberOfOffers+"</div> </div>";
+        const alert = await this.alertCtrl.create({
+            header: this.loggedUser.INT_LEVEL,
+            message: msg,
+            cssClass: "alertTables",
+            buttons: [
+                {
+                    text: "OK",
+                    role: "cancel",
+                },
+                {
+                    text: "Plus d'information",
+                    handler: () => {
+                        this.nativePageTransitions.fade(null); 
+                        this.navCtrl.navigateForward('/parrainage');
+                    }
+                }
+            ]
+        });
+
+        await alert.present(); 
     }
 
 }
+        // console.log("Sponsors=>"+this.userNumberOfSponsors+"\n\nMonths=>"+this.userNumberOfMonthsRegistered+"\n\nOffers=>"+this.userNumberOfOffers+"\n\nRatings=>"+this.userNumberOfGivenRatings+"\n\nProfile Pic=>"+this.loggedUser.INT_PHOTO_CHANGE);

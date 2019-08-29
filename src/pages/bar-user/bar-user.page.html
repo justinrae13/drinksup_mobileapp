@@ -1,5 +1,6 @@
-<div class="header_bar">
-    <div class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
+<div class="header_bar" [ngStyle]="{'top' : hideHeader}">
+    <div *ngIf="ifHasConnection" class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
+    <div *ngIf="!ifHasConnection" class="hb-button" (click)="retour_offline()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
     <!-- <div class="ifOpen" *ngFor="let sched of FilteredSched">
       <div *ngIf="dayShift">
         <div *ngIf="(dayShiftIn)">
@@ -20,19 +21,19 @@
     </div> -->
 </div>
 
-<ion-content color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)">
-  <div class="img-slide">
+<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
+  <div class="img-slide" [ngStyle]="{'opacity' : dyn_imgSlide_opacity}">
     <div class="load_overlay" id="load_overL"></div>
     <div class="img_wrapper iw_1" id="img_1" (touchstart)="touchstart_1($event)" (touchend)="touchend_1($event)">
-      <img [src]="imgLink1" alt="Photo n° 1" id="first_pic" (load)="imgLoaded()">
+      <img [ngStyle]="{'height' : dyn_img_height}" [src]="imgLink1" alt="Photo n° 1" id="first_pic" (load)="imgLoaded()">
     </div>
   
     <div class="img_wrapper iw_2" id="img_2" (touchstart)="touchstart_2($event)" (touchend)="touchend_2($event)">
-      <img [src]="imgLink2" alt="Photo n° 2" id="second_pic">
+      <img [ngStyle]="{'height' : dyn_img_height}" [src]="imgLink2" alt="Photo n° 2" id="second_pic">
     </div>
   
     <div class="img_wrapper iw_3" id="img_3" (touchstart)="touchstart_3($event)" (touchend)="touchend_3($event)">
-      <img [src]="imgLink3" alt="Photo n° 3" id="third_pic">
+      <img [ngStyle]="{'height' : dyn_img_height}" [src]="imgLink3" alt="Photo n° 3" id="third_pic">
     </div>
     <div class="bot_overlay">
       <h1 class="bar_name">{{myBar.ENT_NOM}}</h1>
@@ -42,11 +43,11 @@
    <div class="bar-content">
     <div class="first-section"> 
         <p class="typeBar">{{myBar.ENT_SECTEURACTIVITES}}</p>
-        <div class="note-sec">
+        <div class="note-sec" id="noteID">
             <img class="bar-note" src="{{'../../assets/img/grade/grade-' + grade + '.svg'}}">
             <p>( {{gradeTot}} / 5.0 )</p>
         </div> 
-        <p class="addressBar">{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} - {{myBar.ENT_LOCALITE}}</p>
+        <!-- <p class="addressBar">{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} - {{myBar.ENT_LOCALITE}}</p> -->
         <div class="button_find_bar">
             <ion-button (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)">
                 <img src="../../assets/img/map-icon.svg">
@@ -115,23 +116,33 @@
         <div class="sched_row" [ngClass]="(schedule.HOR_JOURS == dayOfTheWeek) ? 'today' : 'notToday'">
           <p>{{schedule.HOR_JOURS}}</p>
           <div class="sched_col">
-            <p *ngIf="(schedule.HOR_HEUREDEBUT_JOUR == '00:00:00' && schedule.HOR_HEUREFIN_JOUR == '00:00:00') && (schedule.HOR_HEUREDEBUT_SOIR != '00:00:00' || schedule.HOR_HEUREFIN_SOIR != '00:00:00')">Fermé le matin</p>
-            <p *ngIf="schedule.HOR_HEUREDEBUT_JOUR != '00:00:00' || schedule.HOR_HEUREFIN_JOUR != '00:00:00'"><ion-icon name="sunny"></ion-icon>&nbsp;<ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREDEBUT_JOUR}}"></ion-datetime> - <ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREFIN_JOUR}}"></ion-datetime></p>
-            <p *ngIf="schedule.HOR_HEUREDEBUT_SOIR != '00:00:00' || schedule.HOR_HEUREFIN_SOIR != '00:00:00'"><ion-icon name="moon"></ion-icon>&nbsp;<ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREDEBUT_SOIR}}"></ion-datetime> - <ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREFIN_SOIR}}"></ion-datetime></p>
-            <p *ngIf="(schedule.HOR_HEUREDEBUT_SOIR == '00:00:00' && schedule.HOR_HEUREFIN_SOIR == '00:00:00') && (schedule.HOR_HEUREDEBUT_JOUR != '00:00:00' || schedule.HOR_HEUREFIN_JOUR != '00:00:00')">Fermé le soir</p>
-            <p *ngIf="schedule.HOR_HEUREDEBUT_SOIR == '00:00:00' && schedule.HOR_HEUREFIN_SOIR == '00:00:00' && schedule.HOR_HEUREDEBUT_JOUR == '00:00:00' && schedule.HOR_HEUREFIN_JOUR == '00:00:00'">Fermé toute la journée</p>
+            <p *ngIf="(schedule.HOR_HEUREDEBUT_JOUR == '00:00:00' && schedule.HOR_HEUREFIN_JOUR == '00:00:00') && (schedule.HOR_HEUREDEBUT_SOIR != '00:00:00' || schedule.HOR_HEUREFIN_SOIR != '00:00:00')" class="closed_schedules" [ngClass]="(schedule.HOR_JOURS == dayOfTheWeek) ? 'today' : 'notToday'">Fermé le matin</p>
+            <p *ngIf="schedule.HOR_HEUREDEBUT_JOUR != '00:00:00' || schedule.HOR_HEUREFIN_JOUR != '00:00:00'"><ion-icon name="sunny"></ion-icon>&nbsp;<ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREDEBUT_JOUR}}"></ion-datetime>&nbsp;&nbsp;-&nbsp;&nbsp;<ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREFIN_JOUR}}"></ion-datetime></p>
+            <p *ngIf="schedule.HOR_HEUREDEBUT_SOIR != '00:00:00' || schedule.HOR_HEUREFIN_SOIR != '00:00:00'"><ion-icon name="moon"></ion-icon>&nbsp;<ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREDEBUT_SOIR}}"></ion-datetime>&nbsp;&nbsp;-&nbsp;&nbsp;<ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{schedule.HOR_HEUREFIN_SOIR}}"></ion-datetime></p>
+            <p *ngIf="(schedule.HOR_HEUREDEBUT_SOIR == '00:00:00' && schedule.HOR_HEUREFIN_SOIR == '00:00:00') && (schedule.HOR_HEUREDEBUT_JOUR != '00:00:00' || schedule.HOR_HEUREFIN_JOUR != '00:00:00')" class="closed_schedules" [ngClass]="(schedule.HOR_JOURS == dayOfTheWeek) ? 'today' : 'notToday'">Fermé le soir</p>
+            <p *ngIf="schedule.HOR_HEUREDEBUT_SOIR == '00:00:00' && schedule.HOR_HEUREFIN_SOIR == '00:00:00' && schedule.HOR_HEUREDEBUT_JOUR == '00:00:00' && schedule.HOR_HEUREFIN_JOUR == '00:00:00'" class="closed_schedules" [ngClass]="(schedule.HOR_JOURS == dayOfTheWeek) ? 'today' : 'notToday'">Fermé toute la journée</p>
           </div>
         </div>
     </div>
   </div>
 
- 
-  <div class="map_wrapper" (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)">
-    <div id="map"></div>
+  <!-- (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)" -->
+  <div class="map_wrapper">
+    <div>
+        <p>{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} {{myBar.ENT_LOCALITE}}</p>
+        <span>Cliquez pour ouvrir la carte</span>
+    </div>
+    <img src="../../assets/img/dark_map.svg" class="map_image">
   </div>
   
-  <ion-button *ngIf="payed!=='good' && vipUser.Roles_ROL_ID!==4" (click)="rateNotSubscriber()" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
-  <ion-button *ngIf="payed==='good' || vipUser.Roles_ROL_ID===4" (click)="rate(myBar.ENT_ID, user_id)" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
-  <!-- <ion-button  class="geoLocalButton" shape="round"><ion-icon name="navigate"></ion-icon>&nbsp;Localiser ce bar</ion-button> -->
+  <ion-button *ngIf="payed!=='good' && vipUser.Roles_ROL_ID!==4" expand="block" (click)="rateNotSubscriber()" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
+  <ion-button *ngIf="payed==='good' || vipUser.Roles_ROL_ID===4" expand="block" (click)="rate(myBar.ENT_ID, user_id)" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
+</ion-content>
 
+
+<ion-content *ngIf="!ifHasConnection" color="secondary">
+  <div class="no_connection">
+    <img src="../../assets/img/no_connection.svg">
+    <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
+  </div>
 </ion-content>

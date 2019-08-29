@@ -1,0 +1,12 @@
+.curtain_opac_one_to_zero{
+    width: 100vw;
+    height: 100vh;
+    background: url(../../assets/img/splash_background.jpg) center/cover no-repeat #070708;
+    position: fixed;
+    z-index: 10000000;
+    top: 0;
+    left: 0;
+    transition: opacity .5s linear;
+    transition-delay: .1s;
+    opacity: 1;
+}

@@ -33,8 +33,8 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx'
 import { Clipboard } from '@ionic-native/clipboard/ngx';
-// import { HideHeaderDirective } from './hide-header.directive';
-
+import { Device } from '@ionic-native/device/ngx';
+import { Network } from '@ionic-native/network/ngx';
 
 @NgModule({
     declarations: [AppComponent],
@@ -56,6 +56,8 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
         NativeGeocoder,
         SocialSharing,
         Clipboard,
+        Device,
+        Network,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent]

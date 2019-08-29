@@ -29,14 +29,7 @@ export class SearchABarPage implements OnInit {
   }
 
   backToTheRoots(){
-    let options: NativeTransitionOptions = {
-      direction: 'right',
-      duration: 150,
-      slowdownfactor: 3,
-      iosdelay: 100,
-      androiddelay: 150
-     }
-    this.nativePageTransitions.slide(options); 
+    this.nativePageTransitions.fade(null); 
     this.navCtrl.back();
     this.searchBarInput.value = "";
     setTimeout(() => {
@@ -82,13 +75,6 @@ export class SearchABarPage implements OnInit {
   }
 
   moveToBar(id : string){
-    // let options: NativeTransitionOptions = {
-    //   direction: 'left',
-    //   duration: 150,
-    //   slowdownfactor: 3,
-    //   iosdelay: 100,
-    //   androiddelay: 150
-    //  }
     this.nativePageTransitions.fade(null); 
     this.navCtrl.navigateForward('/bar-user/'+id);
     setTimeout(() => {

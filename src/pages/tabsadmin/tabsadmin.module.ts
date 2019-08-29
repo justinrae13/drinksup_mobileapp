@@ -17,45 +17,21 @@ const routes: Routes = [
         children: [
             {
                 path: 'users',
-                children: [
-                    { path: '', loadChildren: '../users/users.module#UsersPageModule' },
-                ]
+                loadChildren: '../users/users.module#UsersPageModule'
             },
-            // {
-            //     path: 'offers-management',
-            //     children: [
-            //         { path: '', loadChildren: '../offers-management/offers-management.module#OffersManagementPageModule' },
-            //     ]
-            // },
             {
                 path: 'bar-admin',
-                children: [
-                    { path: '', loadChildren: '../bar-admin/bar-admin.module#BarAdminPageModule' },
-                ]
+                loadChildren: '../bar-admin/bar-admin.module#BarAdminPageModule'
             },
             {
                 path: 'offers-admin',
-                children: [
-                    { path: '', loadChildren: '../offers-admin/offers-admin.module#OffersAdminPageModule' },
-                ]
-            },
-            // {
-            //     path: 'logout-admin',
-            //     children: [
-            //         { path: '', loadChildren: '../admin-logout/admin-logout.module#AdminLogoutPageModule' },
-            //     ]
-            // },
-            // {
-            //     path: 'profile',
-            //     children: [
-            //         { path: '', loadChildren: '../profile/profile.module#ProfilePageModule' },
-            //     ]
-            // },
+                loadChildren: '../offers-admin/offers-admin.module#OffersAdminPageModule'
+            }
         ]
     },
     {
         path: '',
-        redirectTo: '/tabsadmin',
+        redirectTo: '',
         pathMatch: 'full'
     }
 ];

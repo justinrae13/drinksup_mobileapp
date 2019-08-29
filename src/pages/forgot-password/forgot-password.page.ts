@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {NavController, ToastController} from '@ionic/angular';
+import {NavController, ToastController, AlertController} from '@ionic/angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {AbstractControl, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import { Storage } from '@ionic/storage';
@@ -31,7 +31,7 @@ export class ForgotPasswordPage implements OnInit {
     slb = "block";
 
 
-  constructor(private formBuilder: FormBuilder, private actRout : ActivatedRoute, private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) { 
+  constructor(private alertCtrl : AlertController, private formBuilder: FormBuilder, private actRout : ActivatedRoute, private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) { 
     this.resetPassword = new FormGroup({
       RESET_PASS_EMAIL : new FormControl()
     });
@@ -205,22 +205,30 @@ export class ForgotPasswordPage implements OnInit {
   }
 
   sendToResetPass(){
-    if(!this.resetPassword.valid){
-      this.sendNotification("L'adresse e-mail est invalide !");
+    //Check if user has internet connection
+    if(navigator.onLine){
+      // If user has connection
+      if(!this.resetPassword.valid){
+        this.sendNotification("L'adresse e-mail est invalide !");
+      }else{
+        this.slw = "40px";
+        this.slbg = "transparent";
+        this.slt = "0";
+        setTimeout(() => {
+            this.slb = "none";
+            this.sls = "block";
+        }, 290);
+  
+        setTimeout(() => {
+          this.checkEmailIfExist();
+          this.proceedReset();
+        }, 1000);
+      }           
     }else{
-      this.slw = "40px";
-      this.slbg = "transparent";
-      this.slt = "0";
-      setTimeout(() => {
-          this.slb = "none";
-          this.sls = "block";
-      }, 290);
-
-      setTimeout(() => {
-        this.checkEmailIfExist();
-        this.proceedReset();
-      }, 1000);
+      // If user has no connection
+        this.alertNoConnection();
     }
+    
   }
 
   resetPass(){
@@ -242,6 +250,22 @@ export class ForgotPasswordPage implements OnInit {
         this.proceedResetPassword();
       }, 1000);
     }
+  }
+
+  async alertNoConnection(){
+    const alert = await this.alertCtrl.create({
+        header: "Alerte !",
+        message: "<h3>Veuillez vous assurer que votre appareil est connecté au réseau.</h3>",
+        cssClass : "dimBackdropAlert",
+        buttons: [
+            {
+                text: 'OK',
+                role: 'cancel'
+            }
+        ]
+    });
+
+    await alert.present();
   }
 
 }

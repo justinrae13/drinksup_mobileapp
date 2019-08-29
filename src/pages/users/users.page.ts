@@ -12,6 +12,7 @@ import {ModalPage} from '../modal/modal.page';
 import * as moment from 'moment';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import * as Global from '../../app/global';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 
 
 @Component({
@@ -43,17 +44,39 @@ export class UsersPage implements OnInit {
   termineClicked : boolean = false;
   vipClicked : boolean = false;
 
-  constructor(private emailComposer: EmailComposer, private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient, public modalController: ModalController, public alertController: AlertController) { }
+  //
+  contentSlideUp : string = "translateY(100px)";
+  //
+  ifHasConnection : boolean = true;
+  //Custom Refresher Made By Jutin Rae
+  scrollOffsetTop : number = 0;
+  scrollCounter : number = 0;
+  highCounter : number = 227;
+  mcr_scale : string = "scale(0)";
+  mcr_dashoffset : string = "227";
+  mcr_trans: string = "0s";
+  mcr_svgDisplay : string = "block";
+  mcr_circleDivDisplay : string = "none";
+  mcr_bdDisplay : string = "none";
+  lastY : number = 0;
 
-  ngOnInit() {
+  constructor(private splashScreen: SplashScreen, private emailComposer: EmailComposer, private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient, public modalController: ModalController, public alertController: AlertController) { }
 
-  }
+  ngOnInit() {}
 
 public ionViewWillEnter(): void {
     this.getUsers();
     this.tous();
     this.today = new Date().toISOString();
-    // console.log(this.today)
+    
+    //Check if user has internet connection
+    if(navigator.onLine){
+        //If user has connection
+        this.ifHasConnection = true;
+    }else{
+    //If user has no connection
+    this.ifHasConnection = false;
+    }
 }
   public getUsers() {
       const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
@@ -86,6 +109,7 @@ public ionViewWillEnter(): void {
       this.tous();
       this.hideHeader = "0px";
       this.hideSubHeader = "50px";
+      this.contentSlideUp = "translateY(100px)";
   }
 
   expand(index){
@@ -117,6 +141,7 @@ public ionViewWillEnter(): void {
       modal.present();
       this.ionViewWillEnter();
   }
+
   async delete(slidingItem: IonItemSliding, id, nom) {
       await slidingItem.close();
       this.presentAlert(id, nom);
@@ -146,6 +171,7 @@ public ionViewWillEnter(): void {
     const alert = await this.alertController.create({
         header: "Confirmation",
         message: "<h3>Assigner <span>" + nom + "</span> en tant que V.I.P ? </h3>",
+        cssClass : "dimBackdropAlert",
         buttons: [
             {
                 text: 'Non',
@@ -158,7 +184,10 @@ public ionViewWillEnter(): void {
                 text: 'Oui',
                 handler: () => {
                     this.makeVipUser(id);
-                    this.ionViewWillEnter();
+                    setTimeout(() => {
+                        this.ionViewWillEnter();
+                        this.sendNotification("Votre modification a été prise en compte !");
+                    }, 100);
                 }
             }
         ]
@@ -171,6 +200,7 @@ async alertBoxMakeUnVip(id, nom) {
     const alert = await this.alertController.create({
         header: "Confirmation",
         message: "<h3>Désassigner <span>" + nom + "</span> en tant que V.I.P ? </h3>",
+        cssClass : "dimBackdropAlert",
         buttons: [
             {
                 text: 'Non',
@@ -183,7 +213,10 @@ async alertBoxMakeUnVip(id, nom) {
                 text: 'Oui',
                 handler: () => {
                     this.makeUnVipUser(id);
-                    this.ionViewWillEnter();
+                    setTimeout(() => {
+                        this.ionViewWillEnter();
+                        this.sendNotification("Votre modification a été prise en compte !");
+                    }, 100);
                 }
             }
         ]
@@ -196,6 +229,7 @@ async alertBoxMakeUnVip(id, nom) {
         const alert = await this.alertController.create({
             header: "Confirmation",
             message: "<h3>Assigner <span>" + nom + "</span> en tant que partenaire (propriétaire de bar) ? </h3>",
+            cssClass : "dimBackdropAlert",
             buttons: [
                 {
                     text: 'Non',
@@ -209,7 +243,10 @@ async alertBoxMakeUnVip(id, nom) {
                     handler: () => {
                         this.updateRole(id);
                         this.createEntreprise(id);
-                        this.ionViewWillEnter();
+                        setTimeout(() => {
+                            this.ionViewWillEnter();
+                            this.sendNotification("Votre modification a été prise en compte !");
+                        }, 100);
                     }
                 }
             ]
@@ -222,6 +259,7 @@ async alertBoxMakeUnVip(id, nom) {
         const alert = await this.alertController.create({
             header: "Attention !",
             message: "<h3>Êtes vous sûr de vouloir supprimer l'utilisateur: <span>" + nom + "</span> ? </h3>",
+            cssClass : "dimBackdropAlert",
             buttons: [
                 {
                     text: 'Non',
@@ -234,7 +272,10 @@ async alertBoxMakeUnVip(id, nom) {
                     text: 'Oui',
                     handler: () => {
                         this.deleteUser(id);
-                        this.ionViewWillEnter();
+                        setTimeout(() => {
+                            this.ionViewWillEnter();
+                            this.sendNotification("Votre modification a été prise en compte !");
+                        }, 100);
                     }
                 }
             ]
@@ -247,13 +288,11 @@ async alertBoxMakeUnVip(id, nom) {
         const alert = await this.alertController.create({
             header: "Attention !",
             message: "<h3>Vous ne pouvez pas supprimer l'utilisateur: <span>" + nom + "</span> car il/elle est actuellement abonné/e </h3>",
+            cssClass : "dimBackdropAlert",
             buttons: [
                 {
                     text: 'OK',
-                    role: 'cancel',
-                    cssClass: 'secondary',
-                    handler: (blah) => {
-                    }
+                    role: 'cancel'
                 }
             ]
         });
@@ -366,17 +405,69 @@ async alertBoxMakeUnVip(id, nom) {
 
     scrollEvent(event){
         let currentScroll = event.detail.scrollTop;
-    
+        this.scrollOffsetTop = event.detail.scrollTop;
+        
         if(currentScroll > 0 && this.lastScroll <= currentScroll){
             this.hideHeader = "-50px";
             this.hideSubHeader = "0px";
+            this.contentSlideUp = "translateY(0px)";
             this.lastScroll = currentScroll;
         }else{
             this.hideHeader = "0px";
             this.hideSubHeader = "50px";
+            this.contentSlideUp = "translateY(100px)";
             this.lastScroll = currentScroll;
         }
-    }
+      }
+    
+      touchmove(event){
+        if(this.scrollOffsetTop ==0){
+    
+          var currentY = event.touches[0].screenY;
+    
+          if(currentY > this.lastY){
+            this.scrollCounter++;
+          }else if(currentY < this.lastY){
+            this.scrollCounter--;
+          }
+    
+          this.lastY = currentY;
+          var slowedCounter = this.scrollCounter/45;
+          var doffSet = 227;
+    
+          if(slowedCounter <= 1 && slowedCounter > 0){
+            this.mcr_scale = "scale("+slowedCounter+")";
+            doffSet-=(this.scrollCounter*Math.PI);
+            this.mcr_dashoffset = doffSet.toString();
+          }
+    
+          if(slowedCounter == 1){
+            this.mcr_trans = ".2s ease 1.5s";
+            this.mcr_svgDisplay = "none";
+            this.mcr_circleDivDisplay = "block";
+            this.mcr_bdDisplay = "block";
+            setTimeout(() => {
+              this.mcr_trans = "0s ease 0s";
+            }, 1800);
+            setTimeout(() => {
+              this.mcr_svgDisplay = "block";
+              this.mcr_circleDivDisplay = "none";
+            }, 2100);
+            setTimeout(() => {
+              this.ionViewWillEnter();
+              this.mcr_bdDisplay = "none";        
+            }, 2200);
+          }
+    
+        }
+          
+      }
+    
+      touchend(){
+        this.scrollCounter = 0;
+        this.mcr_scale = "scale("+this.scrollCounter+")";
+      }
+    
 
     tous(){
         this.usersFilter = this.users;

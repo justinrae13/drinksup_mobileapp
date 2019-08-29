@@ -27,6 +27,7 @@ export class OffersPage implements OnInit {
   user_id;
   random : number;
   randomImgNo : number;
+  contentSlideUp : string = "translateY(50px)";
   tabPosition : string = "translateX(0)";
   leftPosition : string = "0%";
   activeColor1 : string = "#fff";
@@ -50,21 +51,111 @@ export class OffersPage implements OnInit {
   ];
   noOffer : boolean = false;
   ifLoadedAlready : string = "block";
+
+  //
+  ifHasConnection : boolean = true;
+  //Custom Refresher Made By Jutin Rae
+  scrollOffsetTop : number = 0;
+  scrollCounter : number = 0;
+  highCounter : number = 227;
+  mcr_scale : string = "scale(0)";
+  mcr_dashoffset : string = "227";
+  mcr_trans: string = "0s";
+  mcr_svgDisplay : string = "block";
+  mcr_circleDivDisplay : string = "none";
+  mcr_bdDisplay : string = "none";
+  lastY : number = 0;
     
   constructor(private router: Router, private navCtrl : NavController, private nativePageTransitions: NativePageTransitions, private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private toastCtrl : ToastController) { 
     this.random = Math.floor(Math.random() * 100);
     this.randomImgNo = Math.floor(Math.random() * 3)+1;
-    
   }
 
   ngOnInit() {
   }
+  
 
-  ionViewWillEnter(): void { 
+  scrollEvent(event){
+    let currentScroll = event.detail.scrollTop;
+    this.scrollOffsetTop = event.detail.scrollTop;
+    
+      if(currentScroll > 0 && this.lastScroll <= currentScroll){
+          this.hideHeader = "-50px";
+          this.hideSubHeader = "0px";
+          this.contentSlideUp = "translateY(0px)";
+          this.lastScroll = currentScroll;
+      }else{
+          this.hideHeader = "0px";
+          this.hideSubHeader = "50px";
+          this.contentSlideUp = "translateY(50px)";
+          this.lastScroll = currentScroll;
+      }
+  }
+
+  touchmove(event){
+    if(this.scrollOffsetTop ==0){
+
+      var currentY = event.touches[0].screenY;
+
+      if(currentY > this.lastY){
+        this.scrollCounter++;
+      }else if(currentY < this.lastY){
+        this.scrollCounter--;
+      }
+
+      this.lastY = currentY;
+      var slowedCounter = this.scrollCounter/45;
+      var doffSet = 227;
+
+      if(slowedCounter <= 1 && slowedCounter > 0){
+        this.mcr_scale = "scale("+slowedCounter+")";
+        doffSet-=(this.scrollCounter*Math.PI);
+        this.mcr_dashoffset = doffSet.toString();
+      }
+
+      if(slowedCounter == 1){
+        this.mcr_trans = ".2s ease 1.5s";
+        this.mcr_svgDisplay = "none";
+        this.mcr_circleDivDisplay = "block";
+        this.mcr_bdDisplay = "block";
+        setTimeout(() => {
+          this.mcr_trans = "0s ease 0s";
+        }, 1800);
+        setTimeout(() => {
+          this.mcr_svgDisplay = "block";
+          this.mcr_circleDivDisplay = "none";
+        }, 2100);
+        setTimeout(() => {
+          this.ionViewWillEnter();
+          this.mcr_bdDisplay = "none";        
+        }, 2200);
+      }
+
+    }
+      
+  }
+
+  touchend(){
+    this.scrollCounter = 0;
+    this.mcr_scale = "scale("+this.scrollCounter+")";
+  }
+
+
+  ionViewWillEnter(){
     this.storage.get('SessionIdKey').then((val) => {
       this.getPaidUser(val);
       this.loadBar(val);
     }); 
+
+
+    //Check if user has internet connection
+    if(navigator.onLine){
+      //If user has connection
+      this.ifHasConnection = true;
+    }else{
+      //If user has no connection
+      this.ifHasConnection = false;
+    }
 
     // this.intervalInit = setInterval(() => { 
     //   this.setCountDown(); 
@@ -112,20 +203,6 @@ export class OffersPage implements OnInit {
     {
       console.log(error);
     });
-  }
-
-  scrollEvent(event){
-    let currentScroll = event.detail.scrollTop;
-    
-      if(currentScroll > 0 && this.lastScroll <= currentScroll){
-          this.hideHeader = "-50px";
-          this.hideSubHeader = "0px";
-          this.lastScroll = currentScroll;
-      }else{
-          this.hideHeader = "0px";
-          this.hideSubHeader = "50px";
-          this.lastScroll = currentScroll;
-      }
   }
 
   setCountDown(){
@@ -251,18 +328,10 @@ export class OffersPage implements OnInit {
   }
 
     
-
   moveToBar(id : string, id_offer : string){
-    // let options: NativeTransitionOptions = {
-    //   direction: 'left',
-    //   duration: 150,
-    //   slowdownfactor: 1,
-    //   iosdelay: 50,
-    //   androiddelay: 150
-    //  }
     this.nativePageTransitions.fade(null); 
     this.navCtrl.navigateForward("/bar-user/"+id+"/"+id_offer);
-    // this.navCtrl.navigateForward();
+    
   }
 
   displayNone(){

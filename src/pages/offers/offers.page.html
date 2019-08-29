@@ -1,18 +1,19 @@
-<!-- <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Boissons Offertes</ion-title>
-  </ion-toolbar>
-</ion-header> -->
-<div class="tab_header" [ngStyle]="{'top' : hideHeader}"><div class="filter" (click)="openSelect()"><img src="../../assets/img/filter.svg"></div>Boissons Offertes</div>
-<!-- <div class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
-  <div (click)="tous()" [ngStyle]="{'color' : activeColor1}">Tous <span class="rippleEffect"></span></div>
-  <div (click)="encours()" [ngStyle]="{'color' : activeColor2}">En cours</div>
-  <div (click)="imminent()" [ngStyle]="{'color' : activeColor3}">Imminent</div>
-  <span class="outline_bar" [ngStyle]="{'transform' : tabPosition, 'left' : leftPosition}"></span>
-</div> -->
+<div class="tab_header"><div class="filter" (click)="openSelect()"><img src="../../assets/img/filter.svg"></div>Boissons Offertes</div>
 
-<ion-content color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)">
+<!-- Custom Refresher Start -->
+<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
+    <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
+      <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
+    </svg>
+    <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+</div>
+<div class="mcr_backdrop" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
+<!-- Custom Refresher End -->
+
+<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)" [ngStyle]="{'transform' : contentSlideUp}">
+
   <p *ngIf="Filtereditems===null" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour le moment</p>
+
   <ion-list *ngFor="let bars of Filtereditems; let i = index">
     <ion-item no-padding color="secondary" lines="none">
         <div class="bubbles-wrapper" [class.displayBubbles]="disBub" [ngStyle]="{'z-index' : zindex}">
@@ -22,9 +23,8 @@
         <div (click)="moveToBar(bars.ENT_ID, bars.OFF_ID)" class="img-overlay"></div>
         <img (click)="moveToBar(bars.ENT_ID, bars.OFF_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_'+ randomImgNo +'.jpg?ran=' + random"  [id]="'offset_'+i">
         <div (click)="moveToBar(bars.ENT_ID, bars.OFF_ID)" class="bar-details">
-          <ion-ripple-effect></ion-ripple-effect>
-          <p class="off_desc"><ion-icon src="../../assets/img/offres_icon.svg"></ion-icon>&nbsp;{{bars.OFF_DESCRIPTION}}</p>
-          <p class="ent_nom">Chez {{bars.ENT_NOM}}</p>
+          <div class="off_desc"><ion-icon src="../../assets/img/offres_icon.svg"></ion-icon>&nbsp;<p>{{bars.OFF_DESCRIPTION.charAt(0).toUpperCase()}}{{bars.OFF_DESCRIPTION.substring(1)}}</p></div>
+          <p class="ent_nom"><ion-icon name="pin"></ion-icon>&nbsp;Chez&nbsp;{{bars.ENT_NOM}}</p>
           <!-- <p id="countdown_{{bars.OFF_ID}}" class="countdown">{{countdownText}}</p> -->
           <p class="day_of_the_week"><ion-icon name="calendar"></ion-icon>&nbsp;&nbsp;<ion-datetime [readonly]="true" day-names="Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi" displayFormat="DDDD" value="{{bars.OFF_DATEDEBUT}}"></ion-datetime></p>
         </div>  
@@ -35,7 +35,11 @@
       <ion-select-option [selected]="true" value="all">Tous</ion-select-option>
       <ion-select-option *ngFor="let jour of joursDeLaSemaine" value="{{jour.num}}">{{jour.nomFr}}</ion-select-option>
   </ion-select>
+</ion-content>
 
-  <!-- <p *ngIf="noOffer" class="pasDoffre">Aucune</p> -->
-
+<ion-content *ngIf="!ifHasConnection" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
+    <div class="no_connection">
+      <img src="../../assets/img/no_connection.svg">
+      <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
+    </div>
 </ion-content>

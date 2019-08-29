@@ -2,8 +2,8 @@ ion-content{
     .bg_du{
         position: absolute;
         width: 100%;
-            height: 100%;
-            object-fit: cover;
+        height: 100%;
+        object-fit: cover;
     }
     position: relative;
     .bg_login{
@@ -316,15 +316,15 @@ ion-content{
     margin-top: 30px !important;
 }
 
-@media only screen and (max-width: 850px) {
-    .overlay{
-        background: url("../../assets/img/du.jpg") no-repeat 10% center fixed; 
-        -webkit-background-size: cover;
-        -moz-background-size: cover;
-        -o-background-size: cover;
-        background-size: cover;
-    }
-}
+// @media only screen and (max-width: 850px) {
+//     .overlay{
+//         background: url("../../assets/img/du.jpg") no-repeat 10% center fixed; 
+//         -webkit-background-size: cover;
+//         -moz-background-size: cover;
+//         -o-background-size: cover;
+//         background-size: cover;
+//     }
+// }
 
 //animation delay
 .ad2, .ad2_2{animation-delay: .2s !important}

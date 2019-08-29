@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
+    { path: '', redirectTo: 'custom-splashscreen', pathMatch: 'full' },
     { path: 'login', loadChildren: '../pages/login/login.module#LoginPageModule' },
     { path: 'register/:email', loadChildren: '../pages/register/register.module#RegisterPageModule' },
     { path: 'settings', loadChildren: '../pages/settings/settings.module#SettingsPageModule' },
@@ -20,17 +20,10 @@ const routes: Routes = [
     { path: 'bar/:id_partenaire', loadChildren: '../pages/bar/bar.module#BarPageModule'},
     { path: 'cgu', loadChildren: '../pages/cgu/cgu.module#CguPageModule' },
     { path: 'parrainage', loadChildren: '../pages/parrainage/parrainage.module#ParrainagePageModule' },
+    { path: 'custom-splashscreen', loadChildren: '../pages/custom-splashscreen/custom-splashscreen.module#CustomSplashscreenPageModule' },  { path: 'show-map', loadChildren: './show-map/show-map.module#ShowMapPageModule' },
 
 
 
-  // { path: 'admin-logout', loadChildren: './admin-logout/admin-logout.module#AdminLogoutPageModule' },
-  // { path: 'offers-admin', loadChildren: './offers-admin/offers-admin.module#OffersAdminPageModule' },
-
-
-  // { path: 'tabs/offers', loadChildren: '../pages/offers/offers.module#OffersPageModule' },
-  // { path: 'tabsadmin/users', loadChildren: '../pages/users/users.module#UsersPageModule' },
-  // { path: 'tabsproprio/bar', loadChildren: '../pages/bar/bar.module#BarPageModule' },
-  // { path: 'bar-user/:id', loadChildren: '../pages/bar-user/bar-user.module#BarUserPageModule' },
 ];
 
 @NgModule({

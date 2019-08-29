@@ -1,7 +1,6 @@
-import { Facebook } from '@ionic-native/facebook/ngx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit} from '@angular/core';
-import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
+import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ModalController, ToastController, AlertController } from "@ionic/angular";
 import { Storage } from '@ionic/storage';
@@ -9,7 +8,6 @@ import { ModalQrcodePage } from '../modal-qrcode/modal-qrcode.page';
 import { ModalRatingsPage } from '../modal-ratings/modal-ratings.page';
 import { timer } from 'rxjs';
 import { LaunchNavigator } from '@ionic-native/launch-navigator/ngx';
-import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import * as Global from '../../app/global';
 declare var google;
 
@@ -55,6 +53,16 @@ export class BarUserPage implements OnInit {
   touchendX = 0;
   touchendY = 0;
 
+  lastScroll : number = 0;
+  hideHeader : string = "0";
+  scrollOffsetTop : number = 0;
+  scrollOffsetTopCounter : number = 400;
+  scrollCounter : number = 0;
+  lastY : number = 0;
+  dyn_img_height : string = "400px";
+  dyn_imgSlide_opacity : string = "1";
+  
+
   interval;
 
   dayOfTheWeek : string;
@@ -81,10 +89,13 @@ export class BarUserPage implements OnInit {
   barLocalite : string = "";
   
   if_user_already_rated : boolean = false;
+  //
+  ifHasConnection : boolean = true;
 
-  constructor(private nativeGeocoder: NativeGeocoder, private launchNav: LaunchNavigator, private modalCtrl : ModalController, private toastCtrl: ToastController, private storage : Storage,private http : HttpClient, private aRoute : ActivatedRoute, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, public alertController: AlertController) { 
-    
+  constructor(private launchNav: LaunchNavigator, private modalCtrl : ModalController, private toastCtrl: ToastController, private storage : Storage,private http : HttpClient, private aRoute : ActivatedRoute, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, public alertController: AlertController) { 
+   
   }
+
 
   directMe(adresse,npa,localite){
 
@@ -101,7 +112,16 @@ export class BarUserPage implements OnInit {
  
   }
 
+  ngAfterViewInit(){
+  }  
+
+  ionViewDidEnter(){
+    this.initStyle();
+    timer(2000).subscribe(() => (this.showBtns = true));
+  }
+
   ionViewWillEnter(){
+
     this.getScannedCode();     
     this.storage.get('SessionIdKey').then((val) => {
       this.getPaidUser(val);
@@ -119,12 +139,19 @@ export class BarUserPage implements OnInit {
 
     //SlideShow Styles
     this.initStyle();
-
-
     //
-    var jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+    //Check if user has internet connection
+    if(navigator.onLine){
+      //If user has connection
+      this.ifHasConnection = true;
+    }else{
+      //If user has no connection
+      this.ifHasConnection = false;
+    }
+    //
+    var jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
     var date = new Date();
-    this.dayOfTheWeek = jours[date.getDay()-1];
+    this.dayOfTheWeek = jours[date.getDay()];
     this.timeNow = ('0' + (date.getHours())).slice(-2)+":"+('0' + date.getMinutes()).slice(-2);
   
 
@@ -150,7 +177,7 @@ export class BarUserPage implements OnInit {
   //*************************************************************************** */
   
 
-  async loadMap(latitide: number, longitude: number) {
+  async loadMap(latitide: number, longitude: number, barname: string) {
     
     const mapEle: HTMLElement = document.getElementById('map');
     this.mapRef = new google.maps.Map(mapEle, {
@@ -158,18 +185,17 @@ export class BarUserPage implements OnInit {
       zoom: 15,
       disableDefaultUI: true
     });
-    google.maps.event
-    .addListenerOnce(this.mapRef, 'idle', () => {
-      this.addMaker(latitide, longitude);
+    google.maps.event.addListenerOnce(this.mapRef, 'idle', () => {
+      this.addMaker(latitide, longitude, barname);
     });
   }
 
-  private addMaker(lat: number, lng: number) {
+  private addMaker(lat: number, lng: number, barname: string) {
     const marker = new google.maps.Marker({
       position: { lat, lng },
       map: this.mapRef,
       animation: google.maps.Animation.DROP,  
-      title: 'Hello World!'
+      title: barname
     });
   }
 
@@ -185,11 +211,7 @@ export class BarUserPage implements OnInit {
     document.getElementById("load_overL").style.display = "block";
   }
 
-  ionViewDidEnter(){
-    this.initStyle();
-    timer(2000).subscribe(() => (this.showBtns = true));
-
-  }
+  
 
   ifOfferScanned(offerId){
     if(this.scannedOfferId.indexOf(offerId)>-1){
@@ -216,19 +238,20 @@ export class BarUserPage implements OnInit {
         this.imgLink2 = this.uplPhotoURI+this.barName+"_2?ran="+random;
         this.imgLink3 = this.uplPhotoURI+this.barName+"_3?ran="+random;
 
+        // this.loadMap(parseFloat(data.ENT_LATITUDE), parseFloat(data.ENT_LONGITUDE), data.ENT_NOM);
+
         //Get address and convert to Latitude and Longitude
-        this.barAdresse = data.ENT_ADRESSE;
-        this.barNPA = data.ENT_NPA;
-        this.barLocalite = data.ENT_LOCALITE;
+        // this.barAdresse = data.ENT_ADRESSE;
+        // this.barNPA = data.ENT_NPA;
+        // this.barLocalite = data.ENT_LOCALITE;
         //
         this.storage.get('SessionIdKey').then((myId) => {
           this.checkIfUserAlreadyRated(myId,data.ENT_ID);
         }); 
-        
-        this.nativeGeocoder.forwardGeocode(this.barAdresse+" "+this.barNPA+" "+this.barLocalite, { useLocale: false, maxResults: 1 })
-        .then((result) => this.loadMap(parseFloat(result[0].latitude), parseFloat(result[0].longitude)))
-        .catch((error: any) => console.log(error));
-      
+
+        // this.nativeGeocoder.forwardGeocode(this.barAdresse+" "+this.barNPA+" "+this.barLocalite, { useLocale: false, maxResults: 1 })
+        // .then((result) => this.loadMap(parseFloat(result[0].latitude), parseFloat(result[0].longitude)))
+        // .catch((error: any) => console.log(error));
     },
     (error : any) =>
     {
@@ -245,12 +268,12 @@ export class BarUserPage implements OnInit {
       {
         this.mySchedule = data;
         //
-        var days = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+        var days = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
         var date = new Date();
-        var today = days[date.getDay()-1];
+        var today = days[date.getDay()];
         var time_Now = ('0' + (date.getHours())).slice(-2)+":"+('0' + date.getMinutes()).slice(-2);
 
-        console.log("dasdsad", time_Now);
+        console.log("Day of the week => ", today);
 
         this.FilteredSched = this.mySchedule.filter(function(data){
           return data.HOR_JOURS == today;
@@ -422,12 +445,31 @@ export class BarUserPage implements OnInit {
     }
 
     scrollEvent(event){
-      var scroll = event.detail.scrollTop*1.4;
-      // console.log(event);
-      if(scroll<330){
-        // this.dynamicHeight = (350 - scroll+"px");
-      }
+      let currentScroll = event.detail.scrollTop;
+      this.scrollOffsetTop = event.detail.scrollTop;
+
+        if(currentScroll > 0 && this.lastScroll <= currentScroll){
+            this.hideHeader = "-50px";
+            this.lastScroll = currentScroll;
+            this.scrollCounter--;
+        }else{
+            this.hideHeader = "0px";
+            this.lastScroll = currentScroll;
+            this.scrollCounter++;
+        }
+        
+        
+        if(this.scrollOffsetTop >=0 && this.scrollOffsetTop <=400){
+          this.dyn_img_height = (400 - (this.scrollOffsetTop/2))+"px";
+        }
+
+        let opac = 400 - (this.scrollOffsetTop/400);
+        this.dyn_imgSlide_opacity = (opac-399)+"";
     }
+
+    touchmove(event){}
+  
+    touchend(){}
 
     // SLIDESHOW ANIMATION
 
@@ -654,6 +696,11 @@ export class BarUserPage implements OnInit {
     document.getElementById("second_pic").classList.remove("secondimgscale");
     document.getElementById("third_pic").classList.remove("thirdimgscale");
 
+    this.nativePageTransitions.fade(null); 
+    this.navCtrl.back();
+  }
+
+  retour_offline(){
     this.nativePageTransitions.fade(null); 
     this.navCtrl.back();
   }

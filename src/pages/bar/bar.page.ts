@@ -60,10 +60,6 @@ export class BarPage implements OnInit {
 
 
   constructor(private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, private aRoute : ActivatedRoute, private modalCtrl : ModalController, private formBuilder : FormBuilder, private http : HttpClient, private storage : Storage, private camera : Camera, private toastCtrl : ToastController) { 
-    // this.storage.get('SessionIdKey').then((val) => {
-    //   this.loadBar(val);
-    // });
-
     this.editBarForm = new FormGroup({
       nomEnt: new FormControl(),
       typeEnt: new FormControl(),

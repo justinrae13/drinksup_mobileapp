@@ -29,16 +29,22 @@ export class AppComponent {
     private storage: Storage,
     private router: Router,
     private navCtrl : NavController,
-    private deepLinks: Deeplinks
+    private deepLinks: Deeplinks,
   ) {
     this.initializeApp();
   }
+  
 
   initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
+      this.statusBar.styleLightContent();
       this.statusBar.overlaysWebView(false);
       this.statusBar.backgroundColorByHexString("#101012");
+      //
+      this.navCtrl.navigateForward('custom-splashscreen');
+      setTimeout(() => {
+        this.splashScreen.hide();
+      }, 800);
 
       this.deepLinks.route({
         '/register': RegisterPage,
@@ -61,80 +67,50 @@ export class AppComponent {
         });
       
 
-      // this.storage.get('SessionInKey').then((val) => {
-      //   if(val!==null){
-      //     setTimeout(() => {
-      //       this.splashScreen.hide();
-      //     }, 1800);
+      //Check if app is launch for the first time
+      // this.storage.get('firstLaunch').then((first)=>{
+      //   if(first!==null){
+      //     console.log("App is not launch for the first time");
       //   }else{
-      //     setTimeout(() => {
-      //       this.splashScreen.hide();
-      //     }, 800);
+      //     this.storage.set('firstLaunch', 'Yes');
+      //     this.storage.remove("SessionInKey");
+      //     this.storage.remove("SessionRoleKey");
+      //     this.storage.remove("SessionEmailKey");
+      //     this.storage.remove("SessionIdKey");
+      //     this.storage.remove("firstLogin");
+      //     this.navCtrl.navigateRoot('/login');
+         
       //   }
       // });
 
-      //Check if app is launch for the first time
-      this.storage.get('firstLaunch').then((first)=>{
-        if(first!==null){
-          console.log("App is not launch the first time");
-        }else{
-          this.storage.set('firstLaunch', 'Yes');
-          console.log("First time? "+first);
-          this.storage.remove("SessionInKey");
-          this.storage.remove("SessionRoleKey");
-          this.storage.remove("SessionEmailKey");
-          this.storage.remove("SessionIdKey");
-          this.storage.remove("firstLogin");
-          setTimeout(() => {
-            this.splashScreen.hide();
-          }, 800);
-        }
-      });
+      // this.storage.get('SessionInKey').then((val) => {
+      //   this.storage.get('SessionRoleKey').then((valRole) => {
+      //       this.userSessionRole = valRole;
 
-      this.storage.get('SessionInKey').then((val) => {
-        this.storage.get('SessionRoleKey').then((valRole) => {
-            this.userSessionRole = valRole;
-            console.log('val '  + val + ' valRole ' + valRole);
-            if(val=='Yes' && this.userSessionRole == this.roleAdmin){
-                this.navCtrl.navigateRoot('/tabsadmin/users');
-                setTimeout(() => {
-                  this.splashScreen.hide();
-                }, 1800);
-
-            }else if(val=='Yes' && this.userSessionRole == this.roleProprio){
-                this.navCtrl.navigateRoot('/tabsproprio/qrcode');
-                setTimeout(() => {
-                  this.splashScreen.hide();
-                }, 4000);
-
-            }else if(val=='Yes' && this.userSessionRole == this.roleUser){
-                this.navCtrl.navigateRoot('/tabs/offers');
-                setTimeout(() => {
-                  this.splashScreen.hide();
-                }, 1800);
-
-            }else if(val === null || valRole === null || val == null || valRole == null){
-              this.navCtrl.navigateRoot('/login');
-              this.storage.remove("SessionInKey");
-              this.storage.remove("SessionRoleKey");
-              this.storage.remove("SessionEmailKey");
-              this.storage.remove("SessionIdKey");
-              setTimeout(() => {
-                this.splashScreen.hide();
-              }, 800);
-            }else{
-              this.navCtrl.navigateRoot('/login');
-
-              this.storage.remove("SessionInKey");
-              this.storage.remove("SessionRoleKey");
-              this.storage.remove("SessionEmailKey");
-              this.storage.remove("SessionIdKey");
-              setTimeout(() => {
-                this.splashScreen.hide();
-              }, 800);
-            }
-        });
-      });
+      //       console.log('val '  + val + ' valRole ' + valRole);
+      //       if(val===null || valRole ===null){
+      //         this.navCtrl.navigateRoot('/login');
+      //         this.storage.remove("SessionInKey");
+      //         this.storage.remove("SessionRoleKey");
+      //         this.storage.remove("SessionEmailKey");
+      //         this.storage.remove("SessionIdKey");
+      //       }else{
+      //       if(val==='Yes' && this.userSessionRole === this.roleAdmin){
+      //         this.navCtrl.navigateRoot('/tabsadmin/users');
+      //       }
+      //         // if(val==='Yes' && this.userSessionRole === this.roleAdmin){
+      //         //   this.navCtrl.navigateRoot('/tabsadmin/users');
+      //         // }else if(val==='Yes' && this.userSessionRole === this.roleProprio){
+      //         //     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
+      //         // }else if(val==='Yes' && this.userSessionRole === this.roleUser){
+      //         //     this.navCtrl.navigateRoot('/tabs/offers');
+      //         // }else{
+      //         //   return false;
+      //         // }
+      //         console.log("I still went here !! :(")
+      //       }
+      //   });
+      // });
 
 
     });

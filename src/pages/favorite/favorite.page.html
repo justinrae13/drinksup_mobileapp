@@ -1,31 +1,16 @@
-<!-- <ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>favorite</ion-title>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content color="secondary">
-  <ion-list *ngFor="let bars of items; let i = index">
-    <ion-item no-padding color="secondary" lines="none">
-        <div class="bubbles-wrapper" [class.displayBubbles]="disBub" [ngStyle]="{'z-index' : zindex}">
-          <div class="bubbles"><div></div><div></div><div></div><div></div></div>
-        </div>
-        <img src="../../assets/img/star-icon-filled.svg" class="star" alt="" (click)="removeToFave(bars.ENT_ID)">
-        <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-        <img (click)="moveToBar(bars.ENT_ID)" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
-        <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
-          <ion-ripple-effect></ion-ripple-effect>
-          <p class="bar-nom">{{bars.ENT_NOM}}</p>
-          <p class="bar-desc">{{bars.ENT_ADRESSE}}, {{bars.ENT_NPA}} - {{bars.ENT_LOCALITE}}</p>
-        </div>  
-      </ion-item>
-  </ion-list>
-</ion-content> -->
-
-
 <div class="tab_header" [ngStyle]="{'margin-top' : hideHeader}">Mes bars</div>
-<!-- (ionScroll)="scrollEvent($event)" -->
-<ion-content color="secondary">
+
+<!-- Custom Refresher Start -->
+<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
+    <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
+      <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
+    </svg>
+    <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+</div>
+<div class="mcr_backdrop" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
+<!-- Custom Refresher End -->
+
+<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)" [ngStyle]="{'transform' : contentSlideUp}">
   <ion-list *ngFor="let bars of items; let i = index">
       <ion-item no-padding color="secondary" lines="none">
         <img src="../../assets/img/star-icon-filled.svg" class="star" alt="" (click)="removeToFave(bars.ENT_ID)">
@@ -33,16 +18,23 @@
         <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
         <img (click)="moveToBar(bars.ENT_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
         <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
-        <p class="off_desc">{{bars.ENT_NOM}}</p>
+        <div class="off_desc"><ion-icon name="bookmark"></ion-icon><p>{{bars.ENT_NOM}}</p></div>
         <p class="ent_nom">{{bars.ENT_ADRESSE}}</p>
         </div>  
       </ion-item>
   </ion-list>
-<div *ngIf="items == null" class="empty_fave_wrapper">
-  <div class="empty_fave">
-    <img src="../../assets/img/empty_favorite.svg">
-    <h1>Votre boîte de favoris est vide</h1>
+  <div *ngIf="items == null" class="empty_fave_wrapper">
+    <div class="empty_fave">
+      <img src="../../assets/img/empty_favorite.svg">
+      <h1>Votre boîte de favoris est vide</h1>
+    </div>
   </div>
-</div>
+</ion-content>
+
+<ion-content *ngIf="!ifHasConnection" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
+    <div class="no_connection">
+      <img src="../../assets/img/no_connection.svg">
+      <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
+    </div>
 </ion-content>
 

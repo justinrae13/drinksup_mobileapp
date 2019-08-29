@@ -25,6 +25,22 @@ export class OffersAdminPage implements OnInit {
   tousClicked : boolean = false;
   valideClicked : boolean = false;
   nonvalideClicked : boolean = false;
+
+  //
+  contentSlideUp : string = "translateY(108px)";
+  //
+  ifHasConnection : boolean = true;
+  //Custom Refresher Made By Jutin Rae
+  scrollOffsetTop : number = 0;
+  scrollCounter : number = 0;
+  highCounter : number = 227;
+  mcr_scale : string = "scale(0)";
+  mcr_dashoffset : string = "227";
+  mcr_trans: string = "0s";
+  mcr_svgDisplay : string = "block";
+  mcr_circleDivDisplay : string = "none";
+  mcr_bdDisplay : string = "none";
+  lastY : number = 0;
   constructor(public http: HttpClient, private toastCtrl: ToastController, public alertController: AlertController) { }
 
   ngOnInit() {
@@ -32,6 +48,22 @@ export class OffersAdminPage implements OnInit {
 
   ionViewWillEnter() : void{
     this.getAllOffers();
+
+    //Check if user has internet connection
+    if(navigator.onLine){
+      //If user has connection
+      this.ifHasConnection = true;
+    }else{
+      //If user has no connection
+      this.ifHasConnection = false;
+    }
+  }
+
+  ionViewDidLeave(){
+    this.tous();
+    this.hideHeader = "0px";
+    this.hideSubHeader = "50px";
+    this.contentSlideUp = "translateY(108px)";
   }
 
   async makeValid(slidingItem: IonItemSliding, id, desc, status) {
@@ -51,6 +83,7 @@ export class OffersAdminPage implements OnInit {
     const alert = await this.alertController.create({
       header: "Confirmation",
       message: msg,
+      cssClass : "dimBackdropAlert",
       buttons: [
           {
               text: 'Non',
@@ -62,7 +95,10 @@ export class OffersAdminPage implements OnInit {
               text: 'Oui',
               handler: () => {
                   this.validateOffer(id, statVar);
-                  this.ionViewWillEnter();
+                  setTimeout(() => {
+                    this.ionViewWillEnter();
+                    this.sendNotification("Votre modification a été prise en compte !");
+                }, 100);
               }
           }
       ]
@@ -71,45 +107,13 @@ export class OffersAdminPage implements OnInit {
     await alert.present();
   }
 
-  // async makeValid(slidingItem: IonItemSliding, id, desc, status) {
-  //   await slidingItem.close();
-  //   var statVar, msg;
-  //   if(status==="Oui"){
-  //     statVar = "Non";
-  //     msg = "<h3>Rendre l'offre : <span>" + desc + "</span> invalide ? </h3>";
-  //   }else{
-  //     statVar = "Oui";
-  //     msg = "<h3>Valider l'offre : <span>" + desc + "</span> ? </h3>";
-  //   }
-  //   const alert = await this.alertController.create({
-  //     header: "Confirmation",
-  //     message: msg,
-  //     buttons: [
-  //         {
-  //             text: 'Non',
-  //             role: 'cancel',
-  //             cssClass: 'secondary',
-  //             handler: () => {
-  //             }
-  //         }, {
-  //             text: 'Oui',
-  //             handler: () => {
-  //                 this.validateOffer(id, statVar);
-  //                 this.ionViewWillEnter();
-  //             }
-  //         }
-  //     ]
-  //   });
-
-  //   await alert.present();
-  // }
-
   async deleteOffer(slidingItem: IonItemSliding, id, desc) {
     await slidingItem.close();
 
     const alert = await this.alertController.create({
       header: "Confirmation",
       message: "<h3>Supprimer l'offre : <span>" + desc + "</span> ? </h3>",
+      cssClass : "dimBackdropAlert",
       buttons: [
           {
               text: 'Non',
@@ -121,7 +125,10 @@ export class OffersAdminPage implements OnInit {
               text: 'Oui',
               handler: () => {
                   this.deleteOffre(id);
-                  this.ionViewWillEnter();
+                  setTimeout(() => {
+                    this.ionViewWillEnter();
+                    this.sendNotification("Votre modification a été prise en compte !");
+                }, 100);
               }
           }
       ]
@@ -189,17 +196,68 @@ export class OffersAdminPage implements OnInit {
   //My Stuff
   scrollEvent(event){
     let currentScroll = event.detail.scrollTop;
-
+    this.scrollOffsetTop = event.detail.scrollTop;
+    
     if(currentScroll > 0 && this.lastScroll <= currentScroll){
         this.hideHeader = "-50px";
         this.hideSubHeader = "0px";
+        this.contentSlideUp = "translateY(0px)";
         this.lastScroll = currentScroll;
     }else{
         this.hideHeader = "0px";
         this.hideSubHeader = "50px";
+        this.contentSlideUp = "translateY(100px)";
         this.lastScroll = currentScroll;
     }
-}
+  }
+
+  touchmove(event){
+    if(this.scrollOffsetTop ==0){
+
+      var currentY = event.touches[0].screenY;
+
+      if(currentY > this.lastY){
+        this.scrollCounter++;
+      }else if(currentY < this.lastY){
+        this.scrollCounter--;
+      }
+
+      this.lastY = currentY;
+      var slowedCounter = this.scrollCounter/45;
+      var doffSet = 227;
+
+      if(slowedCounter <= 1 && slowedCounter > 0){
+        this.mcr_scale = "scale("+slowedCounter+")";
+        doffSet-=(this.scrollCounter*Math.PI);
+        this.mcr_dashoffset = doffSet.toString();
+      }
+
+      if(slowedCounter == 1){
+        this.mcr_trans = ".2s ease 1.5s";
+        this.mcr_svgDisplay = "none";
+        this.mcr_circleDivDisplay = "block";
+        this.mcr_bdDisplay = "block";
+        setTimeout(() => {
+          this.mcr_trans = "0s ease 0s";
+        }, 1800);
+        setTimeout(() => {
+          this.mcr_svgDisplay = "block";
+          this.mcr_circleDivDisplay = "none";
+        }, 2100);
+        setTimeout(() => {
+          this.ionViewWillEnter();
+          this.mcr_bdDisplay = "none";        
+        }, 2200);
+      }
+
+    }
+      
+  }
+
+  touchend(){
+    this.scrollCounter = 0;
+    this.mcr_scale = "scale("+this.scrollCounter+")";
+  }
 
 tous(){
     this.filteredOffres = this.offres;

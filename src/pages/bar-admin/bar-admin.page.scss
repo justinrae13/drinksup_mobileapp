@@ -63,6 +63,12 @@
     margin-bottom: 8px;
     position: relative;
     z-index: 1;
+    &:last-of-type{
+      margin-bottom: 0px;
+    }
+    &:last-child{
+      margin-bottom: 0px;
+    }
     .voirPlus{
       position: absolute;
       height: 50px;

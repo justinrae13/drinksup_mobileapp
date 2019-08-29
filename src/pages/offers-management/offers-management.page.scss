@@ -84,6 +84,6 @@ ion-list{
   --border-radius: 0px;
 }
 
-.descriptInput{
-  text-transform: capitalize;
+.descriptInput::first-letter{
+  text-transform: capitalize !important;
 }

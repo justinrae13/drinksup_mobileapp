@@ -10,7 +10,16 @@ export class TabsPage implements OnInit {
 
   offres_icon : string = "1";
   favoris_icon : string = ".3";
+  c_o_o_t_z : string = "1";
+  c_d_o_t_z : string = "flex";
   constructor() { }
+
+  ionViewWillEnter(){
+    this.c_o_o_t_z = "0";
+    setTimeout(() => {
+      this.c_d_o_t_z = "none";
+    }, 650);
+  }
 
   ngOnInit() {
   }

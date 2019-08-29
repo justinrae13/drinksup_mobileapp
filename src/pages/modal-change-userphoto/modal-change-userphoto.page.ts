@@ -31,7 +31,7 @@ export class ModalChangeUserphotoPage implements OnInit {
 
   upl(){
     const options: CameraOptions = {
-      quality: 40,
+      quality: 30,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,
@@ -59,7 +59,7 @@ export class ModalChangeUserphotoPage implements OnInit {
 
   gal(){
     const options: CameraOptions = {
-      quality: 40,
+      quality: 30,
       destinationType: this.camera.DestinationType.DATA_URL,
       encodingType: this.camera.EncodingType.JPEG,
       mediaType: this.camera.MediaType.PICTURE,

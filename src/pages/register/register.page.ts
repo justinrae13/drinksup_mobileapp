@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController, NavController} from '@ionic/angular';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { Device } from '@ionic-native/device/ngx';
 import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
 
@@ -29,7 +30,9 @@ export class RegisterPage implements OnInit {
   eyeOff : string = "none";
   inputType : string = "password";
 
-  constructor(private storage: Storage, private actRout : ActivatedRoute, private formBuilder: FormBuilder, private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient) {
+  uuid : string = "";
+
+  constructor(private device: Device, private storage: Storage, private actRout : ActivatedRoute, private formBuilder: FormBuilder, private navCtrl: NavController, private toastCtrl: ToastController, public http: HttpClient) {
     this.enregistrerForm = new FormGroup({
         PRO_PRENOM: new FormControl(),
         PRO_PASSWORD: new FormControl(),
@@ -48,6 +51,10 @@ export class RegisterPage implements OnInit {
     this.eyeOn = "block";
     this.eyeOff = "none";
     this.inputType = "password";
+  }
+
+  ionViewWillEnter(){
+    this.uuid = this.device.uuid;
   }
 
   ngOnInit() {
@@ -110,7 +117,7 @@ export class RegisterPage implements OnInit {
 
     signUpOwners(nomcomplet: string, email: string, mdp: string) {
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-              options: any		= { 'key' : 'enregistrerUser', 'PRO_PRENOM': nomcomplet, 'PRO_EMAIL': email, 'PRO_PASSWORD': mdp},
+              options: any		= { 'key' : 'enregistrerUser', 'PRO_PRENOM': nomcomplet, 'PRO_EMAIL': email, 'PRO_PASSWORD': mdp, 'uuid' : this.uuid},
               url: any      	= this.baseURI;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
@@ -198,7 +205,7 @@ export class RegisterPage implements OnInit {
                         this.storage.set('SessionRoleKey', this.roleProprio);
                         this.sendNotification('Bienvenue !');          
                     } else if (this.userDetails.ROLE === this.roleUser) {
-                        this.navCtrl.navigateRoot('/tabs/bars');
+                        this.navCtrl.navigateRoot('/tabs/offers');
                         this.storage.set('SessionRoleKey', this.roleUser);
                         this.sendNotification('Bienvenue !');  
                     } else {
