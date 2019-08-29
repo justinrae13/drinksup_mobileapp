@@ -127,7 +127,7 @@
   </div>
 
   <!-- (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)" -->
-  <div class="map_wrapper">
+  <div class="map_wrapper" (click)="goToMap()">
     <div>
         <p>{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} {{myBar.ENT_LOCALITE}}</p>
         <span>Cliquez pour ouvrir la carte</span>

@@ -700,6 +700,11 @@ export class BarUserPage implements OnInit {
     this.navCtrl.back();
   }
 
+  goToMap(){
+    this.nativePageTransitions.fade(null); 
+    this.navCtrl.navigateForward("show-map");
+  }
+
   retour_offline(){
     this.nativePageTransitions.fade(null); 
     this.navCtrl.back();
