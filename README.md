@@ -66,7 +66,7 @@ Execution failed for task ':app:processDebugResources'.
 <br>
 <hr>
 
-## Fixing the gray screen before splash screen [Cordova] - Pre-launch bug
+## Fixing the gray screen before splash screen [Cordova] [Pre-launch bug]
 <br>
 
 ##### <img width="60px" src="https://justinrae.ch/git_icons/step1.svg"> Create a new style file in path :
