@@ -1,6 +1,6 @@
 
 <div class="tab_header" [ngStyle]="{'top' : hideHeader}">Gestion des partenaires</div>
-<div class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
+<div *ngIf="ifHasConnection" class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
   <div (click)="tous()" [ngStyle]="{'color' : activeColor1}">Tous <span class="rippleEffect"></span></div>
   <div (click)="actif()" [ngStyle]="{'color' : activeColor2}">Actif</div>
   <div (click)="inactif()" [ngStyle]="{'color' : activeColor3}">Inactif</div>
@@ -9,18 +9,17 @@
 
 
 <!-- Custom Refresher Start -->
-<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
-  <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
-    <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
-  </svg>
-  <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngClass]="{double_header : ifHasConnection}" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
-<div class="mcr_backdrop twoHeads" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
 <!-- Custom Refresher End -->
 
-<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
   <ion-searchbar animated color="primary" placeholder="Rechercher un bar" (ionInput)="search($event)"></ion-searchbar>
   
+  <p *ngIf="padDeDonee" class="pasDeDonnee"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Aucun bar</p>
+
   <ion-list>
     <ion-item-sliding *ngFor="let user of usersFilter; let i = index" #slidingItem>
       <!-- <span class="voirPlus" (click)="expand(i)"><ion-icon name="arrow-dropdown"></ion-icon></span> -->
@@ -62,8 +61,8 @@
   <p>{{haveBarOrNot}}</p>
 </ion-content>
 
-<ion-content *ngIf="!ifHasConnection" [ngStyle]="{'transform': !ifHasConnection ? 'translateY(50px)' : 'translateY(100px)'}" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
-  <div class="no_connection">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+    <div class="no_connection">
     <img src="../../assets/img/no_connection.svg">
     <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
   </div>

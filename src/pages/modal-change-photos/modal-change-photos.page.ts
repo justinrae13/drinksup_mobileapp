@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalController, NavParams, ToastController } from '@ionic/angular';
+import { Component } from '@angular/core';
+import { ModalController, NavParams } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { Observable } from 'rxjs';
@@ -10,30 +10,27 @@ import { Observable } from 'rxjs';
   templateUrl: './modal-change-photos.page.html',
   styleUrls: ['./modal-change-photos.page.scss'],
 })
-export class ModalChangePhotosPage implements OnInit {
+export class ModalChangePhotosPage{
   uplPhotoURI = 'https://www.drinksup.ch/serveur/barphotos/';
   barName : string;
   photoNUM : string;
 
 
-  constructor(private modalCtrl : ModalController, private navParam : NavParams, private toastCtrl : ToastController, private http : HttpClient, private camera : Camera) { }
-
-  ngOnInit() {
-  }
-
+  constructor(private modalCtrl : ModalController, private navParam : NavParams, private http : HttpClient, private camera : Camera) { }
   ionViewWillEnter(){
     this.barName = this.navParam.get('bar_name');
+    this.photoNUM = this.navParam.get('img_num');
   }
 
-  whichPhoto(num : string){
-    document.getElementById("pho_"+num+"_wrapper").style.display = "block";
-    document.getElementById("pho_choices_wrapper").style.display = "none";
-  }
+  // whichPhoto(num : string){
+  //   document.getElementById("pho_"+num+"_wrapper").style.display = "block";
+  //   document.getElementById("pho_choices_wrapper").style.display = "none";
+  // }
 
-  backToChoices(num : string){
-    document.getElementById("pho_"+num+"_wrapper").style.display = "none";
-    document.getElementById("pho_choices_wrapper").style.display = "block";
-  }
+  // backToChoices(num : string){
+  //   document.getElementById("pho_"+num+"_wrapper").style.display = "none";
+  //   document.getElementById("pho_choices_wrapper").style.display = "block";
+  // }
 
   upl(photoNumber : string){
     this.photoNUM = photoNumber;

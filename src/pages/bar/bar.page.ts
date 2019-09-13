@@ -1,18 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
-import { ModalController, ToastController, IonItemSliding, NavController } from '@ionic/angular';
-import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
-import { Observable } from 'rxjs';
+import { ModalController, ToastController, IonItemSliding, NavController, IonTextarea, IonContent, AlertController } from '@ionic/angular';
+import { Camera } from '@ionic-native/camera/ngx';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { ModalSchedulePage } from '../modal-schedule/modal-schedule.page';
 import { ModalChangePhotosPage } from '../modal-change-photos/modal-change-photos.page';
 import { LoadingpagePage } from '../loadingpage/loadingpage.page';
 import { ActivatedRoute } from '@angular/router';
 import * as Global from '../../app/global';
-import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
-
-
+import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 
 
 @Component({
@@ -21,7 +18,9 @@ import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/na
   styleUrls: ['./bar.page.scss'],
 })
 export class BarPage implements OnInit {
+  sendnotifURL = 'https://www.drinksup.ch/serveur/mailer/sendnotif.php';
   @ViewChild(IonItemSliding) slidingItem: IonItemSliding;
+  @ViewChild(IonTextarea) myInput: IonTextarea;
   baseURI = Global.mainURI;
   uplPhotoURI = Global.photosURI;
   myBar : any = {};
@@ -44,7 +43,7 @@ export class BarPage implements OnInit {
   dHide : string = "inline-flex";
   activeBorder : string = "none";
   activeHeight : string = "auto";
-  activeHeightTA : string = "auto";
+  activeHeightTA : string = "130px";
   activeFS : string = ".9rem"
   invalidColor : string = "#DC143C";
   preCovOpac : string = "1";
@@ -58,8 +57,29 @@ export class BarPage implements OnInit {
 
   roleLogged : string = "";
 
+  //
+  ifHasConnection : boolean = true;
+  //Custom Refresher Made By Jutin Rae
+  @ViewChild(IonContent) maincontent: IonContent;
+  scrollOffsetTop : number = 0;
+  touchStart : number = 0;
+  refresherPosY : number = 0;
+  currPosY : number = 0;
+  ifPulled : boolean = false;
+  posY : string = "translateY(0px)";
+  animDur : string = "0s";
+  rotate : string = "none";
+  popFD : string = "none";
+  mainOpac : string = "1";
 
-  constructor(private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, private aRoute : ActivatedRoute, private modalCtrl : ModalController, private formBuilder : FormBuilder, private http : HttpClient, private storage : Storage, private camera : Camera, private toastCtrl : ToastController) { 
+  maxReached : boolean = false;
+  filteredBarDesc : string = null;
+  givenLimit : number = 255;
+
+  nameNotYetUpdated : boolean = false;
+  
+
+  constructor(private alertCtrl : AlertController,private nativePageTransitions: NativePageTransitions, private navCtrl : NavController, private aRoute : ActivatedRoute, private modalCtrl : ModalController, private formBuilder : FormBuilder, private http : HttpClient, private storage : Storage, private camera : Camera, private toastCtrl : ToastController) { 
     this.editBarForm = new FormGroup({
       nomEnt: new FormControl(),
       typeEnt: new FormControl(),
@@ -90,11 +110,11 @@ imgLoad(){
   }
 
   ngOnInit() {
-    this.barFromAdminSide = this.aRoute.snapshot.paramMap.get('id_partenaire');
   }
 
   ionViewWillEnter(){ 
-    
+    this.barFromAdminSide = this.aRoute.snapshot.paramMap.get('id_partenaire');
+
     this.storage.get('SessionRoleKey').then((role) => {
       this.roleLogged = role;
     });
@@ -108,10 +128,18 @@ imgLoad(){
     }
 
     this.getCategorie();
-    console.log(this.barFromAdminSide)
-    var jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+    var jours = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
     var date = new Date();
-    this.dayOfTheWeek = jours[date.getDay()-1];
+    this.dayOfTheWeek = jours[date.getDay()];
+
+    //[ngStyle]="{'display': dNone}"k if user has internet connection
+    if(navigator.onLine){
+      //If user has connection
+      this.ifHasConnection = true;
+    }else{
+        //If user has no connection
+        this.ifHasConnection = false;
+    }
   }
 
   getCategorie() : void{
@@ -150,6 +178,20 @@ imgLoad(){
           this.barStatus = "Inactif";
           this.invalidColor = "#DC143C";
         }
+
+        //Check bar name if it has already been updated
+        if(this.barName.substring(0, 6) === "Nom de"){
+          this.nameNotYetUpdated = true;
+        }else{
+          this.nameNotYetUpdated = false;
+        }
+
+        // console.log("???",this.nameNotYetUpdated)
+
+        //
+        let initTextLength = data.ENT_DESCRIPTION;
+        this.givenLimit = 255 - initTextLength.length;
+        
         //form
         this.editBarForm.get('nomEnt').setValue(data.ENT_NOM);
         this.editBarForm.get('typeEnt').setValue(data.ENT_SECTEURACTIVITES);
@@ -176,9 +218,13 @@ imgLoad(){
     const localiteEnt: string = this.editBarForm.controls['localiteEnt'].value;
     const IdEnt : string = this.ID_ENT;
     // Validation Bar to display for Users interface
+    const remBreakLine = descEnt.replace(/(\r\n|\n|\r)/gm," ");
+    //Pure text
+    // var dsds = _.unescape(remBreakLine);
     this.updateImageName(this.barName, nomEnt);
     setTimeout(()=>{
       this.updateBar(nomEnt, descEnt, adresseEnt, localiteEnt, npaEnt, secteurEnt, IdEnt);
+      this.sendNotifToAdmin("Mise à jour de description du bar", nomEnt+" (ce bar est maintenant inactif)");
     },1000);
     
 }
@@ -189,7 +235,7 @@ updateBar(nomEnt: string, descEnt: string, adresseEnt: string, localiteEnt: stri
       url: any      	= this.baseURI;
 
   this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-          this.sendNotification('Votre modification a bien été pris en compte !');
+          this.sendNotification('Vos modifications ont bien été pris en compte !');
           this.ionViewWillEnter();
           this.disableEdit();
       },
@@ -261,13 +307,14 @@ async editSchedule(jourIdParam : string, jourParam : string, hdj : string, hfj :
   modal.present();
 }
 
-async editPhotos() {
+async editPhotos(imgNum) {
   const modal = await this.modalCtrl.create( {
       component: ModalChangePhotosPage,
-      cssClass: "edit-photos-modal",
+      cssClass: "edit-profilepic-modal",
       showBackdrop : true,
       componentProps: {
-        bar_name : this.barName
+        bar_name : this.barName,
+        img_num : imgNum
       },
   });
   modal.onDidDismiss().then((data) => {
@@ -285,16 +332,21 @@ async editPhotos() {
 //
 
   allowEdit(){
+    this.alertUpdateBar();
     this.barInputDisabled = false;
     this.activeColor = "#1b1e27";
     this.dNone = "inline-flex";
     this.dHide = "none";
     this.activeBorder = "1px solid rgba(255,255,255,.7)"
     this.activeHeight = "40px";
-    this.activeHeightTA = "100px";
+    this.activeHeightTA = "150px";
     this.activeFS = "1rem";
     this.typeBar = "none";
     this.typeBarSelect = "flex";
+
+    // let initTextLength = this.editBarForm.controls['descEnt'].value;
+    // this.givenLimit = this.givenLimit - initTextLength.length;
+
   }
 
   disableEdit(){
@@ -304,7 +356,7 @@ async editPhotos() {
     this.dHide = "inline-flex";
     this.activeBorder = "none"
     this.activeHeight = "auto";
-    this.activeHeightTA = "auto";
+    this.activeHeightTA = "130px";
     this.activeFS = ".9rem";
     this.typeBar = "block";
     this.typeBarSelect = "none";
@@ -316,7 +368,7 @@ async editPhotos() {
     const toast = await this.toastCtrl.create({
         message: msg,
         duration: 3000,
-        position: 'bottom'
+        position: 'top'
     });
     toast.present();
 }
@@ -337,9 +389,139 @@ async loadingModal() {
   });
 }
 
+retour_offline(){
+  this.nativePageTransitions.fade(null);  
+  this.navCtrl.back();
+}
+
 retour(){
   this.nativePageTransitions.fade(null);  
   this.navCtrl.back();
+}
+
+scrollEvent(event){
+  this.scrollOffsetTop = event.detail.scrollTop;
+  if(this.scrollOffsetTop > 0){
+    this.maincontent.scrollY = true;
+  }
+}
+
+pullstart(e){
+  this.touchStart = e.changedTouches[0].clientY;
+}
+
+pull(e){
+  this.animDur = "0s";
+  var touchEnd = e.changedTouches[0].clientY;
+
+  if (this.touchStart > touchEnd) {
+    this.refresherPosY--;
+  } else {
+    this.refresherPosY++;
+  }
+
+  //---------------------------------------------
+  var incPosY = this.refresherPosY*12;
+
+  if (this.touchStart > touchEnd) {
+
+  }else {
+    if(this.scrollOffsetTop == 0){
+        this.maincontent.scrollY = false;
+        this.ifPulled = true;
+        if(incPosY>= 0 && incPosY <= 200){
+          this.currPosY = incPosY;
+          this.posY = "translateY("+incPosY+"px)";
+        }
+        if(incPosY > 150 && incPosY < 200){
+          this.maincontent.scrollY = false;
+        }else{
+          this.maincontent.scrollY = true;
+        }
+    }
+  }
+}
+
+endpull(){
+  this.maincontent.scrollY = true;
+  if(this.currPosY < 150){
+    this.refresherPosY = 0;
+    this.posY = "translateY("+this.refresherPosY+"px)";
+    this.animDur = "200ms";
+  }else{
+    //
+    if(this.scrollOffsetTop == 0 && this.ifPulled){
+      this.ifPulled = false; 
+      this.posY = "translateY("+150+"px)";
+      this.animDur = "200ms";
+      this.rotate = "rotate 600ms infinite linear";
+      this.maincontent.scrollY = false;
+      this.popFD = "block";
+      setTimeout(() => {
+        this.animDur = "500ms";
+        this.rotate = "none";
+        this.refresherPosY = 0;
+        this.posY = "translateY("+this.refresherPosY+"px)";
+      }, 2200);
+
+      setTimeout(() => {
+        this.popFD = "none";
+        this.mainOpac = "0";
+        //Put LifeCycle Hooks Here...
+        this.ionViewWillEnter();
+        //
+      }, 2300);
+      
+      setTimeout(() => {
+        this.mainOpac  = "1";
+        this.maincontent.scrollY = true;
+      }, 3000);
+    }
+    //
+  }
+  
+}
+
+checkLength(e){
+  let text = this.editBarForm.controls['descEnt'].value
+  let textValueOnChange = text.length;
+  this.givenLimit = 255 - textValueOnChange;
+}
+
+sendNotifToAdmin(title, barname) {
+  const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options: any		= { 'title' : title, 'barname' : barname, 'nametype' : 'Nom du bar'},
+        url: any      	= this.sendnotifURL;
+
+  this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
+      {
+          console.log(data);
+          if(data == "Sent"){
+            this.sendNotification("Une notification a été envoyé à l'administrateur");
+          }else{
+            console.log("Erreur d'envoi de notification");
+          }
+      },
+      (error: any) => {
+          console.log(error);
+      });
+}
+
+async alertUpdateBar(){
+  const alert = await this.alertCtrl.create({
+      header: "Attention !",
+      message: "<h3>Vous allez devoir remettre vos images de bar si vous décidez de modifier le NOM de votre bar.</h3>",
+      cssClass : "dimBackdropAlert",
+      buttons: [
+          {
+              text: 'OK',
+              role: 'cancel',
+              cssClass: 'secondary',
+          }
+      ]
+  });
+
+  await alert.present();
 }
 
 

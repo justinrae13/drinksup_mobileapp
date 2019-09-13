@@ -1,19 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Router, PreloadingStrategy } from '@angular/router';
+import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
-import { NavController, ModalController } from '@ionic/angular';
+import { NavController, ModalController, IonContent } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { LoadingpagePage } from '../loadingpage/loadingpage.page';
 import * as Global from '../../app/global';
-
-
+import { AborenewService } from '../../app/service/aborenew.service';
+import { Events } from '@ionic/angular';
 
 @Component({
   selector: 'app-favorite',
   templateUrl: './favorite.page.html',
   styleUrls: ['./favorite.page.scss'],
 })
-export class FavoritePage implements OnInit{
+export class FavoritePage implements OnInit, AfterViewInit{
   baseURI = Global.mainURI;
   uplPhotoURI = Global.photosURI;
   items : Array<any> = [];
@@ -26,29 +27,37 @@ export class FavoritePage implements OnInit{
   //
   ifHasConnection : boolean = true;
   //Custom Refresher Made By Jutin Rae
+  @ViewChild(IonContent) maincontent: IonContent;
   scrollOffsetTop : number = 0;
-  scrollCounter : number = 0;
-  highCounter : number = 227;
-  mcr_scale : string = "scale(0)";
-  mcr_dashoffset : string = "227";
-  mcr_trans: string = "0s";
-  mcr_svgDisplay : string = "block";
-  mcr_circleDivDisplay : string = "none";
-  mcr_bdDisplay : string = "none";
-  lastY : number = 0;
+  touchStart : number = 0;
+  refresherPosY : number = 0;
+  currPosY : number = 0;
+  ifPulled : boolean = false;
+  posY : string = "translateY(0px)";
+  animDur : string = "0s";
+  rotate : string = "none";
+  popFD : string = "none";
+  mainOpac : string = "1";
 
 
-  constructor(private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
-    
-    
+  constructor(private events : Events, private aborenew : AborenewService, private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
+    this.storage.get('SessionIdKey').then((valId) => {
+      this.aborenew.triggerRenewal(valId,"CheckIT");
+    });
 
   }
 
+  ngAfterViewInit(){}
+  ngOnInit() {}
+
   ionViewWillEnter(){
+    this.storage.get('SessionIdKey').then((valId) => {
+      this.aborenew.triggerRenewal(valId,null);
+    });
+    //
     this.storage.get('SessionEmailKey').then((val) => {
       this.loadFaveBar(val);
     });
-
     //Check if user has internet connection
     if(navigator.onLine){
       //If user has connection
@@ -59,67 +68,87 @@ export class FavoritePage implements OnInit{
     }
   }
 
-  ngOnInit() {}
-
   scrollEvent(event){
-    let currentScroll = event.detail.scrollTop;
     this.scrollOffsetTop = event.detail.scrollTop;
-    
-      if(currentScroll > 0 && this.lastScroll <= currentScroll){
-          this.contentSlideUp = "translateY(0px)";
-          this.lastScroll = currentScroll;
-      }else{
-          this.contentSlideUp = "translateY(50px)";
-          this.lastScroll = currentScroll;
-      }
-  }
-
-  touchmove(event){
-    if(this.scrollOffsetTop ==0){
-
-      var currentY = event.touches[0].screenY;
-
-      if(currentY > this.lastY){
-        this.scrollCounter++;
-      }else if(currentY < this.lastY){
-        this.scrollCounter--;
-      }
-
-      this.lastY = currentY;
-      var slowedCounter = this.scrollCounter/45;
-      var doffSet = 227;
-
-      if(slowedCounter <= 1 && slowedCounter > 0){
-        this.mcr_scale = "scale("+slowedCounter+")";
-        doffSet-=(this.scrollCounter*Math.PI);
-        this.mcr_dashoffset = doffSet.toString();
-      }
-
-      if(slowedCounter == 1){
-        this.mcr_trans = ".2s ease 1.5s";
-        this.mcr_svgDisplay = "none";
-        this.mcr_circleDivDisplay = "block";
-        this.mcr_bdDisplay = "block";
-        setTimeout(() => {
-          this.mcr_trans = "0s ease 0s";
-        }, 1800);
-        setTimeout(() => {
-          this.mcr_svgDisplay = "block";
-          this.mcr_circleDivDisplay = "none";
-        }, 2100);
-        setTimeout(() => {
-          this.ionViewWillEnter();
-          this.mcr_bdDisplay = "none";        
-        }, 2200);
-      }
-
+    if(this.scrollOffsetTop > 0){
+      this.maincontent.scrollY = true;
     }
-      
   }
 
-  touchend(){
-    this.scrollCounter = 0;
-    this.mcr_scale = "scale("+this.scrollCounter+")";
+  pullstart(e){
+    this.touchStart = e.changedTouches[0].clientY;
+  }
+
+  pull(e){
+    this.animDur = "0s";
+    var touchEnd = e.changedTouches[0].clientY;
+  
+    if (this.touchStart > touchEnd) {
+      this.refresherPosY--;
+    } else {
+      this.refresherPosY++;
+    }
+
+    //---------------------------------------------
+    var incPosY = this.refresherPosY*12;
+
+    if (this.touchStart > touchEnd) {
+
+    }else {
+      if(this.scrollOffsetTop ==0){
+          this.maincontent.scrollY = false;
+          this.ifPulled = true;
+          if(incPosY>= 0 && incPosY <= 200){
+            this.currPosY = incPosY;
+            this.posY = "translateY("+incPosY+"px)";
+          }
+          if(incPosY > 150 && incPosY < 200){
+            this.maincontent.scrollY = false;
+          }else{
+            this.maincontent.scrollY = true;
+          }
+      }
+    }
+  }
+
+  endpull(){
+    this.maincontent.scrollY = true;
+    if(this.currPosY < 150){
+      this.refresherPosY = 0;
+      this.posY = "translateY("+this.refresherPosY+"px)";
+      this.animDur = "200ms";
+    }else{
+      //
+      if(this.scrollOffsetTop == 0 && this.ifPulled){
+        this.ifPulled = false; 
+        this.posY = "translateY("+150+"px)";
+        this.animDur = "200ms";
+        this.rotate = "rotate 600ms infinite linear";
+        this.maincontent.scrollY = false;
+        this.popFD = "block";
+        setTimeout(() => {
+          this.animDur = "500ms";
+          this.rotate = "none";
+          this.refresherPosY = 0;
+          this.posY = "translateY("+this.refresherPosY+"px)";
+        }, 2200);
+  
+        setTimeout(() => {
+          this.popFD = "none";
+          this.mainOpac = "0";
+          //Put LifeCycle Hooks Here...
+          this.ionViewWillEnter();
+          //
+        }, 2300);
+        
+        setTimeout(() => {
+          this.mainOpac  = "1";
+          this.maincontent.scrollY = true;
+        }, 3000);
+      }
+      //
+    }
+    
   }
 
 
@@ -175,7 +204,7 @@ export class FavoritePage implements OnInit{
         componentProps: {},
     });
     modal.onDidDismiss().then(() => {
-        this.ionViewWillEnter();
+      this.ionViewWillEnter();
     })
     modal.present();
   }

@@ -1,27 +1,31 @@
-import { ToastController, AlertController } from '@ionic/angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ToastController, AlertController, IonContent } from '@ionic/angular';
+import { Component, ViewChild } from '@angular/core';
 import { Storage } from '@ionic/storage';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NavController, Platform, ModalController, IonSelect } from '@ionic/angular';
-import { Router, ActivatedRoute } from '@angular/router';
-import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
+import { NavController, ModalController, IonSelect } from '@ionic/angular';
+import { Router } from '@angular/router';
+import {Facebook } from '@ionic-native/facebook/ngx';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import * as moment from 'moment';
 import 'moment/locale/fr';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { ModalChangeUserphotoPage } from '../modal-change-userphoto/modal-change-userphoto.page'
+import { ModalToSponsorPage } from '../modal-to-sponsor/modal-to-sponsor.page'
+import { ModalToSharePage } from '../modal-to-share/modal-to-share.page'
+import { ModalGetSponsoredPage } from '../modal-get-sponsored/modal-get-sponsored.page'
 import { LoadingpagePage } from '../loadingpage/loadingpage.page'
-import { SocialSharing } from '@ionic-native/social-sharing/ngx';
-import { Clipboard } from '@ionic-native/clipboard/ngx';
+import { AbonnementPage } from '../abonnement/abonnement.page'
 import * as Global from '../../app/global';
 import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
+import { AborenewService } from '../../app/service/aborenew.service';
+import { Events } from '@ionic/angular';
 
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.page.html',
     styleUrls: ['./profile.page.scss'],
 })
-export class ProfilePage implements OnInit {
+export class ProfilePage{
     @ViewChild(IonSelect) selectRef: IonSelect;
     customActionSheetOptions: any = {
         header: 'Sélectionnez votre ville préférée.',
@@ -38,13 +42,14 @@ export class ProfilePage implements OnInit {
     defaultPic : string = "../../assets/img/user-icon.svg";
     userSessionRole : string;
     paidUser : string;
+    ifHasBeenSubscribed : number = null;
     data: any;
     dateInscription = '';
     loadHeight : string = "100%";
     loadSlide : string = "translateX(0px)";
     idInternaute: number;
     allVille = [];
-    abonneDetail = {};
+    abonneDetail : any = {};
     curtain_fade : string = "1";
     curtain_hide : string = "block";
 
@@ -62,80 +67,124 @@ export class ProfilePage implements OnInit {
     the_pasted_code : string = "- - - - - - -";
     the_code_exists : boolean = false;
     if_already_sponsored : boolean = false;
+
     //
     ifHasConnection : boolean = true;
     //Custom Refresher Made By Jutin Rae
+    @ViewChild(IonContent) maincontent: IonContent;
     scrollOffsetTop : number = 0;
-    scrollCounter : number = 0;
-    highCounter : number = 227;
-    mcr_scale : string = "scale(0)";
-    mcr_dashoffset : string = "227";
-    mcr_trans: string = "0s";
-    mcr_svgDisplay : string = "block";
-    mcr_circleDivDisplay : string = "none";
-    mcr_bdDisplay : string = "none";
-    lastY : number = 0;
-    constructor(private nativePageTransitions: NativePageTransitions, private clipboard: Clipboard, private socialSharing: SocialSharing, public alertCtrl: AlertController, private toastCtrl : ToastController,private modalCtrl : ModalController,private emailComposer: EmailComposer,private fb: Facebook, private googlePlus : GooglePlus, private route: Router, public navCtrl : NavController, public storage: Storage, private http : HttpClient, private platform : Platform) {
-
-    }
-
-    ngOnInit() {}
-
-    ngAfterViewInit(){
-        setTimeout(() => {
-            this.curtain_fade = "0";
-        }, 1000);
-        setTimeout(() => {
-            this.curtain_hide = "none";
-        }, 1600);
-    }
+    touchStart : number = 0;
+    refresherPosY : number = 0;
+    currPosY : number = 0;
+    ifPulled : boolean = false;
+    posY : string = "translateY(0px)";
+    animDur : string = "0s";
+    rotate : string = "none";
+    popFD : string = "none";
+    mainOpac : string = "1";
+    constructor(private events: Events, private aborenew : AborenewService, private nativePageTransitions: NativePageTransitions, public alertCtrl: AlertController, private toastCtrl : ToastController,private modalCtrl : ModalController,private emailComposer: EmailComposer,private fb: Facebook, private googlePlus : GooglePlus, private route: Router, public navCtrl : NavController, public storage: Storage, private http : HttpClient) {
+        this.storage.get('SessionIdKey').then((valId) => {
+            this.aborenew.triggerRenewal(valId,"CheckIT");
+        });
 
     
-    touchmove(event){
-        var currentY = event.touches[0].screenY;
+        this.events.subscribe("LOOL",()=>{
+            alert("dfsdfsdfd  ")
+        });
 
-        if(currentY > this.lastY){
-        this.scrollCounter++;
-        }else if(currentY < this.lastY){
-        this.scrollCounter--;
-        }
-
-        this.lastY = currentY;
-        var slowedCounter = this.scrollCounter/45;
-        var doffSet = 227;
-
-        if(slowedCounter <= 1 && slowedCounter > 0){
-        this.mcr_scale = "scale("+slowedCounter+")";
-        doffSet-=(this.scrollCounter*Math.PI);
-        this.mcr_dashoffset = doffSet.toString();
-        }
-
-        if(slowedCounter == 1){
-        this.mcr_trans = ".2s ease 1.5s";
-        this.mcr_svgDisplay = "none";
-        this.mcr_circleDivDisplay = "block";
-        this.mcr_bdDisplay = "block";
         setTimeout(() => {
-            this.mcr_trans = "0s ease 0s";
+            this.curtain_fade = "0";
+        }, 1200);
+        setTimeout(() => {
+            this.curtain_hide = "none";
         }, 1800);
-        setTimeout(() => {
-            this.mcr_svgDisplay = "block";
-            this.mcr_circleDivDisplay = "none";
-        }, 2100);
-        setTimeout(() => {
+  
+    }
+
+    scrollEvent(event){
+        this.scrollOffsetTop = event.detail.scrollTop;
+        if(this.scrollOffsetTop > 0){
+        this.maincontent.scrollY = true;
+        }
+    }
+
+    pullstart(e){
+        this.touchStart = e.changedTouches[0].clientY;
+    }
+
+    pull(e){
+        this.animDur = "0s";
+        var touchEnd = e.changedTouches[0].clientY;
+    
+        if (this.touchStart > touchEnd) {
+        this.refresherPosY--;
+        } else {
+        this.refresherPosY++;
+        }
+
+        //---------------------------------------------
+        var incPosY = this.refresherPosY*12;
+
+        if (this.touchStart > touchEnd) {
+
+        }else {
+        if(this.scrollOffsetTop <= 0){
+            this.maincontent.scrollY = false;
+            this.ifPulled = true;
+            if(incPosY>= 0 && incPosY <= 200){
+                this.currPosY = incPosY;
+                this.posY = "translateY("+incPosY+"px)";
+            }
+            if(incPosY > 150 && incPosY < 200){
+                this.maincontent.scrollY = false;
+            }else{
+                this.maincontent.scrollY = true;
+            }
+        }
+        }
+    }
+
+    endpull(){
+        this.maincontent.scrollY = true;
+        if(this.currPosY < 150){
+        this.refresherPosY = 0;
+        this.posY = "translateY("+this.refresherPosY+"px)";
+        this.animDur = "200ms";
+        }else{
+        //
+        if(this.scrollOffsetTop <= 0 && this.ifPulled){
+            this.ifPulled = false; 
+            this.posY = "translateY("+150+"px)";
+            this.animDur = "200ms";
+            this.rotate = "rotate 600ms infinite linear";
+            this.maincontent.scrollY = false;
+            this.popFD = "block";
+            setTimeout(() => {
+            this.animDur = "500ms";
+            this.rotate = "none";
+            this.refresherPosY = 0;
+            this.posY = "translateY("+this.refresherPosY+"px)";
+            }, 2200);
+    
+            setTimeout(() => {
+            this.popFD = "none";
+            this.mainOpac = "0";
+            //Put LifeCycle Hooks Here...
             this.ionViewWillEnter();
-            this.mcr_bdDisplay = "none";        
-        }, 2200);
+            //
+            }, 2300);
+            
+            setTimeout(() => {
+            this.mainOpac  = "1";
+            this.maincontent.scrollY = true;
+            }, 3000);
+        }
+        //
         }
         
     }
 
-    touchend(){
-    this.scrollCounter = 0;
-    this.mcr_scale = "scale("+this.scrollCounter+")";
-    }
-
-    ionViewWillEnter(){
+    ionViewWillEnter() : void{
         this.getVille();
         
         this.storage.get('SessionIdKey').then((val) => {
@@ -144,6 +193,7 @@ export class ProfilePage implements OnInit {
             this.getDetailAbonnement(val);
             this.getUserNumOffers(parseInt(val));
             this.getUserNumRatings(parseInt(val));
+            this.aborenew.triggerRenewal(val,null);
         });
         //Check if user has internet connection
         if(navigator.onLine){
@@ -192,29 +242,33 @@ export class ProfilePage implements OnInit {
             (error: any) => {
                 console.log(error);
             });
-      }
+    }
 
-      getVille() {
-        const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'getAllVille'},
-            url: any      	= this.baseURI;
-      
-        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-              this.allVille = data;
-            },  
-            (error: any) => {
-                console.log(error);
-            });
-      }
+    getVille() {
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options: any		= { 'key' : 'getAllVille'},
+        url: any      	= this.baseURI;
+    
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+            this.allVille = data;
+        },  
+        (error: any) => {
+            console.log(error);
+        });
+    }
 
     logoutFromApp(){
         this.storage.remove("SessionInKey");
         this.storage.remove("SessionRoleKey");
         this.storage.remove("SessionEmailKey");
         this.storage.remove("SessionIdKey");
+        this.storage.remove("TriggerOnce");
+        this.storage.remove("TriggerAlertOnce");
+        this.storage.remove("PassByLogin");
         this.googlePlus.logout().then(res => {console.log(res);}).catch(err => console.error(err));
         this.fb.logout();
         this.navCtrl.navigateRoot('login');
+        this.events.publish("closeWhenOnAboPage");
     }
 
     async changerPhoto(useremail : string){
@@ -278,8 +332,44 @@ export class ProfilePage implements OnInit {
         this.navTabs('/cgu');
     }
 
-    goAbonnement(){
-        this.navTabs('/abonnement');
+    async goAbonnement(){
+        const modal = await this.modalCtrl.create( {
+            component: AbonnementPage,
+            showBackdrop : true,
+            componentProps: {},
+        });
+        modal.onDidDismiss().then((data) => {
+            this.ionViewWillEnter();
+            if(data.data === "paymentDone"){
+                this.events.publish("pre-init-offer");
+                setTimeout(() => {
+                    this.curtain_fade = "0";
+                }, 1400);
+                setTimeout(() => {
+                    this.curtain_hide = "none";
+                }, 1950);
+                
+            }else if(data.data === "back"){
+                this.events.publish("reboundPopUp");
+                console.log("Payment cancelled");
+                this.curtain_fade = "0";
+                setTimeout(() => {
+                        this.curtain_hide = "none";
+                }, 550);
+            }else{
+                this.events.publish("reboundPopUp");
+                console.log("Payment cancelled");
+               this.curtain_fade = "0";
+               setTimeout(() => {
+                    this.curtain_hide = "none";
+               }, 550);
+            }
+        })
+        modal.present();
+        this.curtain_fade = "1";
+        this.curtain_hide = "block";
+        this.events.publish("closeWhenOnAboPage");
+        
     }
 
     getDetailAbonnement(id : string) {
@@ -412,16 +502,16 @@ export class ProfilePage implements OnInit {
             this.updateUserLevel(id, "Ambassadeur");
             console.log("Ambassadeur");
         }else if(this.userNumberOfMonthsRegistered >= 6 && this.userNumberOfOffers >=50 && this.userNumberOfGivenRatings >= 15 && this.userNumberOfSponsors >= 3){
-            this.updateUserLevel(id, "Expert/Bartender");
-            console.log("Expert/Bartender");
+            this.updateUserLevel(id, "Bartender");
+            console.log("Bartender");
         }else if(this.userNumberOfMonthsRegistered >= 3 && this.userNumberOfOffers >=30 && this.userNumberOfGivenRatings >= 10 && this.userNumberOfSponsors >= 1){
             this.updateUserLevel(id, "Connaisseur");
             console.log("Connaisseur");
         }else if(this.userNumberOfMonthsRegistered >= 2 && this.userNumberOfOffers >=10 && this.userNumberOfGivenRatings >= 5){
-            this.updateUserLevel(id, "Habitué/Confirmé");
-            console.log("Habitué/Confirmé");
+            this.updateUserLevel(id, "Habitué");
+            console.log("Habitué");
         }else if(this.userNumberOfMonthsRegistered >= 1 && this.userNumberOfOffers >=5 && this.userNumberOfGivenRatings >= 2 && this.loggedUser.INT_PHOTO_CHANGE === "true"){
-            this.updateUserLevel(id, "Initié/Petit joueur");
+            this.updateUserLevel(id, "Petit joueur");
         }else{
             return false;
         }
@@ -440,6 +530,7 @@ export class ProfilePage implements OnInit {
         const alert = await this.alertCtrl.create({
             header: "V.I.P",
             message: "<h3>Votre statut vous permet de profiter de toutes les offres de Drinks Up.</h3>",
+            cssClass : "dimBackdropAlert",
             buttons: [
                 {
                     text: 'OK',
@@ -458,6 +549,7 @@ export class ProfilePage implements OnInit {
         const alert = await this.alertCtrl.create({
             header: "Propriétaire de bar",
             message: "<h3>Vous êtes bien un partenaire de Drinks Up.</h3>",
+            cssClass : "dimBackdropAlert",
             buttons: [
                 {
                     text: 'OK',
@@ -472,17 +564,36 @@ export class ProfilePage implements OnInit {
         await alert.present();
     }
 
-    async monAbonnementDetail(type,debut,fin){
+    async monAbonnementDetail(id, type,debut,fin){
         moment.locale('fr');
-
+        
         const alert = await this.alertCtrl.create({
             header: "Mon abonnement",
-            message: "<div class='table'> <div class='col'>Type :</div> <div class='col'>"+type+"</div> <div class='col'>Début :</div> <div class='col'>"+moment(debut).format('LLL')+"</div> <div class='col'>Fin :</div> <div class='col'>"+moment(fin).format('LLL')+"</div> </div>",
+            message: "<div class='table'> <div class='col'>Type :</div> <div class='col'>"+type+"</div> <div class='col'>Début :</div> <div class='col'>"+moment(debut).format('LLL')+"</div> <div class='col'>Fin :</div> <div class='col'>"+moment(fin).format('LLL')+"</div></div>",
             cssClass: "alertTables",
             buttons: [
                 {
                     text: 'OK',
                     role: 'cancel'
+                },
+                {
+                    text: 'Résilier mon abonnement',
+                    cssClass: "btnResilier",
+                    handler: () => {
+                        //Check Subscription end date
+                        var ojd = new Date();
+                        // ojd.setDate(ojd.getDate() + 24);
+                        var endDate = new Date(this.abonneDetail.ABO_DATEFIN);
+                        const diffTime = Math.abs(ojd.getTime() - endDate.getTime());
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                        if(diffDays < 7){
+                            this.cannotDisactivate();
+                        }else if(this.abonneDetail.ABO_CANCEL === "OUI"){
+                            this.alreadyCanceled();
+                        }else{
+                            this.canDisactivate(id);
+                        }
+                    }
                 }
             ]
         });
@@ -490,179 +601,47 @@ export class ProfilePage implements OnInit {
         await alert.present();
     }
 
-    //Custom modals
-    parrainer(role : string, user_code : string){
-        document.getElementById("bckdrop").style.display = "block";
-        document.getElementById("pm").style.display = "block";
 
-        var header_text = "";
-        var body_text = "";
-        var btn_text = "";
-        if(role==="user"){
-            header_text = "Vous pouvez soit copier votre code et l'envoyer à vos amis ou vous pouvez tout simplement cliquer sur le bouton \"Parrainer\".";
-            body_text = "<div style='display:flex; justify-content:center; align-items:center; overflow:hidden;height: 60px;border-radius: 5px 5px 0px 0px; position: relative; background-color: rgba(0,0,0,.6); border: 1px solid rgba(255,255,255,.6)'><p style='border-radius:0 0 5px 0;margin: 0; background: rgba(255,255,255,.6);display: inline; font-size: .7em;font-family: NBO; position: absolute;top: 0;left: 0; padding: 2px 15px'>VOTRE CODE</p><h1 style='margin: 0; color: rgba(255,255,255,.7);font-size: 1rem; font-family: NBL; margin-top: 12px'>"+user_code+"</h1></div>";
-            btn_text = "Parrainer";
-            document.getElementById("pm_copy_btn").style.display = "block";
-        }else{
-            header_text = "Partager Drinks Up";
-            body_text = "<h3 style='margin: 0; color: rgba(255,255,255,.7);font-size: .9rem; font-family: NBL'>Partager l'application avec vos proches et vos amis.</h3>";
-            btn_text = "Partager";
-            document.getElementById("pm_copy_btn").style.display = "none";
-    }
-
-        document.getElementById("pm_header_text").innerHTML = header_text;
-        document.getElementById("pm_body_text").innerHTML = body_text;
-        document.getElementById("pm_btn_text").innerHTML = btn_text;
-    }
-
-    saisirCode(){
-        document.getElementById("bckdrop").style.display = "block";
-        document.getElementById("scm").style.display = "block";
-        this.the_pasted_code = "- - - - - - -";   
-    }
-
-    // monAbonnement(){
-    //     document.getElementById("bckdrop").style.display = "block";
-    //     document.getElementById("cm").style.display = "block";
-    // }
-
-    closeModal(){
-        document.getElementById("bckdrop").style.display = "none";
-        document.getElementById("pm").style.display = "none";
-        document.getElementById("scm").style.display = "none";
-    }
-
-    shareCode(role){
-        var subject = "Drinks Up application mobile (Android/IOS)";
-        var message = "";
-        if(role===2){
-            message = "Télécharger Drinks Up dès maintenant ! \n\n Android : https://drinksup.ch \n IOS : https://drinksup.ch";
-        }else{
-            message = "Télécharger Drinks Up dès maintenant ! \n\n Android : https://drinksup.ch \n IOS : https://drinksup.ch \n\nOublies pas de saisir mon code via l'appli : "+this.the_copied_code+"\n\nTu peux soit copier le message en entier ou copier juste le code et le coller dans la section \"As-tu un code?\".";
-        }
-        this.socialSharing.share(message,subject,null,null).then((data) => {
-          }).catch((error) => {
-            console.log(error);
+    //Modals for sponsoring, sharing app and getting sponsored
+    async toSponsor(code) {
+        const modal = await this.modalCtrl.create( {
+            component: ModalToSponsorPage,
+            cssClass: "modalFourLinesHeader",
+            showBackdrop : true,
+            componentProps: {
+                codeParam : code
+            },
         });
+        modal.present();
     }
 
-    copyMyCode(){
-        this.clipboard.copy(this.the_copied_code);
-        this.sendNotification("Copié !");
-        this.closeModal();
-    }
-
-    pasteTheCode(myId){
-        var check = "";
-        var clipBoardMsg = "";
-        var txt = "";
-        var nowhitespaces = "";
-
-        this.clipboard.paste().then(
-            (resolve: string) => {
-                clipBoardMsg = resolve;
-
-                //Condition
-                check = clipBoardMsg.substring(0,3);
-                if(check==="DU-"){
-                    this.the_pasted_code = clipBoardMsg.replace(/\s/g,'');
-                    //
-                    this.checkIfCodeExists(clipBoardMsg.replace(/\s/g,''));
-                    this.checkIfAlreadySponsored(clipBoardMsg.replace(/\s/g,''), myId);
-
-                }else if(check==="Tél"){
-                    clipBoardMsg = clipBoardMsg.split("l'appli : ").pop();
-                    txt = clipBoardMsg.split('Tu peux').shift();
-                    nowhitespaces = txt.replace(/\s/g,'');
-
-                    this.the_pasted_code = nowhitespaces;
-                    //
-                    this.checkIfCodeExists(nowhitespaces);
-                    this.checkIfAlreadySponsored(nowhitespaces, myId);
- 
-                }else{
-                    this.sendNotification("Veuillez assurer que vous avez copié le message en entier ou le bon code.");
-                }
-
-             },
-             (reject: string) => {
-               console.log('Error: ' + reject);
-             }
-        );
-    }
-
-    saveCode(myCode, myId){
-        if(myCode === this.the_pasted_code){
-            this.sendNotification("Vous ne pouvez utiliser votre propre code !");
-        }else if(!this.the_code_exists){
-            this.sendNotification("Le code est invalide. Veuillez vérifier si vous avez bien saisi le bon code.");
-        }else if(this.the_pasted_code === "- - - - - - -"){
-            this.sendNotification("Le code est invalide. Veuillez vérifier si vous avez bien saisi le bon code.");
-        }else if(this.the_code_exists ){
-            if(!this.if_already_sponsored){
-                this.addSponsorship(this.the_pasted_code, myId);
-                this.sendNotification("Succès !");
-                setTimeout(() => {
-                    this.closeModal();
-                }, 1000);
-            }else{
-                this.sendNotification("Erreur !\nVous avez déjà utilisé le code de cet utilisateur.");
-            }
-        }else{
-            return false;
-        }
-    }
-
-    addSponsorship(code_of_sponsor : string, id_of_sponsored : number) {
-        const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'addSponsorship', 'code': code_of_sponsor, 'id' : id_of_sponsored},
-            url: any      	= this.baseURI;
-    
-        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            console.log(data)
-        },  
-        (error: any) => {
-            console.log(error);
+    async toShare() {
+        const modal = await this.modalCtrl.create( {
+            component: ModalToSharePage,
+            cssClass: "edit-profilepic-modal",
+            showBackdrop : true,
+            componentProps: {},
         });
+        modal.present();
     }
 
-    checkIfCodeExists(code : string) {
-        const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'checkIfCodeExists', 'code': code},
-            url: any      	= this.baseURI;
-    
-        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            if(data.num > 0){
-                this.the_code_exists = true;
-            }else{
-                this.the_code_exists = false;
-            }
-        },  
-        (error: any) => {
-            console.log(error);
+    async getSponsored(code, id) {
+        const modal = await this.modalCtrl.create( {
+            component: ModalGetSponsoredPage,
+            cssClass: "modalThreeLinesHeader",
+            showBackdrop : true,
+            componentProps: {
+                codeParam : code,
+                idParam : id
+            },
         });
+        modal.present();
     }
 
-    checkIfAlreadySponsored(code_of_sponsor : string, id_of_sponsored : number) {
-        const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-            options: any		= { 'key' : 'checkIfAlreadySponsored', 'code': code_of_sponsor, 'id' : id_of_sponsored},
-            url: any      	= this.baseURI;
-    
-        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
-            if(data.num > 0){
-                this.if_already_sponsored = true;
-            }else{
-                this.if_already_sponsored = false;
-            }
-        },  
-        (error: any) => {
-            console.log(error);
-        });
-    }
-
+    //-----------------------------------
     async parrainageInfo(){
         var fixedMonthNum = this.userNumberOfMonthsRegistered.toFixed(1);
-        var msg = "<div class='table'> <div class='col xl'>Nombre de personnes parrainé :</div> <div class='col xs'>"+this.userNumberOfSponsors+"</div> <div class='col xl'>Membre depuis (mois) :</div> <div class='col xs'>"+fixedMonthNum+"</div> <div class='col xl'>Nombre d'avis laissé :</div> <div class='col xs'>"+this.userNumberOfGivenRatings+"</div> <div class='col xl'>Nombre d'avis laissé :</div> <div class='col xs'>"+this.userNumberOfOffers+"</div> </div>";
+        var msg = "<div class='table'> <div class='col xl'>Nombre de personnes parrainées :</div> <div class='col xs'>"+this.userNumberOfSponsors+"</div> <div class='col xl'>Membre depuis (mois) :</div> <div class='col xs'>"+fixedMonthNum+"</div> <div class='col xl'>Nombre d'avis laissés :</div> <div class='col xs'>"+this.userNumberOfGivenRatings+"</div> <div class='col xl'>Nombre d'offre profitées :</div> <div class='col xs'>"+this.userNumberOfOffers+"</div> </div>";
         const alert = await this.alertCtrl.create({
             header: this.loggedUser.INT_LEVEL,
             message: msg,
@@ -685,5 +664,70 @@ export class ProfilePage implements OnInit {
         await alert.present(); 
     }
 
+    async canDisactivate(id){
+        const alert = await this.alertCtrl.create({
+            header: "Confirmation",
+            message: "<h3>Êtes-vous sûr de vouloir résilier votre abonnement ?</h3>",
+            buttons: [
+                {
+                    text: "Oui",
+                    handler: () => {
+                        this.cancelAbo(id);
+                        setTimeout(() => {
+                            this.ionViewWillEnter();
+                        }, 100);
+                    }
+                },
+                {
+                    text: "Non",
+                    role: 'cancel'
+                }
+            ]
+        });
+
+        await alert.present(); 
+    }
+
+    async cannotDisactivate(){
+        const alert = await this.alertCtrl.create({
+            header: "Attention !",
+            message: "<h3>Vous ne pouvez plus résilier votre abonnement.<br><br>La résiliation doit être faite au moins une semaine avant le terme de votre abonnement. <i style='font-family: NBO; font-size: .8rem'>(Article 5.4 de CGU)</i></h3>",
+            buttons: [
+                {
+                    text: "OK",
+                    role: 'cancel'
+                }
+            ]
+        });
+
+        await alert.present(); 
+    }
+
+    async alreadyCanceled(){
+        const alert = await this.alertCtrl.create({
+            header: "Information",
+            message: "<h3>Votre abonnement a été déjà résilié.</h3>",
+            buttons: [
+                {
+                    text: "OK",
+                    role: 'cancel'
+                }
+            ]
+        });
+
+        await alert.present(); 
+    }
+
+    cancelAbo(id){
+        const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+            options: any		= { 'key' : 'cancelAbo','id' : id},
+            url: any      	= this.baseURI;
+        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+            console.log("Success message :",data)
+        },
+        (error: any) => {
+            console.log("Error message :",error);
+        });
+    }
 }
         // console.log("Sponsors=>"+this.userNumberOfSponsors+"\n\nMonths=>"+this.userNumberOfMonthsRegistered+"\n\nOffers=>"+this.userNumberOfOffers+"\n\nRatings=>"+this.userNumberOfGivenRatings+"\n\nProfile Pic=>"+this.loggedUser.INT_PHOTO_CHANGE);

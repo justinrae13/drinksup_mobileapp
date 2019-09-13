@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavParams, ModalController, ToastController } from '@ionic/angular';
+import { NavParams, ModalController } from '@ionic/angular';
 import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -12,14 +12,12 @@ import { Storage } from '@ionic/storage';
   templateUrl: './modal-change-userphoto.page.html',
   styleUrls: ['./modal-change-userphoto.page.scss'],
 })
-export class ModalChangeUserphotoPage implements OnInit {
+export class ModalChangeUserphotoPage{
   user_email : string;
   userPhotoURI = 'https://www.drinksup.ch/serveur/userphotos/';
   baseURI = Global.mainURI;
 
-  constructor(public storage: Storage, private toastCtrl: ToastController, private modalCtrl : ModalController, private navParam : NavParams, private http : HttpClient, private camera : Camera) { }
-
-  ngOnInit() {}
+  constructor(public storage: Storage, private modalCtrl : ModalController, private navParam : NavParams, private http : HttpClient, private camera : Camera) { }
 
   ionViewWillEnter(){
     this.user_email = this.navParam.get('email');

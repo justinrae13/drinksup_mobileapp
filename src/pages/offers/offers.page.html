@@ -1,16 +1,28 @@
-<div class="tab_header"><div class="filter" (click)="openSelect()"><img src="../../assets/img/filter.svg"></div>Boissons Offertes</div>
-
-<!-- Custom Refresher Start -->
-<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
-    <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
-      <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
-    </svg>
-    <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+<div *ngIf="showBanner" class="banner_for_non_subscribed" [ngStyle]="{'transform' : bannerSlidDown}">
+  <div class="bfns_content_wrapper">
+    <img src="../../assets/img/offers_icon.svg">
+    <h1>Abonnez-vous dès maintenant afin de profiter des avantages de Drinks Up.</h1>
+    <ion-button expand="block" (click)="goAbo()">S'ABONNER</ion-button>
+  </div>
 </div>
-<div class="mcr_backdrop" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
+
+<div class="tab_header"><div class="filter" (click)="openSelect()"><img src="../../assets/img/filter.svg"></div>Boissons Offertes</div>
+<!-- Custom Refresher Start -->
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
+</div>
 <!-- Custom Refresher End -->
 
-<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)" [ngStyle]="{'transform' : contentSlideUp}">
+<!-- <div class="loader_wrapper" [ngStyle]="{'display' : popSpinner}">
+  <div class="loader"></div>
+</div> -->
+
+<div class="loading_screen_abonne" [ngStyle]="{'opacity' : curtain_fade, 'display' : curtain_hide}">
+  <div class="spinner_wrapper"><div class="spinner" [ngStyle]="{'opacity' : spinner_fade}"></div></div>
+</div>
+
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
 
   <p *ngIf="Filtereditems===null" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour le moment</p>
 
@@ -31,13 +43,13 @@
       </ion-item>
   </ion-list>
 
-  <ion-select placeholder="Select One" [interfaceOptions]="customActionSheetOptions" style="display:none" (ionChange)="filterByDay($event)">
+  <ion-select placeholder="Select One" [interfaceOptions]="customActionSheetOptions"  style="display:none" (ionChange)="filterByDay($event)">
       <ion-select-option [selected]="true" value="all">Tous</ion-select-option>
       <ion-select-option *ngFor="let jour of joursDeLaSemaine" value="{{jour.num}}">{{jour.nomFr}}</ion-select-option>
   </ion-select>
 </ion-content>
 
-<ion-content *ngIf="!ifHasConnection" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
     <div class="no_connection">
       <img src="../../assets/img/no_connection.svg">
       <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>

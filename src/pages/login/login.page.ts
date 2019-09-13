@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
 import {NavController, ToastController, AlertController} from '@ionic/angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
@@ -9,21 +9,23 @@ import { Device } from '@ionic-native/device/ngx';
 import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
 import { Network } from '@ionic-native/network/ngx';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { Events } from '@ionic/angular';
+
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class LoginPage {
+    payed : string;
     userData: any;
     userfb: any = {};
     userdatafb: any;
     loginForm: FormGroup;
     registerEmail: FormGroup;
     baseURI = Global.mainURI;
-    regURL = 'https://www.futurae-ge.ch/ionic-phpmailer.php';
+    regURL = 'https://www.drinksup.ch/serveur/mailer/native_registration.php';
     userDetails : any;
     users = [];  
     fbIdExist : boolean = false;
@@ -53,7 +55,7 @@ export class LoginPage implements OnInit {
 
     uuid : string = "";
     
-    constructor(private splashScreen: SplashScreen, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
+    constructor(private events : Events, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
         this.loginForm = new FormGroup({
             PRO_EMAIL: new FormControl(),
             PRO_PASSWORD: new FormControl(),
@@ -65,30 +67,13 @@ export class LoginPage implements OnInit {
 
         this.validationForm();
 
-        this.network.onDisconnect().subscribe(() => {
-            alert('network was disconnected :-(');
-        });
-
-        this.network.onConnect().subscribe(() => {
-            alert('network connected!');
-        // We just got a connection but we need to wait briefly
-            // before we determine the connection type. Might need to wait.
-        // prior to doing any api requests as well.
-        setTimeout(() => {
-            if (this.network.type === 'wifi') {
-                alert('we got a wifi connection, woohoo!');
-            }
-        }, 3000);
-        });
-
-        
+        this.network.onDisconnect().subscribe(() => {});
+        this.network.onConnect().subscribe(() => {});
     }
 
-    ngOnInit() {
-        this.getUsers();
-    }
 
     ngAfterViewInit(){
+        this.getUsers();
         setTimeout(() => {
             this.formLog = "block";
         }, 1750);
@@ -249,9 +234,13 @@ export class LoginPage implements OnInit {
             {
                 
                 this.userDetails = data;
+                this.getPaidUser(this.userDetails.ID);
                 this.storage.set('SessionIdKey', this.userDetails.ID);
                 this.storage.set('SessionEmailKey', this.userDetails.EMAIL);
                 this.storage.set('SessionInKey', 'Yes');
+                setTimeout(() => {
+                    this.events.publish("TriggerPopUp");
+                }, 1000);
                 if (this.userDetails.ROLE === this.roleAdmin) {
                     
                     this.storage.set('SessionRoleKey', this.roleAdmin);
@@ -260,6 +249,7 @@ export class LoginPage implements OnInit {
                     // document.getElementById("seConnTextId").innerHTML = "OK !";
                     // document.getElementById("seConnTextId").style.color = "#4caf50";
                     // this.btnAnim_1_Off();
+                    this.sendNotification("Bienvenue à bord !");
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsadmin/users');
                     }, 500);
@@ -271,6 +261,7 @@ export class LoginPage implements OnInit {
                     // document.getElementById("seConnTextId").innerHTML = "OK !";
                     // document.getElementById("seConnTextId").style.color = "#4caf50";
                     // this.btnAnim_1_Off();
+                    this.sendNotification("Bienvenue à bord !");
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     }, 500); 
@@ -281,8 +272,13 @@ export class LoginPage implements OnInit {
                     // document.getElementById("seConnTextId").innerHTML = "OK !";
                     // document.getElementById("seConnTextId").style.color = "#4caf50";
                     // this.btnAnim_1_Off();
+                    this.sendNotification("Bienvenue à bord !");
                     setTimeout(() => {
-                        this.navCtrl.navigateRoot('/tabs/offers');
+                        if(this.payed !== "expired"){
+                            this.navCtrl.navigateRoot('/tabs/offers');
+                        }else{
+                            this.navCtrl.navigateRoot('/tabs/bars');
+                        }
                     }, 500);
                 } else {
                     
@@ -315,10 +311,13 @@ export class LoginPage implements OnInit {
             {
                 
                 this.userDetails = data;
-                console.log(this.userDetails);
+                this.getPaidUser(this.userDetails.ID);
                 this.storage.set('SessionIdKey', this.userDetails.ID);
                 this.storage.set('SessionEmailKey', this.userDetails.EMAIL);
                 this.storage.set('SessionInKey', 'Yes');
+                setTimeout(() => {
+                    this.events.publish("TriggerPopUp");
+                }, 1000);
                 if (this.userDetails.ROLE === this.roleAdmin) {
                     this.navCtrl.navigateRoot('/tabsadmin/users');
                     this.storage.set('SessionRoleKey', this.roleAdmin);
@@ -326,7 +325,13 @@ export class LoginPage implements OnInit {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
                 } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
-                    this.navCtrl.navigateRoot('/tabs/offers');
+                    setTimeout(() => {
+                        if(this.payed !== "expired"){
+                            this.navCtrl.navigateRoot('/tabs/offers');
+                        }else{
+                            this.navCtrl.navigateRoot('/tabs/bars');
+                        }
+                    }, 300);
                     this.storage.set('SessionRoleKey', this.roleUser);
                 } else {
                     // console.log(JSON.stringify(options));
@@ -349,10 +354,13 @@ export class LoginPage implements OnInit {
             {
                 
                 this.userDetails = data;
-                console.log(this.userDetails);
+                this.getPaidUser(this.userDetails.ID);
                 this.storage.set('SessionIdKey', this.userDetails.ID);
                 this.storage.set('SessionEmailKey', this.userDetails.EMAIL);
                 this.storage.set('SessionInKey', 'Yes');
+                setTimeout(() => {
+                    this.events.publish("TriggerPopUp");
+                }, 1000);
                 if (this.userDetails.ROLE === this.roleAdmin) {
                     this.navCtrl.navigateRoot('/tabsadmin/users');
                     this.storage.set('SessionRoleKey', this.roleAdmin);
@@ -368,7 +376,13 @@ export class LoginPage implements OnInit {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
                 } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
-                    this.navCtrl.navigateRoot('/tabs/offers');
+                    setTimeout(() => {
+                        if(this.payed !== "expired"){
+                            this.navCtrl.navigateRoot('/tabs/offers');
+                        }else{
+                            this.navCtrl.navigateRoot('/tabs/bars');
+                        }
+                    }, 300);
                     this.storage.set('SessionRoleKey', this.roleUser);
                 } else {
                     // console.log(JSON.stringify(options));
@@ -391,10 +405,14 @@ export class LoginPage implements OnInit {
             {
                 
                 this.userDetails = data;
+                this.getPaidUser(this.userDetails.ID);
                 console.log(this.userDetails);
                 this.storage.set('SessionIdKey', this.userDetails.ID);
                 this.storage.set('SessionEmailKey', this.userDetails.EMAIL);
                 this.storage.set('SessionInKey', 'Yes');
+                setTimeout(() => {
+                    this.events.publish("TriggerPopUp");
+                }, 1000);
                 if (this.userDetails.ROLE === this.roleAdmin) {
                     this.navCtrl.navigateRoot('/tabsadmin/users');
                     this.storage.set('SessionRoleKey', this.roleAdmin);
@@ -410,7 +428,13 @@ export class LoginPage implements OnInit {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
                 } else if (this.userDetails.ROLE === this.roleUser) {
-                    this.navCtrl.navigateRoot('/tabs/offers');
+                    setTimeout(() => {
+                        if(this.payed !== "expired"){
+                            this.navCtrl.navigateRoot('/tabs/offers');
+                        }else{
+                            this.navCtrl.navigateRoot('/tabs/bars');
+                        }
+                    }, 300);
                     this.storage.set('SessionRoleKey', this.roleUser);
                 } else {
                     // console.log(JSON.stringify(options));
@@ -458,19 +482,25 @@ export class LoginPage implements OnInit {
             this.sendNotification("L'adresse e-mail existe déjà");
         }else{
             this.confirmThenRegister();
-            this.sendNotification("Un mail de confirmation vous a été envoyé");
         }
     }
 
     confirmThenRegister() {
         const email : string = this.registerEmail.controls['REG_EMAIL'].value;
+        console.log("this email =>",email)
         const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
               options: any		= { 'email' : email},
               url: any      	= this.regURL;
 
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
             {
-                console.log(data);
+                if(data == "Sent"){
+                    this.sendNotification("Un mail de confirmation vous a été envoyé");
+                }else{
+                    this.sendNotification("Erreur 421. Réessayez ultérieurement");
+                }
+
+                console.log("Registration Output => ",data)
             },
             (error: any) => {
                 console.log(error);
@@ -524,7 +554,6 @@ export class LoginPage implements OnInit {
                 this.btnAnim_1_on();
                 setTimeout(() => {
                     this.loginUsers();
-                    this.sendNotification("Bienvenue à bord !");
                 }, 2000);
             }            
         }else{
@@ -711,5 +740,19 @@ export class LoginPage implements OnInit {
 
         await alert.present();
     }
+
+    getPaidUser(id : string) {
+        const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+            options: any		= { 'key' : 'getPaidUser', 'idUser': id},
+            url: any      	= this.baseURI;
+      
+        this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+              console.log("If user is subscribed (Login Page) =>",data.validity); 
+              this.payed = data.validity;
+            },  
+            (error: any) => {
+                console.log(error);
+        });
+      }
 
 }

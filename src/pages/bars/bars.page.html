@@ -1,5 +1,5 @@
 <div class="tab_header" [ngStyle]="{'top' : hideHeader}">
-  <div *ngIf="tousClicked" class="filter" (click)="openSelect('All')"><img src="../../assets/img/filter.svg"></div>
+  <div *ngIf="tousClicked || initTousClicked" class="filter" (click)="openSelect('All')"><img src="../../assets/img/filter.svg"></div>
   <div *ngIf="toptenClicked" class="filter" (click)="openSelect('Top10')"><img src="../../assets/img/filter.svg"></div>
   <div *ngIf="presdemoiClicked" class="filter" (click)="openSelect('Presdemoi')"><img src="../../assets/img/filter.svg"></div>
   Drinks&nbsp;up
@@ -13,18 +13,19 @@
   <span class="outline_bar" [ngStyle]="{'transform' : tabPosition, 'left' : leftPosition}"></span>
 </div>
 
-
 <!-- Custom Refresher Start -->
-<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
-    <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
-      <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
-    </svg>
-    <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngClass]="{double_header : ifHasConnection}" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher" [ngStyle]="{'opacity' : cuspulrefOpac}"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
-<div class="mcr_backdrop twoHeads" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
 <!-- Custom Refresher End -->
 
-<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<div class="loader_wrapper" [ngStyle]="{'display' : popSpinner}">
+  <div class="loader"></div>
+</div>
+
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+
   <ion-list *ngFor="let bars of Filtereditems; let i = index; let number = index">
       <ion-item no-padding color="secondary" lines="none">
         <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
@@ -56,13 +57,13 @@
     <ion-select-option *ngFor="let cat of allCategories" value="{{cat.CAT_DESC}}">{{cat.CAT_DESC}}</ion-select-option>
   </ion-select>
 
-  <p *ngIf="noBarFilter" class="pasDeBar"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Pas de bar dans cette catégorie</p>
-  <p *ngIf="this.Filtereditems === undefined" class="pasDeBar"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Vous n'avez pas donné l'accès à votre location</p>
+  <p *ngIf="noBarFilter" class="pasDeDonnee"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Pas de bar dans cette catégorie</p>
+  <p *ngIf="Filtereditems === undefined" class="pasDeDonnee"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Veuillez autoriser Drinks Up à accéder à votre position.</p>
 
 </ion-content>
 
 
-<ion-content *ngIf="!ifHasConnection" [ngStyle]="{'transform': !ifHasConnection ? 'translateY(50px)' : 'translateY(100px)'}" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
     <div class="no_connection">
       <img src="../../assets/img/no_connection.svg">
       <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>

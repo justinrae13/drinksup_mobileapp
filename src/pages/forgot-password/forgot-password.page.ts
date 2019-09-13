@@ -12,7 +12,7 @@ import * as Global from '../../app/global';
   styleUrls: ['./forgot-password.page.scss'],
 })
 export class ForgotPasswordPage implements OnInit {
-    resetURL = 'https://www.futurae-ge.ch/ionic-phpmailer-resetpassword.php';
+    resetURL = 'https://www.drinksup.ch/serveur/mailer/reset_password.php';
     baseURI = Global.mainURI;
     users = []; 
     resetPassword: FormGroup;
@@ -93,10 +93,6 @@ export class ForgotPasswordPage implements OnInit {
       setTimeout(() => {
           this.slt = "1";
       }, 300);
-
-      setTimeout(() => {
-        this.sendNotification("Un mail de confirmation vous a été envoyé");
-      }, 900);
         
     }else{
       this.sendNotification("L'adresse e-mail non enregistrée");
@@ -122,6 +118,15 @@ export class ForgotPasswordPage implements OnInit {
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
         {
             console.log(data);
+            if(data == "Sent"){
+                setTimeout(() => {
+                  this.sendNotification("Un mail de confirmation vous a été envoyé");
+                }, 900);
+            }else{
+                setTimeout(() => {
+                  this.sendNotification("Erreur 421. Réessayez ultérieurement");
+                }, 900);
+            }
         },
         (error: any) => {
             console.log(error);

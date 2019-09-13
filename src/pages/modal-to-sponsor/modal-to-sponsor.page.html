@@ -1,0 +1,14 @@
+<ion-content>
+  <h1>Pour parrainer, vous pouvez soit copier votre code et l'envoyer à vos amis ou vous pouvez tout simplement cliquer sur le bouton "Parrainer".</h1>
+  <section>
+    <div>
+       <p>VOTRE CODE</p>
+      <h2>{{code}}</h2>
+    </div>
+    <ion-button expand="block" (click)="copyMyCode()">Copier votre code</ion-button>
+  </section>
+  <footer>
+    <span (click)="toSponsor()">Parrainer</span>
+    <span (click)="closeModal()">Annuler</span>
+  </footer>
+</ion-content>

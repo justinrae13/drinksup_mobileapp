@@ -1,17 +1,12 @@
 <div class="tab_header" [ngStyle]="{'margin-top' : hideHeader}">Mes bars</div>
 
 <!-- Custom Refresher Start -->
-<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
-    <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
-      <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
-    </svg>
-    <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
-<div class="mcr_backdrop" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
-<!-- Custom Refresher End -->
-
-<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)" [ngStyle]="{'transform' : contentSlideUp}">
-  <ion-list *ngFor="let bars of items; let i = index">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+    <ion-list *ngFor="let bars of items; let i = index">
       <ion-item no-padding color="secondary" lines="none">
         <img src="../../assets/img/star-icon-filled.svg" class="star" alt="" (click)="removeToFave(bars.ENT_ID)">
         <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlreadyFave}"></div>
@@ -31,7 +26,7 @@
   </div>
 </ion-content>
 
-<ion-content *ngIf="!ifHasConnection" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
     <div class="no_connection">
       <img src="../../assets/img/no_connection.svg">
       <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>

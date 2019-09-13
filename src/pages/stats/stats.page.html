@@ -1,10 +1,4 @@
-<ion-header>
-  <ion-toolbar color="primary" >
-    <ion-title>
-      <span (click)="popYears()">{{chosenYear}}&nbsp;<ion-icon name="arrow-dropdown"></ion-icon></span>Mes Stats
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<div class="tab_header"><div class="ville" (click)="popYears()">{{chosenYear}}&nbsp;<ion-icon name="arrow-dropdown"></ion-icon></div>Mes Stats</div>
 
 <div class="custom_backdrop" id="bckdrop"></div>
 <div class="custom_modal_wrapper_2" id="cmw2">
@@ -20,30 +14,20 @@
 </div>
 
 
-<div class="custom_modal_wrapper" id="cmw">
-  <div class="custom_modal" id="cm">
-    <header>Info sur l'offre du jour</header>
-    <section>
-      <span>
-        <p>Description</p>
-        <p>Nb code scanné</p>
-      </span>
-      <div *ngFor="let details of scannedCodesDetails" >
-        <p *ngIf="!noDataForMoreDetails">{{details.offDesc}}</p>
-        <p *ngIf="!noDataForMoreDetails">{{details.nbOffre}}</p>
-        <p *ngIf="noDataForMoreDetails">Pas de donnée</p>
-      </div>
-    </section>
-    <footer (click)="closeModal()">OK</footer>
-  </div>
+<!-- Custom Refresher Start -->
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
+<!-- Custom Refresher End -->
 
-<ion-content color="secondary">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+
   <div class="months_wrapper"  id="m_w">
       <div class="months" *ngFor="let mois of lesMois"  id="months_{{mois.num}}">
-          <section class="months_header" id="mh_{{mois.num}}">
+          <section class="months_header" id="mh_{{mois.num}}" (click)="expand(mois.num)">
               <p>{{mois.nom}}</p>
-              <span (click)="expand(mois.num)" class="plus_icon" id="plusIcon_{{mois.num}}">PLUS</span>
+              <span class="plus_icon" id="plusIcon_{{mois.num}}"><ion-icon name="arrow-dropdown"></ion-icon></span>
           </section>
           <section class="months_body" id="mb_{{mois.num}}">
             <span *ngFor="let scannedCodes of scannedCodesByDate" (click)="moreDetails(scannedCodes.dateScan)" class="scanCode_row">
@@ -60,40 +44,11 @@
           </section>
       </div>
   </div>
-  <!-- <div *ngFor="let stat of stats" >
-    <p class="text">
-     <span>Nombre de QrCode scanné :</span>&nbsp;{{stat.nbOffre}} ( {{stat.Mois}} ) 
-    </p>
+</ion-content>
+
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+    <div class="no_connection">
+    <img src="../../assets/img/no_connection.svg">
+    <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
   </div>
-  <p *ngIf="statUser===null || statUser===undefined" class="text">
-    Pas de donnée
-  </p>
-
-  <div class="chart_wrapper">
-    <span class="y_legend">Nombre de code scanné</span>
-    <span class="max">{{maxClick}}</span>
-    <span class="zero">0</span>
-    <div class="chart_box">
-        <div *ngFor="let stat of stats" class="graph_wrapper">
-          <div class="graph" [ngStyle]="{'height' : (stat.nbOffre/maxClick)*100+'%'}">
-            {{stat.nbOffre}}
-            <span>{{stat.Mois}}</span>
-          </div>
-        </div>
-    </div>
-
-    <div class="grid_wrapper">
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-      <span class="grid"></span>
-    </div>
-  </div> -->
-
 </ion-content>

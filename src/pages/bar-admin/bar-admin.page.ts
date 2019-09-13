@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {ModalController, NavController, ToastController, IonItemSliding, AlertController} from '@ionic/angular';
+import {ModalController, NavController, ToastController, IonItemSliding, AlertController, IonContent} from '@ionic/angular';
 import {ModalbarAdminPage} from '../modalbar-admin/modalbar-admin.page';
 import { Router } from '@angular/router';
 import { NativeGeocoder, NativeGeocoderResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder/ngx';
@@ -11,7 +11,7 @@ import * as Global from '../../app/global';
   templateUrl: './bar-admin.page.html',
   styleUrls: ['./bar-admin.page.scss'],
 })
-export class BarAdminPage implements OnInit {
+export class BarAdminPage{
   users = [];
   proprio = 0;
   bar: any = {};
@@ -32,44 +32,42 @@ export class BarAdminPage implements OnInit {
   inactifClicked : boolean = false;
   barFullAddress : string = "";
 
-  //
-  contentSlideUp : string = "translateY(100px)";
-  //
-  ifHasConnection : boolean = true;
-  //Custom Refresher Made By Jutin Rae
-  scrollOffsetTop : number = 0;
-  scrollCounter : number = 0;
-  highCounter : number = 227;
-  mcr_scale : string = "scale(0)";
-  mcr_dashoffset : string = "227";
-  mcr_trans: string = "0s";
-  mcr_svgDisplay : string = "block";
-  mcr_circleDivDisplay : string = "none";
-  mcr_bdDisplay : string = "none";
-  lastY : number = 0;
+ //
+ifHasConnection : boolean = true;
+//Custom Refresher Made By Jutin Rae
+@ViewChild(IonContent) maincontent: IonContent;
+scrollOffsetTop : number = 0;
+touchStart : number = 0;
+refresherPosY : number = 0;
+currPosY : number = 0;
+ifPulled : boolean = false;
+posY : string = "translateY(0px)";
+animDur : string = "0s";
+rotate : string = "none";
+popFD : string = "none";
+mainOpac : string = "1";
+
+  padDeDonee : boolean = false;
 
   constructor(private nativeGeocoder: NativeGeocoder, private toastCtrl: ToastController, public http: HttpClient, public modalController: ModalController, private route: Router, public alertController: AlertController) { }
 
-    ngOnInit() {}
-
-    ionViewWillEnter(): void {
+    ionViewWillEnter(){
         this.getProprio();
 
         //Check if user has internet connection
         if(navigator.onLine){
-            //If user has connection
-            this.ifHasConnection = true;
+          //If user has connection
+          this.ifHasConnection = true;
         }else{
-            //If user has no connection
-            this.ifHasConnection = false;
+          //If user has no connection
+          this.ifHasConnection = false;
         }
-    }
+      }
 
     ionViewDidLeave(){
         this.tous();
         this.hideHeader = "0px";
         this.hideSubHeader = "50px";
-        this.contentSlideUp = "translateY(100px)";
     }
     
   public getProprio() {
@@ -79,80 +77,19 @@ export class BarAdminPage implements OnInit {
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.users = data;
             this.usersFilter = this.users;
-           // if (this.users == null ) {this.haveUserOrNot = 'Aucun Internaute ayant le role USERS'; } else {this.haveUserOrNot = ''; }
         });
 
   }
 
 
-  //My Stuff
-  scrollEvent(event){
-    let currentScroll = event.detail.scrollTop;
-    this.scrollOffsetTop = event.detail.scrollTop;
-    
-    if(currentScroll > 0 && this.lastScroll <= currentScroll){
-        this.hideHeader = "-50px";
-        this.hideSubHeader = "0px";
-        this.contentSlideUp = "translateY(0px)";
-        this.lastScroll = currentScroll;
-    }else{
-        this.hideHeader = "0px";
-        this.hideSubHeader = "50px";
-        this.contentSlideUp = "translateY(100px)";
-        this.lastScroll = currentScroll;
-    }
-  }
-
-  touchmove(event){
-    if(this.scrollOffsetTop ==0){
-
-      var currentY = event.touches[0].screenY;
-
-      if(currentY > this.lastY){
-        this.scrollCounter++;
-      }else if(currentY < this.lastY){
-        this.scrollCounter--;
-      }
-
-      this.lastY = currentY;
-      var slowedCounter = this.scrollCounter/45;
-      var doffSet = 227;
-
-      if(slowedCounter <= 1 && slowedCounter > 0){
-        this.mcr_scale = "scale("+slowedCounter+")";
-        doffSet-=(this.scrollCounter*Math.PI);
-        this.mcr_dashoffset = doffSet.toString();
-      }
-
-      if(slowedCounter == 1){
-        this.mcr_trans = ".2s ease 1.5s";
-        this.mcr_svgDisplay = "none";
-        this.mcr_circleDivDisplay = "block";
-        this.mcr_bdDisplay = "block";
-        setTimeout(() => {
-          this.mcr_trans = "0s ease 0s";
-        }, 1800);
-        setTimeout(() => {
-          this.mcr_svgDisplay = "block";
-          this.mcr_circleDivDisplay = "none";
-        }, 2100);
-        setTimeout(() => {
-          this.ionViewWillEnter();
-          this.mcr_bdDisplay = "none";        
-        }, 2200);
-      }
-
-    }
-      
-  }
-
-  touchend(){
-    this.scrollCounter = 0;
-    this.mcr_scale = "scale("+this.scrollCounter+")";
-  }
-
     tous(){
         this.usersFilter = this.users;
+
+        if (this.usersFilter.length === 0){
+            this.padDeDonee = true;
+        }else{
+            this.padDeDonee = false;
+        }
     
         this.tabPosition = "translateX(0%)";
         this.leftPosition = "0%";
@@ -175,6 +112,12 @@ export class BarAdminPage implements OnInit {
         this.usersFilter = this.users.filter(function(data : any){
             return data.ENT_VALIDATION == "Oui"; 
         });
+
+        if (this.usersFilter.length === 0 ){
+            this.padDeDonee = true;
+        }else{
+            this.padDeDonee = false;
+        }
     
         this.tousClicked = false;
         this.actifClicked = true;
@@ -191,6 +134,12 @@ export class BarAdminPage implements OnInit {
         this.usersFilter = this.users.filter(function(data : any){
             return data.ENT_VALIDATION == "Non"; 
         });   
+
+        if (this.usersFilter.length === 0 ){
+            this.padDeDonee = true;
+        }else{
+            this.padDeDonee = false;
+        }
     
         this.tousClicked = false;
         this.actifClicked = false;
@@ -429,4 +378,98 @@ export class BarAdminPage implements OnInit {
         });
         toast.present();
     }
+
+    scrollEvent(event){
+        let currentScroll = event.detail.scrollTop;
+        this.scrollOffsetTop = event.detail.scrollTop;
+        if(this.scrollOffsetTop > 0){
+            this.maincontent.scrollY = true;
+        }
+        
+        if(currentScroll > 0 && this.lastScroll <= currentScroll){
+            this.hideHeader = "-50px";
+            this.hideSubHeader = "0px";
+            this.lastScroll = currentScroll;
+        }else{
+            this.hideHeader = "0px";
+            this.hideSubHeader = "50px";
+            this.lastScroll = currentScroll;
+        }
+      }
+    
+      pullstart(e){
+        this.touchStart = e.changedTouches[0].clientY;
+      }
+    
+      pull(e){
+        this.animDur = "0s";
+        var touchEnd = e.changedTouches[0].clientY;
+      
+        if (this.touchStart > touchEnd) {
+          this.refresherPosY--;
+        } else {
+          this.refresherPosY++;
+        }
+    
+        //---------------------------------------------
+        var incPosY = this.refresherPosY*12;
+    
+        if (this.touchStart > touchEnd) {
+    
+        }else {
+          if(this.scrollOffsetTop == 0){
+              this.maincontent.scrollY = false;
+              this.ifPulled = true;
+              if(incPosY>= 0 && incPosY <= 200){
+                this.currPosY = incPosY;
+                this.posY = "translateY("+incPosY+"px)";
+              }
+              if(incPosY > 150 && incPosY < 200){
+                this.maincontent.scrollY = false;
+              }else{
+                this.maincontent.scrollY = true;
+              }
+          }
+        }
+      }
+    
+      endpull(){
+        this.maincontent.scrollY = true;
+        if(this.currPosY < 150){
+          this.refresherPosY = 0;
+          this.posY = "translateY("+this.refresherPosY+"px)";
+          this.animDur = "200ms";
+        }else{
+          //
+          if(this.scrollOffsetTop == 0 && this.ifPulled){
+            this.ifPulled = false; 
+            this.posY = "translateY("+150+"px)";
+            this.animDur = "200ms";
+            this.rotate = "rotate 600ms infinite linear";
+            this.maincontent.scrollY = false;
+            this.popFD = "block";
+            setTimeout(() => {
+              this.animDur = "500ms";
+              this.rotate = "none";
+              this.refresherPosY = 0;
+              this.posY = "translateY("+this.refresherPosY+"px)";
+            }, 2200);
+      
+            setTimeout(() => {
+              this.popFD = "none";
+              this.mainOpac = "0";
+              //Put LifeCycle Hooks Here...
+              this.ionViewWillEnter();
+              //
+            }, 2300);
+            
+            setTimeout(() => {
+              this.mainOpac  = "1";
+              this.maincontent.scrollY = true;
+            }, 3000);
+          }
+          //
+        }
+        
+      }
 }

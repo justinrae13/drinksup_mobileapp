@@ -10,7 +10,6 @@ const routes: Routes = [
   { path: 'tabsadmin', loadChildren: '../pages/tabsadmin/tabsadmin.module#TabsadminPageModule' },
   { path: 'tabsproprio', loadChildren: '../pages/tabsproprio/tabsproprio.module#TabsproprioPageModule' },
   { path: 'faq', loadChildren: '../pages/faq/faq.module#FaqPageModule' },
-  { path: 'abonnement', loadChildren: '../pages/abonnement/abonnement.module#AbonnementPageModule' },
   { path: 'registerthirdparty/:name/:email/:id', loadChildren: '../pages/registerthirdparty/registerthirdparty.module#RegisterthirdpartyPageModule' },
   { path: 'forgot-password', loadChildren: '../pages/forgot-password/forgot-password.module#ForgotPasswordPageModule' },
   { path: 'forgot-password/:email', loadChildren: '../pages/forgot-password/forgot-password.module#ForgotPasswordPageModule' },
@@ -21,7 +20,7 @@ const routes: Routes = [
   { path: 'cgu', loadChildren: '../pages/cgu/cgu.module#CguPageModule' },
   { path: 'parrainage', loadChildren: '../pages/parrainage/parrainage.module#ParrainagePageModule' },
   { path: 'custom-splashscreen', loadChildren: '../pages/custom-splashscreen/custom-splashscreen.module#CustomSplashscreenPageModule' },
-  { path: 'show-map', loadChildren: '../pages/show-map/show-map.module#ShowMapPageModule' },
+  { path: 'show-map/:lat/:long/:address', loadChildren: '../pages/show-map/show-map.module#ShowMapPageModule' },
 ];
 
 @NgModule({

@@ -1,7 +1,6 @@
-import {Component, Inject, LOCALE_ID, OnInit, ViewChild} from '@angular/core';
+import {Component, Inject, LOCALE_ID, ViewChild} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
-import {AlertController, IonItemSliding, ModalController, ToastController, NavController} from '@ionic/angular';
-import {OffersAddbarPage} from '../offers-addbar/offers-addbar.page';
+import {AlertController, IonItemSliding, ToastController, NavController, IonContent} from '@ionic/angular';
 import {CalendarComponent} from 'ionic2-calendar/calendar';
 import {DatePipe, formatDate} from '@angular/common';
 import { Storage } from '@ionic/storage';
@@ -14,8 +13,9 @@ import * as Global from '../../app/global';
   styleUrls: ['./offers-management.page.scss'],
   providers: [DatePipe]
 })
-export class OffersManagementPage implements OnInit {
-    event = {
+export class OffersManagementPage{
+  sendnotifURL = 'https://www.drinksup.ch/serveur/mailer/sendnotif.php';
+  event = {
         title: '',
         description: '',
         startTime: new Date().toISOString(),
@@ -51,14 +51,29 @@ export class OffersManagementPage implements OnInit {
     validColor : string = "#4caf50";
     mostInvalidColor: string = "#505050";
     entreprise_id : string = "";
+    barname : string;
     
     ojd = new Date();
+
+    //
+    ifHasConnection : boolean = true;
+    //Custom Refresher Made By Jutin Rae
+    @ViewChild(IonContent) maincontent: IonContent;
+    scrollOffsetTop : number = 0;
+    touchStart : number = 0;
+    refresherPosY : number = 0;
+    currPosY : number = 0;
+    ifPulled : boolean = false;
+    posY : string = "translateY(0px)";
+    animDur : string = "0s";
+    rotate : string = "none";
+    popFD : string = "none";
+    mainOpac : string = "1";
+
     @ViewChild(CalendarComponent) myCal: CalendarComponent;
+
     constructor(public dp: DatePipe, public alertCtrl: AlertController, @Inject(LOCALE_ID)private locale: string, public http: HttpClient, public toastCtrl: ToastController, public alertController: AlertController, public storage: Storage, public navCtrl : NavController) { }
-    ngOnInit() {
-
-    }
-
+    
     public ionViewWillEnter(): void {
         this.resetEvents();
         this.eventSource = [];
@@ -67,6 +82,15 @@ export class OffersManagementPage implements OnInit {
             this.getProprio(val);
         });
         this.disactivateAllPassedOffers();
+
+        //Check if user has internet connection
+        if(navigator.onLine){
+            //If user has connection
+            this.ifHasConnection = true;
+        }else{
+            //If user has no connection
+            this.ifHasConnection = false;
+        }
     }
 
     resetEvents() {
@@ -89,6 +113,7 @@ export class OffersManagementPage implements OnInit {
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.loggedEnt = data;
             this.entreprise_id = this.loggedEnt.ENT_ID;
+            this.barname = this.loggedEnt.ENT_NOM;
             this.getOffres(this.loggedEnt.ENT_ID);
             if(this.loggedEnt.ENT_VALIDATION == "Non"){
                 this.activeBar();
@@ -135,10 +160,16 @@ export class OffersManagementPage implements OnInit {
         const dateDebut = this.dp.transform(eventCopy.startTime, 'yyyy-MM-dd HH:mm', 'GMT+0000');
         const dateFin = this.dp.transform(eventCopy.endTime, 'yyyy-MM-dd  HH:mm', 'GMT+0000');
         const capitalizeDesc = eventCopy.description.charAt(0).toUpperCase()+eventCopy.description.substring(1);
-        this.addOffer(capitalizeDesc, dateDebut, dateFin,eventCopy.actif, eventCopy.title);
-        this.eventSource.push(eventCopy);
-        this.ionViewWillEnter();
-
+        // console.log("Date de debut =>",dateDebut);
+        var ojd = new Date();
+        var startOffer = new Date(dateDebut);
+        if(startOffer<ojd){
+            this.sendNotification("La date et heure de début ne peut pas être inférieure à la date et heure d'aujourd'hui !");
+        }else{
+            this.addOffer(capitalizeDesc, dateDebut, dateFin,eventCopy.actif, eventCopy.title);
+            this.eventSource.push(eventCopy);
+            this.ionViewWillEnter();
+        }  
     }
 
     addEventError(){
@@ -162,7 +193,8 @@ export class OffersManagementPage implements OnInit {
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
                 this.sendNotification('L\'ajout de l\'offre a bien été pris en compte!');
                 this.myCal.loadEvents();
-                console.log(idEnt)
+                console.log(idEnt);
+                this.sendNotifToAdmin("Ajout d'une nouvelle offre", this.barname);
             },
             (error: any) => {
                 console.log(error);
@@ -223,6 +255,7 @@ export class OffersManagementPage implements OnInit {
         });
         alert.present();
     }
+    
     onViewTitleChanged(title) {
         this.viewTitle = title;
     }
@@ -287,7 +320,8 @@ export class OffersManagementPage implements OnInit {
     }
     async presentAlert(id, nom) {
         const alert = await this.alertController.create({
-            header: 'Êtes vous sûr de vouloir supprimer l\'offre : ' + nom,
+            header: "Confirmation",
+            message: "<h3>Êtes vous sûr de vouloir supprimer l'offre : " + nom + "</h3>",
             buttons: [
                 {
                     text: 'Non',
@@ -356,9 +390,112 @@ export class OffersManagementPage implements OnInit {
     async sendNotification(msg: string) {
         const toast = await this.toastCtrl.create({
             message: msg,
-            duration: 3000,
+            duration: 4000,
             position: 'top'
         });
         toast.present();
     }
+
+    scrollEvent(event){
+        this.scrollOffsetTop = event.detail.scrollTop;
+        if(this.scrollOffsetTop > 0){
+          this.maincontent.scrollY = true;
+        }
+      }
+    
+      pullstart(e){
+        this.touchStart = e.changedTouches[0].clientY;
+      }
+    
+      pull(e){
+        this.animDur = "0s";
+        var touchEnd = e.changedTouches[0].clientY;
+      
+        if (this.touchStart > touchEnd) {
+          this.refresherPosY--;
+        } else {
+          this.refresherPosY++;
+        }
+    
+        //---------------------------------------------
+        var incPosY = this.refresherPosY*12;
+    
+        if (this.touchStart > touchEnd) {
+    
+        }else {
+          if(this.scrollOffsetTop == 0){
+              this.maincontent.scrollY = false;
+              this.ifPulled = true;
+              if(incPosY>= 0 && incPosY <= 200){
+                this.currPosY = incPosY;
+                this.posY = "translateY("+incPosY+"px)";
+              }
+              if(incPosY > 150 && incPosY < 200){
+                this.maincontent.scrollY = false;
+              }else{
+                this.maincontent.scrollY = true;
+              }
+          }
+        }
+      }
+    
+      endpull(){
+        this.maincontent.scrollY = true;
+        if(this.currPosY < 150){
+          this.refresherPosY = 0;
+          this.posY = "translateY("+this.refresherPosY+"px)";
+          this.animDur = "200ms";
+        }else{
+          //
+          if(this.scrollOffsetTop == 0 && this.ifPulled){
+            this.ifPulled = false; 
+            this.posY = "translateY("+150+"px)";
+            this.animDur = "200ms";
+            this.rotate = "rotate 600ms infinite linear";
+            this.maincontent.scrollY = false;
+            this.popFD = "block";
+            setTimeout(() => {
+              this.animDur = "500ms";
+              this.rotate = "none";
+              this.refresherPosY = 0;
+              this.posY = "translateY("+this.refresherPosY+"px)";
+            }, 2200);
+      
+            setTimeout(() => {
+              this.popFD = "none";
+              this.mainOpac = "0";
+              //Put LifeCycle Hooks Here...
+              this.ionViewWillEnter();
+              //
+            }, 2300);
+            
+            setTimeout(() => {
+              this.mainOpac  = "1";
+              this.maincontent.scrollY = true;
+            }, 3000);
+          }
+          //
+        }
+        
+      }
+
+    sendNotifToAdmin(title, barname) {
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+            options: any		= { 'title' : title, 'barname' : barname, 'nametype' : 'Nom du bar'},
+            url: any      	= this.sendnotifURL;
+    
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
+        {
+            console.log(data);
+            if(data == "Sent"){
+                this.sendNotification("Une notification a été envoyé à l'administrateur");
+            }else{
+                console.log("Erreur d'envoi de notification");
+            }
+        },
+        (error: any) => {
+            console.log(error);
+        });
+    }
+    
 }

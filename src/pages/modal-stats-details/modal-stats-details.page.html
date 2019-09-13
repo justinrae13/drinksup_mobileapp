@@ -1,0 +1,18 @@
+<ion-content>
+  <h1>Info sur l'offre du jour</h1>
+
+  <section>
+    <div *ngFor="let details of scannedCodesDetails">
+      <p>
+        <span class="first-col">L'offre&nbsp;:&nbsp;</span> <span class="second-col">{{details.offDesc}}</span>
+      </p>
+      <p>
+        <span class="first-col">Nb&nbsp;de&nbsp;scan&nbsp;:&nbsp;</span> <span class="second-col">{{details.nbOffre}} fois</span>
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <span (click)="closeModal()">Annuler</span>
+  </footer>
+</ion-content>

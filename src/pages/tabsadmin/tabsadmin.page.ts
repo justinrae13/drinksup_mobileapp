@@ -10,17 +10,37 @@ import { Facebook } from '@ionic-native/facebook/ngx';
   styleUrls: ['./tabsadmin.page.scss'],
 })
 export class TabsadminPage implements OnInit {
+  c_o_o_t_z : string = "1";
+  c_d_o_t_z : string = "flex";
+
+  goLeft : string = "translateX(0px)";
+  goRight : string = "translateX(0px)";
+  fadeOut : string = "1";
+
 
   constructor(private fb: Facebook, public alertController: AlertController,public navCtrl : NavController, public storage: Storage, private googlePlus : GooglePlus) { }
 
   ngOnInit() {
   }
 
+  ionViewDidEnter(){    
+    this.c_o_o_t_z = "0";
+    setTimeout(() => {
+      this.c_d_o_t_z = "none";
+    }, 500);
+  }
+
+  animate(){
+    this.goLeft = "translateX(-70px)";
+    this.goRight = "translateX(70px)";
+    this.fadeOut = "0";
+  }
+
 
   async logoutadmin() {
     const alert = await this.alertController.create({
       header: "Confirmation",
-      message: "<h3>Êtes-vous sûr de vouloir se déloguer ? </h3>",
+      message: "<h3>Êtes-vous sûr de vouloir se déconnecter ? </h3>",
       cssClass : "dimBackdropAlert",
       buttons: [
           {

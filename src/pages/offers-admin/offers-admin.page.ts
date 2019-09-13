@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import * as Global from '../../app/global';
-import { ToastController, AlertController, IonItemSliding } from '@ionic/angular';
+import { ToastController, AlertController, IonItemSliding, IonContent } from '@ionic/angular';
 import * as moment from 'moment';
 
 @Component({
@@ -9,7 +9,7 @@ import * as moment from 'moment';
   templateUrl: './offers-admin.page.html',
   styleUrls: ['./offers-admin.page.scss'],
 })
-export class OffersAdminPage implements OnInit {
+export class OffersAdminPage{
   public baseURI = Global.mainURI;
   offres : Array<any> = [];
   filteredOffres : Array<any> = [];
@@ -27,28 +27,26 @@ export class OffersAdminPage implements OnInit {
   nonvalideClicked : boolean = false;
 
   //
-  contentSlideUp : string = "translateY(108px)";
-  //
-  ifHasConnection : boolean = true;
-  //Custom Refresher Made By Jutin Rae
-  scrollOffsetTop : number = 0;
-  scrollCounter : number = 0;
-  highCounter : number = 227;
-  mcr_scale : string = "scale(0)";
-  mcr_dashoffset : string = "227";
-  mcr_trans: string = "0s";
-  mcr_svgDisplay : string = "block";
-  mcr_circleDivDisplay : string = "none";
-  mcr_bdDisplay : string = "none";
-  lastY : number = 0;
+ifHasConnection : boolean = true;
+//Custom Refresher Made By Jutin Rae
+@ViewChild(IonContent) maincontent: IonContent;
+scrollOffsetTop : number = 0;
+touchStart : number = 0;
+refresherPosY : number = 0;
+currPosY : number = 0;
+ifPulled : boolean = false;
+posY : string = "translateY(0px)";
+animDur : string = "0s";
+rotate : string = "none";
+popFD : string = "none";
+mainOpac : string = "1";
+
+  padDeDonee : boolean = false;
+
   constructor(public http: HttpClient, private toastCtrl: ToastController, public alertController: AlertController) { }
-
-  ngOnInit() {
-  }
-
+  
   ionViewWillEnter() : void{
     this.getAllOffers();
-
     //Check if user has internet connection
     if(navigator.onLine){
       //If user has connection
@@ -63,7 +61,6 @@ export class OffersAdminPage implements OnInit {
     this.tous();
     this.hideHeader = "0px";
     this.hideSubHeader = "50px";
-    this.contentSlideUp = "translateY(108px)";
   }
 
   async makeValid(slidingItem: IonItemSliding, id, desc, status) {
@@ -96,6 +93,7 @@ export class OffersAdminPage implements OnInit {
               handler: () => {
                   this.validateOffer(id, statVar);
                   setTimeout(() => {
+                    this.tous();
                     this.ionViewWillEnter();
                     this.sendNotification("Votre modification a été prise en compte !");
                 }, 100);
@@ -126,6 +124,7 @@ export class OffersAdminPage implements OnInit {
               handler: () => {
                   this.deleteOffre(id);
                   setTimeout(() => {
+                    this.tous();
                     this.ionViewWillEnter();
                     this.sendNotification("Votre modification a été prise en compte !");
                 }, 100);
@@ -139,30 +138,31 @@ export class OffersAdminPage implements OnInit {
 
   public getAllOffers() {
     const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
-        options: any		= { 'key' : 'getAllInactiveOffers'},
+        options: any		= { 'key' : 'getAllValidOffers'},
         url: any      	= this.baseURI;
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
 
-          for(var i in data){
+        data.forEach(function(data : any){
+            moment.locale('fr');
 
-            var newStart = new Date(data[i].OFF_DATEDEBUT);
-            var newEnd = new Date(data[i].OFF_DATEFIN);
+            var newStart = moment(data.OFF_DATEDEBUT).format();
+            var newEnd = moment(data.OFF_DATEFIN).format();
 
-            var mnewStart = moment(newStart).format();
-            var mnewEnd = moment(newEnd).format();
-
-            if(data[i].OFF_DATEDEBUT !== null && data[i].OFF_DATEFIN !== null){
-                data[i].OFF_DATEDEBUT = mnewStart;
-                data[i].OFF_DATEFIN= mnewEnd;
+            if(data.OFF_DATEDEBUT !== null && data.OFF_DATEFIN !== null){
+                data.OFF_DATEDEBUT = newStart;
+                data.OFF_DATEFIN = newEnd;
             }
-        }
+
+            var start = data.OFF_DATEDEBUT;
+            var end = data.OFF_DATEFIN;
+
+            data.startFR = moment(start).format('D MMMM YYYY à HH:mm');
+            data.endFR = moment(end).format('D MMMM YYYY à HH:mm');
+        });
+
         this.offres = data;
         this.filteredOffres = this.offres;
 
-        if (this.offres == null ) {
-          this.pasDoffre = "Pas d'offre"; 
-        }
- 
     });
   }
 
@@ -197,70 +197,105 @@ export class OffersAdminPage implements OnInit {
   scrollEvent(event){
     let currentScroll = event.detail.scrollTop;
     this.scrollOffsetTop = event.detail.scrollTop;
+    if(this.scrollOffsetTop > 0){
+        this.maincontent.scrollY = true;
+    }
     
     if(currentScroll > 0 && this.lastScroll <= currentScroll){
         this.hideHeader = "-50px";
         this.hideSubHeader = "0px";
-        this.contentSlideUp = "translateY(0px)";
         this.lastScroll = currentScroll;
     }else{
         this.hideHeader = "0px";
         this.hideSubHeader = "50px";
-        this.contentSlideUp = "translateY(100px)";
         this.lastScroll = currentScroll;
     }
   }
 
-  touchmove(event){
-    if(this.scrollOffsetTop ==0){
-
-      var currentY = event.touches[0].screenY;
-
-      if(currentY > this.lastY){
-        this.scrollCounter++;
-      }else if(currentY < this.lastY){
-        this.scrollCounter--;
-      }
-
-      this.lastY = currentY;
-      var slowedCounter = this.scrollCounter/45;
-      var doffSet = 227;
-
-      if(slowedCounter <= 1 && slowedCounter > 0){
-        this.mcr_scale = "scale("+slowedCounter+")";
-        doffSet-=(this.scrollCounter*Math.PI);
-        this.mcr_dashoffset = doffSet.toString();
-      }
-
-      if(slowedCounter == 1){
-        this.mcr_trans = ".2s ease 1.5s";
-        this.mcr_svgDisplay = "none";
-        this.mcr_circleDivDisplay = "block";
-        this.mcr_bdDisplay = "block";
-        setTimeout(() => {
-          this.mcr_trans = "0s ease 0s";
-        }, 1800);
-        setTimeout(() => {
-          this.mcr_svgDisplay = "block";
-          this.mcr_circleDivDisplay = "none";
-        }, 2100);
-        setTimeout(() => {
-          this.ionViewWillEnter();
-          this.mcr_bdDisplay = "none";        
-        }, 2200);
-      }
-
-    }
-      
+  pullstart(e){
+    this.touchStart = e.changedTouches[0].clientY;
   }
 
-  touchend(){
-    this.scrollCounter = 0;
-    this.mcr_scale = "scale("+this.scrollCounter+")";
+  pull(e){
+    this.animDur = "0s";
+    var touchEnd = e.changedTouches[0].clientY;
+  
+    if (this.touchStart > touchEnd) {
+      this.refresherPosY--;
+    } else {
+      this.refresherPosY++;
+    }
+
+    //---------------------------------------------
+    var incPosY = this.refresherPosY*12;
+
+    if (this.touchStart > touchEnd) {
+
+    }else {
+      if(this.scrollOffsetTop == 0){
+          this.maincontent.scrollY = false;
+          this.ifPulled = true;
+          if(incPosY>= 0 && incPosY <= 200){
+            this.currPosY = incPosY;
+            this.posY = "translateY("+incPosY+"px)";
+          }
+          if(incPosY > 150 && incPosY < 200){
+            this.maincontent.scrollY = false;
+          }else{
+            this.maincontent.scrollY = true;
+          }
+      }
+    }
+  }
+
+  endpull(){
+    this.maincontent.scrollY = true;
+    if(this.currPosY < 150){
+      this.refresherPosY = 0;
+      this.posY = "translateY("+this.refresherPosY+"px)";
+      this.animDur = "200ms";
+    }else{
+      //
+      if(this.scrollOffsetTop == 0 && this.ifPulled){
+        this.ifPulled = false; 
+        this.posY = "translateY("+150+"px)";
+        this.animDur = "200ms";
+        this.rotate = "rotate 600ms infinite linear";
+        this.maincontent.scrollY = false;
+        this.popFD = "block";
+        setTimeout(() => {
+          this.animDur = "500ms";
+          this.rotate = "none";
+          this.refresherPosY = 0;
+          this.posY = "translateY("+this.refresherPosY+"px)";
+        }, 2200);
+  
+        setTimeout(() => {
+          this.popFD = "none";
+          this.mainOpac = "0";
+          //Put LifeCycle Hooks Here...
+          this.ionViewWillEnter();
+          //
+        }, 2300);
+        
+        setTimeout(() => {
+          this.mainOpac  = "1";
+          this.maincontent.scrollY = true;
+        }, 3000);
+      }
+      //
+    }
+    
   }
 
 tous(){
     this.filteredOffres = this.offres;
+
+    if (this.filteredOffres.length === 0){
+        this.padDeDonee = true;
+    }else{
+        this.padDeDonee = false;
+    }
 
     this.tabPosition = "translateX(0%)";
     this.leftPosition = "0%";
@@ -284,6 +319,13 @@ valide(){
         return data.OFF_ACTIF === "Oui"; 
     });
 
+    if (this.filteredOffres.length === 0 ){
+      this.padDeDonee = true;
+    }else{
+        this.padDeDonee = false;
+    }
+
+
     this.tousClicked = false;
     this.valideClicked = true;
     this.nonvalideClicked = false;
@@ -298,7 +340,13 @@ nonvalide(){
 
     this.filteredOffres = this.offres.filter(function(data : any){
       return data.OFF_ACTIF === "Non"; 
-  });   
+    }); 
+
+    if (this.filteredOffres.length === 0 ){
+      this.padDeDonee = true;
+    }else{
+        this.padDeDonee = false;
+    }
 
     this.tousClicked = false;
     this.valideClicked = false;

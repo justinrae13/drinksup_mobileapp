@@ -1,3 +1,8 @@
+<div class="curtain_opac_one_to_zero" [ngStyle]="{'opacity' : c_o_o_t_z, 'display' : c_d_o_t_z}">
+  <!-- <img src="../../assets/img/splash_bigtext.png" class="bt_du" [ngStyle]="{'transform' : goLeft, 'opacity' : fadeOut}">
+  <img src="../../assets/img/splash_smalltext.png" class="st_du" [ngStyle]="{'transform' : goRight, 'opacity' : fadeOut}"> -->
+</div>
+
 <ion-tabs>
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="users">
@@ -17,17 +22,8 @@
 
     <ion-tab-button tab="logout-admin" (click)="logoutadmin()">
       <ion-icon name="log-out"></ion-icon>
-      <ion-label>Logout</ion-label>
+      <ion-label>Déconnexion</ion-label>
     </ion-tab-button>
 
-    <!-- <ion-tab-button tab="offers-management">
-      <ion-icon name="calendar"></ion-icon>
-      <ion-label>Gestion offres</ion-label>
-    </ion-tab-button> -->
-  
-    <!-- <ion-tab-button tab="profile">
-      <ion-icon name="person"></ion-icon>
-      <ion-label>Profil</ion-label>
-    </ion-tab-button> -->
   </ion-tab-bar>
 </ion-tabs>

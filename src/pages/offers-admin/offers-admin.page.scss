@@ -82,6 +82,19 @@ ion-list{
         }
       }
 
+      h2{
+        width: 100%;
+        margin: 0;
+        font-family: "NBL";
+        color: rgb(172, 172, 172);
+        font-size: 1rem;
+        text-align: left;
+        display: flex;
+        width: 100%;
+        margin-top: 8px;
+        margin-bottom: 4px;
+      }
+
       h3{
         width: 100%;
         margin: 0;
@@ -89,39 +102,31 @@ ion-list{
         color: rgb(99, 99, 99);
         font-size: .9rem;
         text-align: left;
-        margin: 12px 0;
         display: flex;
         width: 100%;
-
-        ion-datetime{
-          padding: 0;
-          font-family: "NBO";
-          font-size: .9rem;
-          margin: 0;
-          color: rgb(185, 185, 185);
-        }
+        margin-bottom: 4px;
       }
 
       .validspan{
-        background-color: rgba(27, 223, 90, .5);
-        border: 1px solid #1bdf5a;
-        font-size: .7rem;
+        background-color: #008a2c;
+        border: 1px solid #008a2c;
+        font-size: .6rem;
         color: #fff;
         padding: 1px 16px;
         font-family: "NBL";
         text-transform: uppercase;
-        border-radius: 20px;
+        border-radius: 0;
       }
 
       .notvalidspan{
-        background-color: rgba(128,128,128, .5);
+        background-color: #C0C0C0;
         border: 1px solid #C0C0C0;
-        font-size: .7rem;
+        font-size: .6rem;
         color: #fff;
         padding: 1px 16px;
         font-family: "NBL";
         text-transform: uppercase;
-        border-radius: 20px;
+        border-radius: 0;
       }
     }
    

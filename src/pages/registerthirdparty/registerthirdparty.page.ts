@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { Device } from '@ionic-native/device/ngx';
 import { LoadingpagePage } from '../loadingpage/loadingpage.page';
 import * as Global from '../../app/global';
+import { Events } from '@ionic/angular';
 
 
 @Component({
@@ -16,7 +17,7 @@ import * as Global from '../../app/global';
 })
 export class RegisterthirdpartyPage implements OnInit {
   baseURI = Global.mainURI;
-  regURL = 'https://www.futurae-ge.ch/ionic-phpmailer-fb-no-email.php';
+  regURL = 'https://www.drinksup.ch/serveur/mailer/fb_no_email.php';
   nameParam : string;
   emailParam : string;
   idParam : string;
@@ -36,7 +37,7 @@ export class RegisterthirdpartyPage implements OnInit {
 
   uuid : string = "";
 
-  constructor(private modalCtrl : ModalController, private device: Device, private navCtrl: NavController, private storage: Storage, private actRout : ActivatedRoute, private toastCtrl: ToastController, public http: HttpClient, private formBuilder: FormBuilder) { 
+  constructor(private events : Events, private modalCtrl : ModalController, private device: Device, private navCtrl: NavController, private storage: Storage, private actRout : ActivatedRoute, private toastCtrl: ToastController, public http: HttpClient, private formBuilder: FormBuilder) { 
     this.registerEmailForFB = new FormGroup({
       REG_EMAIL_FOR_FB : new FormControl()
     });
@@ -99,26 +100,29 @@ export class RegisterthirdpartyPage implements OnInit {
             this.storage.set('SessionIdKey', this.userDetails.ID);
             this.storage.set('SessionEmailKey', this.userDetails.EMAIL);
             this.storage.set('SessionInKey', 'Yes');
+            setTimeout(() => {
+                this.events.publish("TriggerPopUp");
+            }, 1000);
             if (this.userDetails.ROLE === this.roleAdmin) {
                 this.navCtrl.navigateRoot('/tabsadmin/users');
                 this.storage.set('SessionRoleKey', this.roleAdmin);
                 //check if first login
                 this.storage.get('firstLogin').then((val) => {
                     if (val !== null) {
-                      console.log("This is not your first time logging into this app");
+                        console.log("This is not your first time logging into this app");
                     }else {
-                          this.storage.set('firstLogin', 'Yes');
+                        this.storage.set('firstLogin', 'Yes');
                     }
                 });
-                this.sendNotification('Bienvenue !');
+                this.sendNotification('Bienvenue à bord !');
             } else if (this.userDetails.ROLE === this.roleProprio) {
                 this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                 this.storage.set('SessionRoleKey', this.roleProprio);
-                this.sendNotification('Bienvenue !');
+                this.sendNotification('Bienvenue à bord !');
             } else if (this.userDetails.ROLE === this.roleUser) {
                 this.navCtrl.navigateRoot('/tabs/offers');
                 this.storage.set('SessionRoleKey', this.roleUser);
-                this.sendNotification('Bienvenue !'); 
+                this.sendNotification('Bienvenue à bord !'); 
             } else {
                 // console.log(JSON.stringify(options));
                 this.sendNotification('Votre compte Facebook a été déjà utilisé');
@@ -166,9 +170,7 @@ export class RegisterthirdpartyPage implements OnInit {
           setTimeout(() => {
             this.btnSpinnerOff();
           }, 2000);
-          setTimeout(() => {
-            this.sendNotification("Un mail de confirmation vous a été envoyé");
-          }, 2200);
+          
       }
   }
 
@@ -181,7 +183,15 @@ export class RegisterthirdpartyPage implements OnInit {
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) =>
         {
-            console.log(data);
+            if(data == "Sent"){
+              setTimeout(() => {
+                this.sendNotification("Un mail de confirmation vous a été envoyé");
+              }, 2200);
+            }else{
+              setTimeout(() => {
+                this.sendNotification("Erreur 421. Réessayez ultérieurement");
+              }, 2200);
+            }
         },
         (error: any) => {
             console.log(error);

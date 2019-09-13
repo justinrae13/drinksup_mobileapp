@@ -22,9 +22,18 @@ import { OffersAddbarPageModule } from '../pages/offers-addbar/offers-addbar.mod
 import { ModalRatingsPageModule } from '../pages/modal-ratings/modal-ratings.module';
 import { ModalChangePhotosPageModule } from '../pages/modal-change-photos/modal-change-photos.module';
 import { ModalChangeUserphotoPageModule } from '../pages/modal-change-userphoto/modal-change-userphoto.module';
+import { ModalMoreOptionPageModule } from '../pages/modal-more-option/modal-more-option.module';
+import { ModalToSponsorPageModule } from '../pages/modal-to-sponsor/modal-to-sponsor.module';
+import { ModalToSharePageModule } from '../pages/modal-to-share/modal-to-share.module';
+import { ModalGetSponsoredPageModule } from '../pages/modal-get-sponsored/modal-get-sponsored.module';
+import { ModalStatsDetailsPageModule } from '../pages/modal-stats-details/modal-stats-details.module';
+import { AbonnementPageModule } from '../pages/abonnement/abonnement.module';
+
+
 import { LaunchNavigator } from '@ionic-native/launch-navigator/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
+import { PayPal } from '@ionic-native/paypal/ngx';
 
 import { Calendar } from '@ionic-native/calendar/ngx';
 import {EmailComposer} from '@ionic-native/email-composer/ngx';
@@ -39,8 +48,9 @@ import { Network } from '@ionic-native/network/ngx';
 @NgModule({
     declarations: [AppComponent],
     entryComponents: [],
-    imports: [NgxQRCodeModule, BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, UsersPageModule, ModalChangePhotosPageModule, ModalChangeUserphotoPageModule, ModalPageModule, ModalQrcodePageModule, ModalbarAdminPageModule, ModalSchedulePageModule, LoadingpagePageModule, OffersAddbarPageModule, ModalRatingsPageModule, IonicStorageModule.forRoot()],
+    imports: [NgxQRCodeModule, BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, AbonnementPageModule, UsersPageModule, ModalStatsDetailsPageModule, ModalGetSponsoredPageModule, ModalToSharePageModule, ModalToSponsorPageModule, ModalChangePhotosPageModule, ModalChangeUserphotoPageModule, ModalPageModule, ModalQrcodePageModule, ModalbarAdminPageModule, ModalSchedulePageModule, LoadingpagePageModule, OffersAddbarPageModule, ModalRatingsPageModule, ModalMoreOptionPageModule, IonicStorageModule.forRoot()],
     providers: [
+        PayPal,
         StatusBar,
         SplashScreen,
         GooglePlus,

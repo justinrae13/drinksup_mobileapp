@@ -607,19 +607,19 @@ p{
   .schedule{
     opacity: 0;
     transform: translateX(-40px);
-    animation: slideElem .6s 3.1s ease-out forwards;
+    animation: slideElem .6s 2.8s ease-out forwards;
   }
 
   .map_wrapper{
     opacity: 0;
     transform: translateX(-40px);
-    animation: slideElem .6s 3.4s ease-out forwards;
+    animation: slideElem .6s 2.8s ease-out forwards;
   }
 
   .commentButton{
     opacity: 0;
     transform: translateX(-40px);
-    animation: slideElem .6s 3.7s ease-out forwards;
+    animation: slideElem .6s 2.8s ease-out forwards;
   }
 
   @keyframes slideElem{

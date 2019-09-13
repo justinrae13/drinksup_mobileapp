@@ -1,48 +1,372 @@
-
-ion-card{
-  background-color: rgba(0,0,0,.2);
-  border : 1px solid rgba(255,255,255,0.5);
-  font-size: .75rem;
-  text-align: center;
-  flex-basis: 30%;
-  margin: 0;
-  ion-card-header{
-    ion-card-title{
-      color : #fff;
-      font-size: .9rem;
-    }
-  }
+ion-content{
+  --padding-top : 50px;
 }
-div{
+
+h1{
+  margin: 0;
+  margin-left: 16px;
+  height: 30px;
+  font-family: "NBL";
+  font-size: 1rem;
+  color: #fff;
   display: flex;
-  flex-wrap: wrap;
-  width:100%;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: flex-end;
   margin-bottom: 20px;
 }
 
-h3{
-  margin-top: 70px;
+h2{
+  margin: 0;
+  margin-left: 16px;
+  margin-top: 8px;
+  margin-bottom: 5px;
   font-family: "NBL";
-  font-size: 1.2rem;
+  font-size: .9rem;
+  color: rgb(170, 170, 170);
 }
 
-p{
+h3{
+  margin: 0;
+  margin-top: 10px;
+  margin-left: 16px;
   font-family: "NBO";
   font-size: .9rem;
-  color: rgb(172, 172, 172);
+  color: rgb(192, 192, 192);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  transform: translateY(-40px);
+  opacity: 0;
+  animation: slideDown .3s linear forwards;
 }
 
-.validerBtn{
-  margin: 0 16px;
-  width: calc(100% - 32px);
+h5{
+  margin: 0;
+  width: 100%;
+  text-align: center;
+  padding: 0 16px;
+  margin-top: 16px;
+  margin-bottom: 5px;
+  font-family: "NBL";
+  font-size: .9rem;
+  color: rgb(255, 255, 255);
+  i{
+    font-family: "NBL";
+    font-size: .9rem;
+    color: rgb(172, 172, 172);
+  }
+}
+
+section{
+  width: 100%;
+  height: calc(100% - 85px);
+  position: relative;
+  transition: all .3s linear;
+  padding: 0 16px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  div{
+    height: calc((100% - 32px) / 4);
+    width: 100%;
+    border-radius: 5px;
+    transition: height .2s linear, opacity .2s linear;
+    background-color: #070708;
+    overflow: hidden;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 0 16px;
+    position: relative;
+    border-right: 1px solid rgba(255,255,255,.025);
+    border-left: 1px solid rgba(255,255,255,.025);
+    border-top: 1px solid rgba(255,255,255,.07);
+    border-bottom: 4px solid rgba(0, 0, 0, 1);
+    background-color: #101012;
+    box-shadow: 0 13px 13px -10px rgba(0, 0, 0, 1);
+
+    ion-icon{
+        color: #101012;
+    }
+
+    h1{
+      margin: 0;
+      font-family: "NBL";
+      font-size: 1.5rem;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
+      color: #fff;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      position: relative;
+      padding: 0;
+      span{
+        padding-top: 2px;
+        font-family: "NBL";
+        font-size: .9rem;
+        letter-spacing: 1px;
+      }
+    }
+
+    p{
+      margin: 3px 0;
+      font-family: "NBL";
+      font-size: .75rem;
+      color: #fff;
+      background-color: #820000;
+      padding: 2px 15px;
+      border-radius: 2px;
+    }
+
+    legend{
+      margin: 0;
+      font-family: "NBO";
+      font-size: .9rem;
+      text-shadow: 1px 1px 4px rgba(0, 0, 0, 1);
+      color: #fff;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-start;
+      position: relative;
+      padding: 0;
+      margin-top: 3px;
+      letter-spacing: 2px;
+    }
+
+    .bg_icon{
+      height: 180px;
+      position: absolute;
+      z-index: -1;
+      opacity: .05;
+    }
+
+    .bg_icon.odd{
+      left: -35px;
+      top: 26px;
+    }
+
+    .bg_icon.even{
+      left: -35px;
+      top: -90px;
+    }
+
+    .bg_price{
+      width: 100px;
+      height: 100px;
+      background-color: #fff;
+      border-radius: 50%;
+      color: #070708;
+      position: absolute;
+      border: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      opacity: .015;
+      right: 10px;
+      top: -20px; 
+      span{
+        font-family: "NBL";
+        margin: 0;
+      }
+      .curr{
+        font-size: 20px;
+      }
+      .price{
+        font-size: 25px;
+      }
+    }
+   
+  }
+}
+
+form{
+  transform: translateY(-40px);
+  opacity: 0;
+  animation: slideDown .3s 350ms linear forwards;
+  ion-checkbox{
+    --border-width: 0px;
+  }
+  ion-input{
+    font-size: 1rem;
+    font-family: "NBO";
+  }
+  ion-grid{
+    ion-row{
+      ion-col{
+        ion-item{
+          ion-label{
+            font-size: .8rem;
+            font-family: "NBO";
+            ion-icon{
+              font-size: 1.8rem;
+              color: transparent;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideDown{
+  from{transform: translateY(-40px); opacity: 0}
+  to{transform: translateY(0); opacity: 1}
+}
+
+.validerBtnInvalid{
+  margin: 0 8px;
+  width: calc(100% - 16px);
   text-transform: none;
   font-size: .9rem;
-  --background : #fff;
-  --border-width : 1px;
-  --border-color : #fff;
+  --box-shadow: 0 12px 12px -9px rgba(134, 134, 134,.45);
+  --background : rgb(134, 134, 134);
+  --border-width : 0px;
+  --border-color : transparent;
   --border-style : solid; 
-  color : #070708; 
-  margin-top: 40px;
+  --border-radius : 3px;
+  color : #fff;
   font-family: "NBL";
+  margin-top: 8px;
 }
+
+.validerBtnValid{
+  margin: 0 8px;
+  width: calc(100% - 16px);
+  text-transform: none;
+  font-size: .9rem;
+  --box-shadow: 0 12px 12px -9px rgba(190,0,0,.45);
+  --background : #820000;
+  --border-width : 0px;
+  --border-color : transparent;
+  --border-style : solid; 
+  --border-radius : 3px;
+  color : #fff;
+  font-family: "NBL";
+  margin-top: 8px;
+}
+
+ion-checkbox{
+  --background-checked :#820000;
+}
+
+.modePaiement{
+  margin: 0;
+  margin-left: 16px;
+  font-family: "NBL";
+  font-size: 1rem;
+  color: #fff;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  opacity: 0;
+  animation: slideRight .4s linear forwards;
+}
+.payment_method_wrapper{
+  margin-top: 10px;
+  width: 100%;
+  height: auto;
+  padding: 0 16px;
+  .payment_card{
+    height: 50px;
+    width: 100%;
+    background-color: #101012;
+    box-shadow: 0 8px 10px -5px rgba(0, 0, 0, .7);
+    border-right: 1px solid rgba(255,255,255,.025);
+    border-left: 1px solid rgba(255,255,255,.025);
+    border-top: 1px solid rgba(255,255,255,.04);
+    border-bottom: 3px solid rgba(0, 0, 0, 0.6);
+    border-radius: 3px;
+    opacity: 0;
+    animation: slideRight .4s .2s linear forwards;
+    &:last-of-type{
+      margin-top: 10px;
+      animation: slideRight .4s .4s linear forwards;
+    }
+    h1{
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img{
+        height: 40px;
+      }
+      .smaller_icon{
+        height: 30px;
+      }
+    }
+  }
+}
+
+@keyframes slideRight{
+  from{transform: translateX(-40px); opacity: 0}
+  to{transform: translateX(0); opacity: 1}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ion-card{
+//   background-color: rgba(0,0,0,.2);
+//   border : 1px solid rgba(255,255,255,0.5);
+//   font-size: .75rem;
+//   text-align: center;
+//   flex-basis: 30%;
+//   margin: 0;
+//   ion-card-header{
+//     ion-card-title{
+//       color : #fff;
+//       font-size: .9rem;
+//     }
+//   }
+// }
+// div{
+//   display: flex;
+//   flex-wrap: wrap;
+//   width:100%;
+//   justify-content: space-between;
+//   margin-bottom: 20px;
+// }
+
+// h3{
+//   margin-top: 70px;
+//   font-family: "NBL";
+//   font-size: 1.2rem;
+// }
+
+// p{
+//   font-family: "NBO";
+//   font-size: .9rem;
+//   color: rgb(172, 172, 172);
+// }
+
+// .validerBtn{
+//   margin: 0 16px;
+//   width: calc(100% - 32px);
+//   text-transform: none;
+//   font-size: .9rem;
+//   --background : #fff;
+//   --border-width : 1px;
+//   --border-color : #fff;
+//   --border-style : solid; 
+//   color : #070708; 
+//   margin-top: 40px;
+//   font-family: "NBL";
+// }

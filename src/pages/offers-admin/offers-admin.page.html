@@ -1,5 +1,5 @@
 <div class="tab_header" [ngStyle]="{'top' : hideHeader}">Gestion des offres</div>
-<div class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
+<div *ngIf="ifHasConnection" class="freedrinkstab" [ngStyle]="{'top' : hideSubHeader}">
   <div (click)="tous()" [ngStyle]="{'color' : activeColor1}">Tous</div>
   <div (click)="valide()" [ngStyle]="{'color' : activeColor2}">Validée</div>
   <div (click)="nonvalide()" [ngStyle]="{'color' : activeColor3}">Non-validée</div>
@@ -7,23 +7,24 @@
 </div>
 
 <!-- Custom Refresher Start -->
-<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
-  <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
-    <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
-  </svg>
-  <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngClass]="{double_header : ifHasConnection}" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
-<div class="mcr_backdrop twoHeads" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
 <!-- Custom Refresher End -->
 
-<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+  
+  <p *ngIf="padDeDonee" class="pasDeDonnee"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Aucune offre</p>
+
   <ion-list>
     <ion-item-sliding *ngFor="let off of filteredOffres; let i = index" #slidingItem>
       <ion-item lines="none" no-padding>
         <div class="content">
             <h1>{{off.OFF_DESCRIPTION}}</h1>
-            <h3>Date&nbsp;debut:&nbsp;&nbsp;<ion-datetime [readonly]="true" [value]="off.OFF_DATEDEBUT" displayFormat="DD MMMM YYYY à HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></h3>
-            <h3>Date&nbsp;fin:&nbsp;&nbsp;<ion-datetime [readonly]="true" [value]="off.OFF_DATEFIN" displayFormat="DD MMMM YYYY à HH:mm" month-names="Janvier, Février, Mars, Avril, Mai, Juin, Juillet, Août, Décembre"></ion-datetime></h3>
+            <h2>Bar:&nbsp;&nbsp;{{off.ENT_NOM}}</h2>
+            <h3>Date&nbsp;debut:&nbsp;&nbsp;{{off.startFR}}</h3>
+            <h3>Date&nbsp;fin:&nbsp;&nbsp;{{off.endFR}}</h3>
             <span class="validspan" *ngIf="off.OFF_ACTIF === 'Oui'">Validée</span>
             <span class="notvalidspan" *ngIf="off.OFF_ACTIF === 'Non'">Non-validée</span>
         </div>
@@ -39,8 +40,8 @@
   </ion-list>
 </ion-content>
 
-<ion-content *ngIf="!ifHasConnection" [ngStyle]="{'transform': !ifHasConnection ? 'translateY(50px)' : 'translateY(108px)'}" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
-  <div class="no_connection">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+    <div class="no_connection">
     <img src="../../assets/img/no_connection.svg">
     <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
   </div>

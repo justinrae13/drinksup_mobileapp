@@ -1,4 +1,17 @@
-<ion-content padding>
+<ion-content>
+    <h1>Mettre à jour l'image n° {{photoNUM}}</h1>
+    <section>
+        <p (click)="upl(photoNUM)"><ion-icon name="camera"></ion-icon>&nbsp;Appareil Photo</p>
+        <p (click)="gal(photoNUM)"><ion-icon name="image"></ion-icon>&nbsp;Galérie</p>
+    </section>
+    <footer>
+        <span (click)="closeModal()">Annuler</span>
+    </footer>
+</ion-content>
+
+
+
+<!-- <ion-content padding>
   
   <div id="pho_choices_wrapper">
       <h1>Choisissez le n° de photo</h1>
@@ -65,4 +78,4 @@
     <ion-toolbar>
         <ion-button expand="full" fill="clear" id="close" (click)="closeModal()">Annuler</ion-button>
       </ion-toolbar>
-</ion-footer>
+</ion-footer> -->

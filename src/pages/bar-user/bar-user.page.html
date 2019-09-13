@@ -127,7 +127,7 @@
   </div>
 
   <!-- (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)" -->
-  <div class="map_wrapper" (click)="goToMap()">
+  <div class="map_wrapper" (click)="goToMap(myBar.ENT_LATITUDE, myBar.ENT_LONGITUDE, myBar.ENT_ADRESSE, myBar.ENT_NPA, myBar.ENT_LOCALITE)">
     <div>
         <p>{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} {{myBar.ENT_LOCALITE}}</p>
         <span>Cliquez pour ouvrir la carte</span>
@@ -136,7 +136,8 @@
   </div>
   
   <ion-button *ngIf="payed!=='good' && vipUser.Roles_ROL_ID!==4" expand="block" (click)="rateNotSubscriber()" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
-  <ion-button *ngIf="payed==='good' || vipUser.Roles_ROL_ID===4" expand="block" (click)="rate(myBar.ENT_ID, user_id)" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
+  <ion-button *ngIf="!userCanRate && (payed=='good' || vipUser.Roles_ROL_ID==4)" expand="block" (click)="userCannotRate()" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
+  <ion-button *ngIf="userCanRate && (payed=='good' || vipUser.Roles_ROL_ID==4)" expand="block" (click)="rate(myBar.ENT_ID, user_id)" class="commentButton"><ion-icon name="paper"></ion-icon>&nbsp;Donner votre note</ion-button>
 </ion-content>
 
 

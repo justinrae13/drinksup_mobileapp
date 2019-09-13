@@ -46,7 +46,7 @@ ion-slide{
     justify-content: center;
     align-items: center;
 
-    .pho_number{
+    .bar_new_header{
         position: absolute;
         left: 0;
         top: 0;
@@ -56,11 +56,47 @@ ion-slide{
         background: rgb(7,7,8);
         background: linear-gradient(0deg, rgba(7,7,8,0) 0%, rgba(7,7,8,1) 100%); 
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
-        padding-right: 16px;
-        font-size: 1.2rem;
-        font-family: "NBL";
+        
+        .pho_number{
+            font-size: 1rem;
+            font-family: "NBL";
+            position: absolute;
+            left: 16px;
+            top: 15px;
+            width: auto;
+            height: 30px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            text-shadow: 0 2px 3px rgba(0, 0, 0,1);
+        }
+
+        .change_pho{
+            font-size: .85rem;
+            font-family: "NBL";
+            position: absolute;
+            right: 16px;
+            top: 15px;
+            width: auto;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 20px;
+            border: 1px solid rgba($color: #fff, $alpha: .75);
+            background: repeating-linear-gradient(
+                -55deg,
+                rgba($color: #fff, $alpha: .3) 1px, 
+                rgba($color: #fff, $alpha: .3) 1px, /*size stripes*/
+                rgba($color: #fff, $alpha: .2) 2px,
+                rgba($color: #fff, $alpha: .2) 8px /*space between stripes*/
+            );
+            box-shadow: 0 9px 15px -5px rgba(0, 0, 0,.8);
+            text-shadow: 0 2px 3px rgba(0, 0, 0,1);
+            border-radius: 3px;
+        }
     }
 
     .pre_cover{
@@ -179,7 +215,7 @@ ion-slides{
         .active_status{
             font-size: .9rem;
             font-family: "NBL";
-            color: #4caf50; 
+            color: #008a2c; 
 
             
         }
@@ -216,6 +252,11 @@ ion-select{
     border-bottom: 1px solid rgba(255,255,255,.7);
 }
 
+ion-textarea{
+    --padding-bottom  : 5px;
+    --padding-top  : 5px;
+}
+
 #type_bar{
     font-family: "NBO";
     font-size: 1rem;
@@ -234,6 +275,10 @@ ion-select{
     font-size: 1.2rem;
 }
 
+.bardesc_input{
+    width: 100%;
+}
+
 .inputRow{
     width: 100%;
     display: flex;
@@ -247,14 +292,23 @@ ion-select{
 .scheduleSection{
     position: relative;
     max-width: 100%;
-    padding-top: 20px;
+    padding-top: 25px;
 
     h1{
-        font-size: .9rem;
+        font-size: 1rem;
         font-family: "NBL";
-        margin-bottom: 15px;
+        margin-bottom: 0;
         padding-left: 8px;
-        color: rgb(163, 163, 163);
+        color: rgb(240, 240, 240);
+        margin-bottom: 18px;
+        span{
+            font-size: .85rem;
+            font-family: "NBO";
+            margin-bottom: 15px;
+            padding-left: 8px;
+            color: rgb(163, 163, 163);
+            font-style: italic;
+        }
     }
 }
 
@@ -262,8 +316,9 @@ ion-item-sliding{
     ion-item-option{
         background-color: rgb(196, 0, 0);
         text-transform: none;
-        font-family: "NBO";
-        font-size: 15px;
+        font-family: "NBL";
+        font-size: .9rem;
+        border-radius: 3px 0 0 3px;
     }
     .sched_row{
         width: 100%;
@@ -325,29 +380,44 @@ ion-item-sliding{
 }
 
 .editBtnSection{
-    padding-left: 8px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .modval{
     text-transform: none;
     font-family: "NBL";
     font-size: .9rem;
+    --box-shadow: 0 10px 15px -8px rgba(190,0,0,.65);
     --background : rgb(196, 0, 0);
-    --border-width : 1px;
-    --border-color : rgb(196, 0, 0);
+    --border-width : 0px;
+    --border-color : transparent;
     --border-style : solid; 
-    color : #fff; 
+    --border-radius : 3px;
+    color : #fff;
+}
+
+.modval.full{
+    width: 100%;
+}
+
+.modval.half{
+    width: calc(50% - 4px);
 }
 
 .annul{
     text-transform: none;
     font-family: "NBL";
     font-size: .9rem;
-    --background : rgb(100, 100, 100);
-    --border-width : 1px;
-    --border-color : rgb(100, 100, 100);
+    --box-shadow: 0 15px 18px -10px rgba(255,255,255,.2);
+    --background : rgb(99, 99, 99);
+    --border-width : 0px;
+    --border-color : transparent;
     --border-style : solid; 
-    color : #fff;  
+    --border-radius : 3px;
+    color : rgb(255, 255, 255);  
+    width: calc(50% - 4px);
 }
 
 .odd{
@@ -387,11 +457,33 @@ ion-item-sliding{
     .span-div{
         display: inline-block;
         font-family: "NBL";
-        color : #DC143C;
+        color : rgb(196, 0, 0);
     }
 }
 
+.info_max_text{
+    font-size: .75rem;
+    color: rgb(110, 110, 110);
+    padding: 0 8px;
+    display: block;
+    width: 100%;
+}
 
+.info_max_text.top{
+    margin-top: 12px;
+    text-align: left;
+    margin-bottom: -3px;
+}
 
+.info_max_text.bot{
+    text-align: left;
+    margin-bottom: 5px;
+}
 
-
+.info_max_text.white{
+    margin-bottom: 8px;
+    color: rgb(134, 134, 134);
+    font-family: "NBO";
+    text-align: right;
+    font-size: .85rem;
+}

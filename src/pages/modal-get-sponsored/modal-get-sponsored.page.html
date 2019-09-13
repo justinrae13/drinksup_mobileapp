@@ -1,0 +1,14 @@
+<ion-content>
+  <h1>Collez le code en cliquant sur le bouton "Coller le code" puis appuyez sur le bouton "Confirmer".</h1>
+  <section>
+    <div>
+       <p>COLLEZ LE CODE DE VOTRE PARRAIN ICI</p>
+      <h2>{{sponsorsCode}}</h2>
+    </div>
+    <ion-button expand="block" (click)="pasteTheCode(myId)">Coller le code</ion-button>
+  </section>
+  <footer>
+    <span (click)="getSponsored(myCode, myId)">Confirmer</span>
+    <span (click)="closeModal()">Annuler</span>
+  </footer>
+</ion-content>

@@ -1,15 +1,15 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 import { ActivatedRoute } from '@angular/router';
-import { NavController, ModalController, ToastController, AlertController } from "@ionic/angular";
+import { NavController, ModalController, ToastController, AlertController, IonContent } from "@ionic/angular";
 import { Storage } from '@ionic/storage';
 import { ModalQrcodePage } from '../modal-qrcode/modal-qrcode.page';
 import { ModalRatingsPage } from '../modal-ratings/modal-ratings.page';
 import { timer } from 'rxjs';
 import { LaunchNavigator } from '@ionic-native/launch-navigator/ngx';
 import * as Global from '../../app/global';
-declare var google;
+
 
 
 @Component({
@@ -18,6 +18,7 @@ declare var google;
   styleUrls: ['./bar-user.page.scss'],
 })
 export class BarUserPage implements OnInit {
+  @ViewChild(IonContent) content : IonContent;
   baseURI = Global.mainURI;
   uplPhotoURI = Global.photosURI;
   // drinksPhotoURI = 'https://www.macfi.ch/serveur/drinksphotos/';
@@ -47,6 +48,7 @@ export class BarUserPage implements OnInit {
   gradeTot;
   ifDataScanned : boolean = false;
   showBtns : boolean = false;
+  userCanRate : boolean = false;
 
   touchstartX = 0;
   touchstartY = 0;
@@ -177,27 +179,6 @@ export class BarUserPage implements OnInit {
   //*************************************************************************** */
   
 
-  async loadMap(latitide: number, longitude: number, barname: string) {
-    
-    const mapEle: HTMLElement = document.getElementById('map');
-    this.mapRef = new google.maps.Map(mapEle, {
-      center: {lat : latitide, lng : longitude},
-      zoom: 15,
-      disableDefaultUI: true
-    });
-    google.maps.event.addListenerOnce(this.mapRef, 'idle', () => {
-      this.addMaker(latitide, longitude, barname);
-    });
-  }
-
-  private addMaker(lat: number, lng: number, barname: string) {
-    const marker = new google.maps.Marker({
-      position: { lat, lng },
-      map: this.mapRef,
-      animation: google.maps.Animation.DROP,  
-      title: barname
-    });
-  }
 
   //*************************************************************************** */
 
@@ -209,6 +190,8 @@ export class BarUserPage implements OnInit {
     document.getElementById("third_pic").classList.remove("thirdimgscale");
     document.getElementById("load_overL").style.opacity = "1";
     document.getElementById("load_overL").style.display = "block";
+
+    this.content.scrollToTop();
   }
 
   
@@ -238,20 +221,11 @@ export class BarUserPage implements OnInit {
         this.imgLink2 = this.uplPhotoURI+this.barName+"_2?ran="+random;
         this.imgLink3 = this.uplPhotoURI+this.barName+"_3?ran="+random;
 
-        // this.loadMap(parseFloat(data.ENT_LATITUDE), parseFloat(data.ENT_LONGITUDE), data.ENT_NOM);
-
-        //Get address and convert to Latitude and Longitude
-        // this.barAdresse = data.ENT_ADRESSE;
-        // this.barNPA = data.ENT_NPA;
-        // this.barLocalite = data.ENT_LOCALITE;
-        //
+        
         this.storage.get('SessionIdKey').then((myId) => {
           this.checkIfUserAlreadyRated(myId,data.ENT_ID);
+          this.checkIfUserCanRate(myId, data.ENT_ID)
         }); 
-
-        // this.nativeGeocoder.forwardGeocode(this.barAdresse+" "+this.barNPA+" "+this.barLocalite, { useLocale: false, maxResults: 1 })
-        // .then((result) => this.loadMap(parseFloat(result[0].latitude), parseFloat(result[0].longitude)))
-        // .catch((error: any) => console.log(error));
     },
     (error : any) =>
     {
@@ -700,9 +674,10 @@ export class BarUserPage implements OnInit {
     this.navCtrl.back();
   }
 
-  goToMap(){
+  goToMap(lat, long, address, npa, zipcode){
+    let fullAddress = address+", "+npa+" "+zipcode;
     this.nativePageTransitions.fade(null); 
-    this.navCtrl.navigateForward("show-map");
+    this.navCtrl.navigateForward("show-map/"+lat+"/"+long+"/"+fullAddress);
   }
 
   retour_offline(){
@@ -732,14 +707,25 @@ export class BarUserPage implements OnInit {
     document.getElementById("img_3").style.opacity = "0";
   }
 
-  // getDirection(){
-  //   this.launchNavigator.navigate("Chemin des Coquelicots 9, 1214 Vernier");
-  // }
-
   async rateNotSubscriber(){
     const alert = await this.alertController.create({
       header: "Oops !",
       message: "<h3>Abonnez-vous dès maintenant pour pouvoir donner votre avis/note sur le bar !</h3>",
+      buttons: [{
+              text: 'OK',
+              handler: () => {
+              }
+          }
+      ]
+  });
+
+  await alert.present();
+  }
+
+  async userCannotRate(){
+    const alert = await this.alertController.create({
+      header: "Oops !",
+      message: "<h3>Vous devez d'abord profiter une offre de ce bar pour pouvoir lui donner une note.</h3>",
       buttons: [{
               text: 'OK',
               handler: () => {
@@ -782,6 +768,25 @@ checkIfUserAlreadyRated(my_id : number, bar_id : number) {
   },  
   (error: any) => {
       console.log(error);
+  });
+}
+
+checkIfUserCanRate(idUser, IdBar){
+  let headers 	: any		= new HttpHeaders({ 'Content-Type': 'application/json'}),
+  options 	: any		= {"key" : "checkIfUserCanRate", "idUser" : idUser, 'idBar' : IdBar},
+  url       : any   = this.baseURI;
+
+  this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
+  {
+    if(data.total == 0){
+      this.userCanRate = false;
+    }else{
+      this.userCanRate = true;
+    }
+  },
+  (error : any) =>
+  {
+      console.dir(error);
   });
 }
  

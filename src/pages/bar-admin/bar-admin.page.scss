@@ -118,25 +118,25 @@
       }
   
       .actif_span{
-        background-color: rgba(27, 223, 90, .5);
-        border: 1px solid #1bdf5a;
-        font-size: .7rem;
+        background-color: #008a2c;
+        border: 1px solid #008a2c;
+        font-size: .6rem;
         color: #fff;
         padding: 1px 16px;
         font-family: "NBL";
         text-transform: uppercase;
-        border-radius: 20px;
+        border-radius: 0;
       }
   
       .inactif_span{
-        background-color: rgba(128, 128, 128, .5);
-        border: 1px solid gray;
-        font-size: .7rem;
+        background-color: #C0C0C0;
+        border: 1px solid #C0C0C0;
+        font-size: .6rem;
         color: gray;
         padding: 1px 16px;
         font-family: "NBL";
         text-transform: uppercase;
-        border-radius: 20px;
+        border-radius: 0;
       }
   
       h3{

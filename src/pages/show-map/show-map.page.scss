@@ -1,0 +1,25 @@
+
+.back{
+    border-radius: 50%;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
+    z-index: 5000;
+    width: 45px;
+    height: 45px;
+    background: #070708;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ion-icon{
+        color: #fff;
+        font-size: 1.8rem;
+    }
+}
+
+
+#full-map{
+    width: 100vw;
+    height: 100vh;
+}

@@ -1,34 +1,42 @@
 <div class="header_bar" *ngIf="roleLogged!=='proprio'" >
-    <div class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
+    <div *ngIf="ifHasConnection" class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
+    <div *ngIf="!ifHasConnection" class="hb-button" (click)="retour_offline()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
 </div>
-<ion-content color="secondary">
+
+
+<!-- Custom Refresher Start -->
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngStyle]="{'display' : crwDisplay, 'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
+</div>
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
   <div class="img-slide">
     <ion-slides pager="true" [options]="slideOpts">
         <ion-slide>
-            <div *ngIf="roleLogged==='proprio'" class="pho_number">Photo n° 1</div>
-            <div class="pre_cover" [ngStyle]="{'opacity' : preCovOpac, 'display' : preCovDis}"></div>
+            <div *ngIf="roleLogged==='proprio'" class="bar_new_header"><span class="pho_number">Image n° 1</span> <span class="change_pho" (click)="editPhotos(1)">Mettre à jour cette image</span></div>
+            <div class="pre_cover" *ngIf="!nameNotYetUpdated" [ngStyle]="{'opacity' : preCovOpac, 'display' : preCovDis}"></div>
             <img [src]="imgLink1" alt="Photo n° 1" (load)="imgLoad()">
         </ion-slide>
 
         <ion-slide>
-            <div *ngIf="roleLogged==='proprio'" class="pho_number">Photo n° 2</div>
+            <div *ngIf="roleLogged==='proprio'" class="bar_new_header"><span class="pho_number">Image n° 2</span> <span class="change_pho" (click)="editPhotos(2)">Mettre à jour cette image</span></div>
             <img [src]="imgLink2" alt="Photo n° 2">
       </ion-slide>
 
       <ion-slide>
-            <div *ngIf="roleLogged==='proprio'" class="pho_number">Photo n° 3</div>
+            <div *ngIf="roleLogged==='proprio'" class="bar_new_header"><span class="pho_number">Image n° 3</span> <span class="change_pho" (click)="editPhotos(3)">Mettre à jour cette image</span></div>
             <img [src]="imgLink3" alt="Photo n° 3">
       </ion-slide>
     </ion-slides>
     <!-- <div class="fade_top"></div> -->
     <div class="fade_bot">
-      <p *ngIf="barFromAdminSide===null" class="changeImg" (click)="editPhotos()"><ion-icon name="images"></ion-icon>&nbsp;Mettre à jour vos photos</p>
+      <!-- <p *ngIf="barFromAdminSide===null" class="changeImg" (click)="editPhotos()"><ion-icon name="images"></ion-icon>&nbsp;Mettre à jour vos photos</p> -->
     </div>
   </div>
   <div padding class="bar-content">
     <h1 *ngIf="barFromAdminSide!==null"class="status" (click)="lirePlus()">Son statut actuel : <span [ngClass]="(barStatus == 'Actif') ? 'active_status' : 'inactive_status'">{{barStatus}}</span>&nbsp;<i id="lireplustext">(Lire plus&nbsp;<ion-icon name="arrow-dropdown"></ion-icon>)</i></h1>
     <h1 *ngIf="barFromAdminSide===null" class="status" (click)="lirePlus()">Votre statut actuel : <span [ngClass]="(barStatus == 'Actif') ? 'active_status' : 'inactive_status'">{{barStatus}}</span>&nbsp;<i id="lireplustext">(Lire plus&nbsp;<ion-icon name="arrow-dropdown"></ion-icon>)</i></h1>
-    <div class="note" id="noteSect">
+    <div class="note" id="noteSect" (click)="lirePlus()">
       <div class="span-div">Attention :</div> Si vous modifiez les infos de votre bar, votre statut passera en <div class="span-div">inactif</div>.
       <br>
       L'administrateur vous changera le statut une fois que vos modifications seront validées.
@@ -37,28 +45,34 @@
     </div>
 
     <form [formGroup]="editBarForm" (ngSubmit)="editBar()">
-      <ion-input class="barname_input" formControlName="nomEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight}"></ion-input>
-      <!-- <ion-input class="bartype_input"  formControlName="typeEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input> -->
-      <ion-select id="type_bar_select" formControlName="typeEnt" [ngStyle]="{'display' : typeBarSelect}" placeholder="Type de bar">
-        <ion-select-option *ngFor="let cat of allCategories" value="{{cat.CAT_DESC}}">{{cat.CAT_DESC}}</ion-select-option>
-      </ion-select>
-      <p id="type_bar"  [ngStyle]="{'display' : typeBar}">{{myBar.ENT_SECTEURACTIVITES}}</p>
-      <ion-input  class="baradd_input" formControlName="adresseEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
-      <div class="inputRow">
-        <ion-input class="barnpa_input" formControlName="NPAEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
-        <ion-input class="barloc_input"  formControlName="localiteEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
-      </div>
-      <ion-textarea class="bardesc_input"  rows="6" formControlName="descEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeightTA, 'font-size' : activeFS}"></ion-textarea>
+        <ion-input class="barname_input" formControlName="nomEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight}"></ion-input>
+        <!-- <ion-input class="bartype_input"  formControlName="typeEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input> -->
+        <ion-select id="type_bar_select" formControlName="typeEnt" [ngStyle]="{'display' : typeBarSelect}" placeholder="Type de bar">
+          <ion-select-option *ngFor="let cat of allCategories" value="{{cat.CAT_DESC}}">{{cat.CAT_DESC}}</ion-select-option>
+        </ion-select>
+        <p id="type_bar"  [ngStyle]="{'display' : typeBar}">{{myBar.ENT_SECTEURACTIVITES}}</p>
+        <ion-input  class="baradd_input" formControlName="adresseEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
+        <div class="inputRow">
+          <ion-input class="barnpa_input" formControlName="NPAEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
+          <ion-input class="barloc_input"  formControlName="localiteEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeight, 'font-size' : activeFS}"></ion-input>
+        </div>
 
-      <div class="editBtnSection">
-        <ion-button class="modval" (click)="allowEdit()" [ngStyle]="{'display': dHide}" shape="round">Modifier</ion-button>
-        <ion-button class="modval" type="submit" shape="round" [ngStyle]="{'display': dNone}">Valider</ion-button>
-        <ion-button class="annul"(click)="disableEdit()" shape="round" [ngStyle]="{'display': dNone}">Annuler</ion-button>
-      </div>
+
+        <span class="info_max_text bot" [ngStyle]="{'display': dNone}">Maximum 255 caractères</span>
+        <ion-textarea cols="6" (ionChange)="checkLength($event)" maxlength="255" class="bardesc_input" formControlName="descEnt" type="text" [readonly]="barInputDisabled" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'height' : activeHeightTA, 'font-size' : activeFS}"></ion-textarea>
+        <!-- <textarea  (change)="checkLength($event)" maxlength="255" class="bardesc_input" formControlName="descEnt" [ngStyle]="{'background-color': activeColor, 'border-bottom': activeBorder, 'font-size' : activeFS}"></textarea> -->
+        <span class="info_max_text white">Il vous reste {{givenLimit}} caractère(s)</span>
+        
+
+        <div class="editBtnSection">
+          <ion-button class="modval full" (click)="allowEdit()" expand="block" [ngStyle]="{'display': dHide}">Modifier vos informations</ion-button>
+          <ion-button class="modval half" type="submit" [ngStyle]="{'display': dNone}" expand="block">Valider</ion-button>
+          <ion-button class="annul"(click)="disableEdit()" [ngStyle]="{'display': dNone}" expand="block">Annuler</ion-button>
+        </div>
     </form>
 
     <div class="scheduleSection">
-      <h1>Glisser le jour pour modifier</h1>
+      <h1><ion-icon name="time"></ion-icon>&nbsp;Votre horaire <span>Glisser le jour pour modifier.</span></h1>
       <ion-item-sliding *ngFor="let schedule of mySchedule" #slidingItem>
           <ion-item-options side="start">
             <ion-item-option color="secondary" (click)="editSchedule(schedule.HOR_ID, schedule.HOR_JOURS, schedule.HOR_HEUREDEBUT_JOUR, schedule.HOR_HEUREFIN_JOUR, schedule.HOR_HEUREDEBUT_SOIR, schedule.HOR_HEUREFIN_SOIR)"><ion-icon slot="top" name="create"></ion-icon>&nbsp;Modifier</ion-item-option>
@@ -80,4 +94,12 @@
     
   </div><!-- end bar content-->
 
+</ion-content>
+
+
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+    <div class="no_connection">
+    <img src="../../assets/img/no_connection.svg">
+    <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>
+  </div>
 </ion-content>

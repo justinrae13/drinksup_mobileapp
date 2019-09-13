@@ -15,6 +15,7 @@ ion-title{
 }
 
 ion-content{
+    --padding-top : 50px;
     --padding-start: 10px;
     --padding-end: 10px;
     height: 100%;
@@ -22,16 +23,14 @@ ion-content{
 
     .plus_icon{
         font-family: "NBL";
-        font-size: .6rem;
+        font-size: 1rem;
         margin: 0;
-        background-color: rgba($color: #fff, $alpha: .1);
-        padding: 0 15px;
+        width: 30px;
         height: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
-        color: rgb(185, 3, 3);
-        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 1);
     }
     .months_wrapper{
         height: 100%;
@@ -45,12 +44,17 @@ ion-content{
             height: calc(80% / 12);
             width: 100%;
             background-color: rgba($color: #fff, $alpha: .08);
-            transition: height .2s ease-out;
+            transition: height 350ms linear;
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
+            border-radius: 3px;
 
             .months_header{
+                position: absolute;
+                top: 0;
+                left: 0;
                 height: 100%;
                 width: 100%;
                 display: flex;
@@ -63,6 +67,8 @@ ion-content{
                 background-color: rgba($color: #000, $alpha: .5);
                 padding: 10px;
                 display: none;
+                opacity: 0;
+                animation: fadeIn .3s 250ms linear forwards;
 
                 .scanCode_row{
                     width: 100%;
@@ -107,6 +113,11 @@ ion-content{
             }
         }
     }
+}
+
+@keyframes fadeIn{
+    from{opacity: 0;}
+    to{opacity: 1;}
 }
 
 .custom_backdrop{

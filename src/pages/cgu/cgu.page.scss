@@ -10,22 +10,26 @@ ion-content{
 h3{
     margin-top: 40px;
     font-family: "NBL";
-    font-size: 1.3rem;
-    color: gray;
+    font-size: 1rem;
+    color: #fff;
     text-transform: uppercase;
+    margin-bottom: -10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 h4{
     margin-top: 40px;
     font-family: "NBL";
-    font-size: 1.1rem;
+    font-size: .9rem;
     text-transform: uppercase;
 }
 
 h5{
     margin-top: 15px;
     font-family: "NBL";
-    font-size: 1rem;
+    font-size: .9rem;
 }
 
 p{

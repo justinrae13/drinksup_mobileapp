@@ -1,57 +1,110 @@
 <div class="header-solid">
-  <div class="hs-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg"> retour</div>
-</div>
-
-<ion-content padding color="secondary">
-  <h3>Découvrez toute l'expérience Drinks up</h3>
-  <p>Abonnez-vous pour profiter d'un verre offert chaque jour.</p>
-  <p>100% sans engagement !</p>
-
-  <div>
-    <ion-card [ngStyle]="{'background-color': couleur}" (click)="offer()">
-      <ion-card-header>
-        <ion-card-title [ngStyle]="{'color': fcolor1}">1 Mois</ion-card-title>
-        <ion-card-subtitle>9.90 CHF / mois</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-    <ion-card [ngStyle]="{'background-color': couleur2}" (click)="offer2()">
-      <ion-card-header>
-        <ion-card-title [ngStyle]="{'color': fcolor2}">3 Mois</ion-card-title>
-        <ion-card-subtitle>19.90 CHF / mois</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
-    <ion-card [ngStyle]="{'background-color': couleur3}" (click)="offer3()">
-      <ion-card-header>
-        <ion-card-title [ngStyle]="{'color': fcolor3}">12 Mois</ion-card-title>
-        <ion-card-subtitle>59.90 CHF / mois</ion-card-subtitle>
-      </ion-card-header>
-    </ion-card>
+    <div class="hs-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg"> retour</div>
   </div>
-  <form [formGroup]="paiementForm" (ngSubmit)="validateCard()" >
-    <ion-item color="secondary">
-      <ion-label stacked><ion-icon name="card"></ion-icon></ion-label>
-      <ion-input type="text" placeholder="4576 XXXX XXXX XXXX"
-                 formControlName="cardNumber"></ion-input>
-    </ion-item>
 
-    <ion-item color="secondary">
-      <ion-label stacked>MM</ion-label>
-      <ion-input type="number" placeholder="12"
-                 formControlName="cardMonth"></ion-input>
-    </ion-item>
+<ion-content color="primary">
+    <h1 id="h1Top">Veuillez choisir le type d'abonnement.</h1>
+    <section [ngStyle]="{'height' : sectHeight}">
 
-    <ion-item color="secondary">
-      <ion-label stacked>AA</ion-label>
-      <ion-input type="number" placeholder="2019"
-                 formControlName="cardYear"></ion-input>
-    </ion-item>
+        <div (click)="typeDabo(1)" [ngStyle]="{'opacity' : opac1, 'display' : display1, 'height' : height1}">
+          <img src="../../assets/img/abonnement-icon-red.svg" class="bg_icon odd">
+          <div class="bg_price"><span class="curr">CHF</span><span class="price">24.90</span></div>
+          <h1>1&nbsp;<span>MOIS</span></h1>
+          <p>24.90&nbsp;CHF</p>
+          <legend>24.90&nbsp;CHF&nbsp;/&nbsp;MOIS</legend>
+        </div>
 
-    <ion-item color="secondary">
-      <ion-label  stacked>CVV</ion-label>
-      <ion-input type="number" placeholder="123"
-                 formControlName="cardCVV"></ion-input>
-    </ion-item>
-    <ion-button type="submit" class="validerBtn" shape="round" expand="full" [disabled]="!paiementForm.valid">Valider</ion-button>
-  </form>
+        <div (click)="typeDabo(2)" [ngStyle]="{'opacity' : opac2, 'display' : display2, 'height' : height2}">
+          <img src="../../assets/img/abonnement-icon-red.svg" class="bg_icon even">
+          <div class="bg_price"><span class="curr">CHF</span><span class="price">19.90</span></div>
+          <h1>3&nbsp;<span>MOIS</span></h1>
+          <p>79.60&nbsp;CHF</p>
+          <legend>19.90&nbsp;CHF&nbsp;/&nbsp;MOIS</legend>
+        </div>
 
+        <div (click)="typeDabo(3)" [ngStyle]="{'opacity' : opac3, 'display' : display3, 'height' : height3}">
+          <img src="../../assets/img/abonnement-icon-red.svg" class="bg_icon odd">
+          <div class="bg_price"><span class="curr">CHF</span><span class="price">14.90</span></div>
+          <h1>6&nbsp;<span>MOIS</span></h1>
+          <p>89.40&nbsp;CHF</p>
+          <legend>14.90&nbsp;CHF&nbsp;/&nbsp;MOIS</legend>
+        </div>
+        <div (click)="typeDabo(4)" [ngStyle]="{'opacity' : opac4, 'display' : display4, 'height' : height4}">
+          <img src="../../assets/img/abonnement-icon-red.svg" class="bg_icon even">
+          <div class="bg_price"><span class="curr">CHF</span><span class="price">9.90</span></div>
+          <h1>12&nbsp;<span>MOIS</span></h1>
+          <p>118.80&nbsp;CHF</p>
+          <legend>9.90&nbsp;CHF&nbsp;/&nbsp;MOIS</legend>
+        </div>
+    </section>
+
+    <h1 class="modePaiement" [ngStyle]="{'display' : mdPaimentTitlePop}">Mode de paiement :</h1>
+    <div class="payment_method_wrapper">
+      <div class="payment_card" (click)="paymentWithPaypal()" [ngStyle]="{'display' : mdPaimentPop}">
+          <h1><img src="../../assets/creditcards/paypal-white.svg">&nbsp;&nbsp;Paypal</h1>
+      </div>
+
+      <div class="payment_card" (click)="paymentWithCard()" [ngStyle]="{'display' : mdPaimentPop}">
+          <h1><img src="../../assets/creditcards/creditcard-white.svg" class="smaller_icon">&nbsp;&nbsp;Carte</h1>
+      </div>
+    </div>
+
+   
+    <h3 [ngStyle]="{'display' : formTitlePop}"><ion-icon name="card"></ion-icon>&nbsp;&nbsp;Informations de paiement.</h3>
+    <form [formGroup]="paiementForm" (ngSubmit)="validateCard()" style="padding: 0 8px" [ngStyle]="{'display' : formPop}">
+        <ion-grid>
+            <ion-row>
+                <ion-col size="12">
+                    <ion-item color="primary">
+                        <ion-label stacked>
+                          <ion-icon [ngStyle]="{'display' : cc}" src="../../assets/creditcards/creditcard.svg"></ion-icon>
+                          <ion-icon [ngStyle]="{'display' : amex}" src="../../assets/creditcards/amex.svg"></ion-icon>
+                          <ion-icon [ngStyle]="{'display' : diner}" src="../../assets/creditcards/dinerint.svg"></ion-icon>
+                          <ion-icon [ngStyle]="{'display' : jcb}" src="../../assets/creditcards/jcb.svg"></ion-icon>
+                          <ion-icon [ngStyle]="{'display' : mcard}" src="../../assets/creditcards/mastercard.svg"></ion-icon>
+                          <ion-icon [ngStyle]="{'display' : visa}" src="../../assets/creditcards/visa.svg"></ion-icon>
+                        </ion-label>
+                        <ion-input (ionChange)="whichCard($event)" type="tel" placeholder="Numéro de carte" formControlName="cardNumber"></ion-input>
+                      </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="6">
+                    <ion-item color="primary">
+                        <ion-label stacked></ion-label>
+                        <ion-input type="tel" placeholder="MM" maxlength="2" formControlName="cardMonth"></ion-input>
+                    </ion-item>
+                </ion-col>
+
+                <ion-col size="6">
+                    <ion-item color="primary">
+                        <ion-label stacked></ion-label>
+                        <ion-input type="tel" placeholder="AAAA" maxlength="4" formControlName="cardYear"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-row>
+                <ion-col size="12">
+                    <ion-item color="primary">
+                        <ion-label  stacked></ion-label>
+                        <ion-input type="tel" placeholder="CVV" maxlength="4" formControlName="cardCVV"></ion-input>
+                    </ion-item>
+                </ion-col>
+            </ion-row>
+
+            <ion-row style="margin-top: 16px">
+              <ion-col size="12" style="display: flex;">
+                  <ion-checkbox id="checkbox" (ionChange)="cbChecked($event)"></ion-checkbox>
+                  <ion-label for="checkbox" style="font-size: .8rem; font-family: NBO; margin-left: 8px;">J'accepte les <span (click)="goToCgu()" style="font-size: .8rem; font-family: NBO; text-decoration: underline">conditions générales d'utilisation</span>.</ion-label>
+              </ion-col>
+          </ion-row>
+        </ion-grid>
+        
+        <ion-button type="button" class="validerBtnInvalid" expand="block" *ngIf="!paiementForm.valid">Valider</ion-button>
+        <ion-button type="submit" class="validerBtnValid" expand="block" *ngIf="paiementForm.valid">Valider</ion-button>
+
+        <h5 (click)="paymentWithPaypal()"><i>ou</i>&nbsp;Payer avec Paypal</h5>
+      </form>
 </ion-content>

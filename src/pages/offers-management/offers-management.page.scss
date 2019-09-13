@@ -87,3 +87,7 @@ ion-list{
 .descriptInput::first-letter{
   text-transform: capitalize !important;
 }
+
+ion-content{
+  --padding-top: 50px;
+}

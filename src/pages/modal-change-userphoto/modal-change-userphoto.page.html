@@ -1,11 +1,11 @@
-<ion-content padding>
+<ion-content>
   <h1>Mettre à jour votre photo</h1>
-  <p (click)="upl()"><ion-icon name="camera"></ion-icon>&nbsp;Appareil Photo</p>
-  <hr>
-  <p (click)="gal()"><ion-icon name="image"></ion-icon>&nbsp;Galérie</p>
+  <section>
+    <p (click)="upl()"><ion-icon name="camera"></ion-icon>&nbsp;Appareil Photo</p>
+    <p (click)="gal()"><ion-icon name="image"></ion-icon>&nbsp;Galérie</p>
+  </section>
+  <footer>
+    <span (click)="closeModal()">Annuler</span>
+  </footer>
 </ion-content>
-<ion-footer>
-  <ion-toolbar>
-      <ion-button expand="full" fill="clear" color="light" id="close" (click)="closeModal()">Annuler</ion-button>
-    </ion-toolbar>
-</ion-footer>
+

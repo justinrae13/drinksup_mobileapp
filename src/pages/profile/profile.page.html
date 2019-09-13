@@ -38,17 +38,13 @@
 
 
 <!-- Custom Refresher Start -->
-<div class="myCustomRefresher" [ngStyle]="{'transform': mcr_scale, 'transition' : mcr_trans}">
-    <svg [ngStyle]="{'display' : mcr_svgDisplay}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 80 80" xml:space="preserve">
-      <circle [ngStyle]="{'stroke-dashoffset' : mcr_dashoffset}" transform="rotate(-90 40 40)" class="my_circle" cx="40" cy="40" r="36" fill="transparent" stroke="white" stroke-width="10" />
-    </svg>
-    <div class="my_circle_rotate" [ngStyle]="{'display' : mcr_circleDivDisplay}"></div>
+<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<div class="cp_refresher_wrapper" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
+  <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
-<div class="mcr_backdrop" [ngStyle]="{'display' : mcr_bdDisplay}"></div>
-<!-- Custom Refresher End -->
 
-<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
-  <div class="inner_content_wrapper">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+    <div class="inner_content_wrapper">
     <div class="upper_content">
         <div class="upper_content_over">
             <div class="profile_pic_frame_bg" (click)="changerPhoto(loggedUser.INT_EMAIL)">
@@ -63,14 +59,13 @@
                 <p>Membre {{dateInscription}}</p>
             
                 <legend class="niveau" *ngIf="loggedUser.Roles_ROL_ID!==2" (click)="parrainageInfo()">{{loggedUser.INT_LEVEL}}&nbsp;&nbsp;<ion-icon name="information-circle-outline"></ion-icon></legend>
-                <!-- <legend class="vip" *ngIf="loggedUser.Roles_ROL_ID===4"><img src="../../assets/img/crown.svg"> V.I.P</legend> -->
                 <legend class="partenaire" *ngIf="loggedUser.Roles_ROL_ID===2"><ion-icon name="contacts"></ion-icon>Partenaire</legend>
             </div>
         </div>
         <div class="upper_content_below">
-            <div *ngIf="loggedUser.Roles_ROL_ID!=2" class="shareCode" (click)="parrainer('user', loggedUser.INT_CODE)">Parrainer</div>
-            <div *ngIf="loggedUser.Roles_ROL_ID!=2" class="saveCode" (click)="saisirCode()">As-tu&nbsp;un&nbsp;code&nbsp;?</div>
-            <div *ngIf="loggedUser.Roles_ROL_ID==2" class="shareApp" (click)="parrainer('proprio', loggedUser.INT_CODE)">Partager&nbsp;Drinks&nbsp;Up</div>
+            <div *ngIf="loggedUser.Roles_ROL_ID!=2" class="shareCode" (click)="toSponsor(loggedUser.INT_CODE)">Parrainer</div>
+            <div *ngIf="loggedUser.Roles_ROL_ID!=2" class="saveCode" (click)="getSponsored(loggedUser.INT_CODE, loggedUser.INT_ID)">As-tu&nbsp;un&nbsp;code&nbsp;?</div>
+            <div *ngIf="loggedUser.Roles_ROL_ID==2" class="shareApp" (click)="toShare()">Partager&nbsp;Drinks&nbsp;Up</div>
           </div>
     </div>
     <div class="lower_content">
@@ -93,7 +88,7 @@
         <p>V.I.P</p>
       </div>
 
-      <div class="btns_col ripple_effect" (click)="monAbonnementDetail(abonneDetail.ABO_TYPE,abonneDetail.ABO_DATEDEBUT,abonneDetail.ABO_DATEFIN)" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser =='good'">
+      <div class="btns_col ripple_effect" (click)="monAbonnementDetail(loggedUser.INT_ID, abonneDetail.ABO_TYPE, abonneDetail.ABO_DATEDEBUT, abonneDetail.ABO_DATEFIN)" *ngIf="loggedUser.Roles_ROL_ID==3 && paidUser =='good'">
         <div class="bg_round">
           <div class="img_wrapper">
               <img src="../../assets/img/profil_abonne_icon-01.svg">
@@ -108,7 +103,7 @@
                 <img src="../../assets/img/profil_abonne_icon-01.svg">
             </div>
           </div>
-          <p>Abonnement</p>
+          <p>S'abonner</p>
       </div>
 
       <div class="btns_col ripple_effect" (click)="sendEmail()">
@@ -133,7 +128,7 @@
             <img src="../../assets/img/profil_cgu_icon-04.svg">
           </div>
         </div>
-        <p>Condition générales</p>
+        <p>Condition générales d'utilisation</p>
       </div>
     </div>
   </div>
@@ -146,7 +141,7 @@
   
 </ion-content>
 
-<ion-content *ngIf="!ifHasConnection" [ngStyle]="{'transform': !ifHasConnection ? 'translateY(50px)' : 'translateY(0px)'}" color="secondary" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
     <div class="no_connection">
       <img src="../../assets/img/no_connection.svg">
       <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>

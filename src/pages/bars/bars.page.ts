@@ -1,10 +1,11 @@
-import { Component, ViewChild, OnInit, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { IonContent, NavController, IonSelect } from "@ionic/angular";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
+import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { AborenewService } from '../../app/service/aborenew.service';
 
 @Component({
   selector: 'app-bars',
@@ -61,9 +62,7 @@ export class BarsPage implements AfterViewInit{
   showRank : boolean = false;
 
   //
-  ifHasConnection : boolean = true;
   //Custom Refresher Made By Jutin Rae
-  scrollOffsetTop : number = 0;
   scrollCounter : number = 0;
   highCounter : number = 227;
   mcr_scale : string = "scale(0)";
@@ -71,16 +70,52 @@ export class BarsPage implements AfterViewInit{
   mcr_trans: string = "0s";
   mcr_svgDisplay : string = "block";
   mcr_circleDivDisplay : string = "none";
+  crwDisplay : string = "none";
   mcr_bdDisplay : string = "none";
   lastY : number = 0;
+
+  //
+  ifHasConnection : boolean = true;
+  //Custom Refresher Made By Jutin Rae
+  @ViewChild(IonContent) maincontent: IonContent;
+  scrollOffsetTop : number = 0;
+  touchStart : number = 0;
+  refresherPosY : number = 0;
+  currPosY : number = 0;
+  ifPulled : boolean = false;
+  posY : string = "translateY(0px)";
+  animDur : string = "0s";
+  rotate : string = "none";
+  popFD : string = "none";
+  mainOpac : string = "1";
+  cuspulrefOpac : string = "0";
 
   //
   initFilterTous : string = null;
   initFilterTopTen : string = null;
   initFilterPresDeMoi : string = null;
+  //
+  popSpinner : string = "none";
+  //
+  initTousClicked : boolean = true;
 
-  constructor(private geolocation: Geolocation, private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
+  constructor(private aborenew : AborenewService, private geolocation: Geolocation, private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
+    this.storage.get('SessionIdKey').then((valId) => {
+      this.aborenew.triggerRenewal(valId,"CheckIT");
+    });
+    //
+    // this.mainOpac = "0";
+    // this.popSpinner = "flex"; 
+    // setTimeout(() => {
+    //   this.popSpinner = "none"; 
+    //   this.mainOpac = "1";
+    // }, 2800);
+    //
+    setTimeout(() => {
+      this.cuspulrefOpac = "1";
+    }, 1200);
   }
+
 
   ngAfterViewInit(){
     this.loadBar(null, null, null, null, null)
@@ -91,14 +126,39 @@ export class BarsPage implements AfterViewInit{
     this.isSearchbarOpened = false;
     this.hideHeader = "0px";
     this.hideSubHeader = "50px";
-    this.tousLesBars();
     this.initFilterTous = null;
     this.initFilterTopTen = null;
     this.initFilterPresDeMoi = null;
+
+    //
+    this.tabPosition = "translateX(0%)";
+    this.leftPosition = "0%";
+    this.activeColor1 = "#fff";
+    this.activeColor2 = "rgb(82, 82, 82)";
+    this.activeColor3 = "rgb(82, 82, 82)";
+
+    this.tousClicked = true;
+    this.toptenClicked = false;
+    this.presdemoiClicked = false;
+    this.noBarFilter = false;
+
+    this.initFilterTopTen = null;
+    this.initFilterPresDeMoi = null;
+
+    this.selectTous.value = "all";
+
+    this.showDistance = false;
+    this.showRank = false;
+    //
+    this.loadBar(null, null, null, null, null);
   }
 
 
   ionViewWillEnter(){
+    this.storage.get('SessionIdKey').then((valId) => {
+      this.aborenew.triggerRenewal(valId,null);
+    });
+    
     this.showDistance = false;
     this.showRank = false;
     this.hideHeader = "0px";
@@ -119,6 +179,11 @@ export class BarsPage implements AfterViewInit{
         this.locationNotAllowed = true;
     });
 
+    this.checkIfUserConnected();
+    this.initTousClicked = true;
+  }
+
+  checkIfUserConnected(){
     //Check if user has internet connection
     if(navigator.onLine){
       //If user has connection
@@ -358,6 +423,10 @@ export class BarsPage implements AfterViewInit{
   scrollEvent(event){
     let currentScroll = event.detail.scrollTop;
     this.scrollOffsetTop = event.detail.scrollTop;
+
+    if(this.scrollOffsetTop > 0){
+      this.maincontent.scrollY = true;
+    }
     
     if(currentScroll > 0 && this.lastScroll <= currentScroll){
         this.hideHeader = "-50px";
@@ -372,40 +441,72 @@ export class BarsPage implements AfterViewInit{
     }
   }
 
-  touchmove(event){
-    if(this.scrollOffsetTop ==0){
 
-      var currentY = event.touches[0].screenY;
+  pullstart(e){
+    this.touchStart = e.changedTouches[0].clientY;
+  }
 
-      if(currentY > this.lastY){
-        this.scrollCounter++;
-      }else if(currentY < this.lastY){
-        this.scrollCounter--;
+  pull(e){
+    this.crwDisplay = "flex";
+    this.animDur = "0s";
+    var touchEnd = e.changedTouches[0].clientY;
+  
+    if (this.touchStart > touchEnd) {
+      this.refresherPosY--;
+    } else {
+      this.refresherPosY++;
+    }
+
+    //---------------------------------------------
+    var incPosY = this.refresherPosY*12;
+
+    if (this.touchStart > touchEnd) {
+
+    }else {
+      if(this.scrollOffsetTop ==0){
+          this.maincontent.scrollY = false;
+          this.ifPulled = true;
+          if(incPosY>= 0 && incPosY <= 200){
+            this.currPosY = incPosY;
+            this.posY = "translateY("+incPosY+"px)";
+          }
+          if(incPosY > 150 && incPosY < 200){
+            this.maincontent.scrollY = false;
+          }else{
+            this.maincontent.scrollY = true;
+          }
       }
+    }
+  }
 
-      this.lastY = currentY;
-      var slowedCounter = this.scrollCounter/45;
-      var doffSet = 227;
-
-      if(slowedCounter <= 1 && slowedCounter > 0){
-        this.mcr_scale = "scale("+slowedCounter+")";
-        doffSet-=(this.scrollCounter*Math.PI);
-        this.mcr_dashoffset = doffSet.toString();
-      }
-
-      if(slowedCounter == 1){
-        this.mcr_trans = ".2s ease 1.5s";
-        this.mcr_svgDisplay = "none";
-        this.mcr_circleDivDisplay = "block";
-        this.mcr_bdDisplay = "block";
+  endpull(){
+    this.maincontent.scrollY = true;
+    if(this.currPosY < 150){
+      this.refresherPosY = 0;
+      this.posY = "translateY("+this.refresherPosY+"px)";
+      this.animDur = "200ms";
+    }else{
+      //
+      if(this.scrollOffsetTop == 0 && this.ifPulled){
+        this.ifPulled = false; 
+        this.posY = "translateY("+150+"px)";
+        this.animDur = "200ms";
+        this.rotate = "rotate 600ms infinite linear";
+        this.maincontent.scrollY = false;
+        this.popFD = "block";
         setTimeout(() => {
-          this.mcr_trans = "0s ease 0s";
-        }, 1800);
+          this.animDur = "500ms";
+          this.rotate = "none";
+          this.refresherPosY = 0;
+          this.posY = "translateY("+this.refresherPosY+"px)";
+        }, 2200);
+  
         setTimeout(() => {
-          this.mcr_svgDisplay = "block";
-          this.mcr_circleDivDisplay = "none";
-        }, 2100);
-        setTimeout(() => {
+          this.popFD = "none";
+          this.mainOpac = "0";
+          this.crwDisplay = "none";
+          //Put LifeCycle Hooks Here...
+          this.checkIfUserConnected();
           if(this.tousClicked){
             
             if(this.initFilterTous === null){
@@ -448,23 +549,20 @@ export class BarsPage implements AfterViewInit{
             }
 
           }else{
-            return false;
+            console.log("Default")
           }
-
-          console.log("filter : tous => "+this.initFilterTous+" top ten =>"+this.initFilterTopTen+" pres de moi =>"+this.initFilterPresDeMoi)
-          this.mcr_bdDisplay = "none";        
-        }, 2200);
+          //
+        }, 2300);
+        
+        setTimeout(() => {
+          this.mainOpac  = "1";
+          this.maincontent.scrollY = true;
+        }, 3000);
       }
-
+      //
     }
-      
+    
   }
-
-  touchend(){
-    this.scrollCounter = 0;
-    this.mcr_scale = "scale("+this.scrollCounter+")";
-  }
-
 
   openSearch(){
     this.nativePageTransitions.fade(null); 
@@ -525,85 +623,128 @@ export class BarsPage implements AfterViewInit{
   }
 
   filterTous(event){
-    if(this.Filtereditems === null){
-      return false;
-    }else{
-      if(event.detail.value=="all"){
-        this.loadBar(null, null, null, null, null);
-        setTimeout(() => {
-          this.Filtereditems = this.items.filter((bar) => {
-            return (bar.ENT_SECTEURACTIVITES !== null);
-          });
-        }, 100);
-        this.initFilterTous = null;
-        this.initFilterTopTen = null;
-        this.initFilterPresDeMoi = null;
+    //
+    this.mainOpac = "0";
+    this.popSpinner = "flex"; 
+    setTimeout(() => {
+      this.popSpinner = "none"; 
+      this.mainOpac = "1";
+    }, 1000);
+    //
+    setTimeout(() => {
+      if(this.Filtereditems === null){
+        return false;
       }else{
-        this.loadBar("tobefiltered", event.detail.value, null, null, null);
-        this.initFilterTous = event.detail.value;
-        this.initFilterTopTen = null;
-        this.initFilterPresDeMoi = null;
+        if(event.detail.value=="all"){
+          this.loadBar(null, null, null, null, null);
+          setTimeout(() => {
+            this.Filtereditems = this.items.filter((bar) => {
+              return (bar.ENT_SECTEURACTIVITES !== null);
+            });
+          }, 100);
+          this.initFilterTous = null;
+          this.initFilterTopTen = null;
+          this.initFilterPresDeMoi = null;
+        }else{
+          this.loadBar("tobefiltered", event.detail.value, null, null, null);
+          this.initFilterTous = event.detail.value;
+          this.initFilterTopTen = null;
+          this.initFilterPresDeMoi = null;
+        }
       }
-    }
+    }, 500);
   }
 
   filterTopTen(event){
-    if(this.Filtereditems === null){
-      return false;
-    }else{
-      if(event.detail.value=="all"){
-        this.getAllRatings(null,null);
-        setTimeout(() => {
-          this.Filtereditems = this.Filtereditems.filter((bar) => {
-            return (bar.ENT_SECTEURACTIVITES !== null);
-          });
-        }, 100);
-        this.initFilterTous = null;
-        this.initFilterTopTen = null;
-        this.initFilterPresDeMoi = null;
+    //
+    this.mainOpac = "0";
+    this.popSpinner = "flex"; 
+    setTimeout(() => {
+      this.popSpinner = "none"; 
+      this.mainOpac = "1";
+    }, 1000);
+    //
+    setTimeout(() => {
+      if(this.Filtereditems === null){
+        return false;
       }else{
-        this.getAllRatings("tobefiltered", event.detail.value);
-        this.initFilterTous = null;
-        this.initFilterPresDeMoi = null;
-        this.initFilterTopTen = event.detail.value;
+        if(event.detail.value=="all"){
+          this.getAllRatings(null,null);
+          setTimeout(() => {
+            this.Filtereditems = this.Filtereditems.filter((bar) => {
+              return (bar.ENT_SECTEURACTIVITES !== null);
+            });
+          }, 100);
+          this.initFilterTous = null;
+          this.initFilterTopTen = null;
+          this.initFilterPresDeMoi = null;
+        }else{
+          this.getAllRatings("tobefiltered", event.detail.value);
+          this.initFilterTous = null;
+          this.initFilterPresDeMoi = null;
+          this.initFilterTopTen = event.detail.value;
+        }
       }
-    }
+    }, 500);
   }
 
   filterPresDeMoi(event, myLat, myLong){
-    if(this.Filtereditems === null){
-      return false;
-    }else{
-      if(event.detail.value=="all"){
-        // this.presDeMoiCalcul(myLat, myLong, null, null);
-        this.loadBar(null, null, "presdemoi", myLat, myLong)
-        setTimeout(() => {
-          this.Filtereditems = this.Filtereditems.filter((bar) => {
-            return (bar.ENT_SECTEURACTIVITES !== null);
-          });
-        }, 100);
-        this.initFilterTous = null;
-        this.initFilterTopTen = null;
-        this.initFilterPresDeMoi = null;
+    //
+    this.mainOpac = "0";
+    this.popSpinner = "flex"; 
+    setTimeout(() => {
+      this.popSpinner = "none"; 
+      this.mainOpac = "1";
+    }, 1000);
+    //
+    setTimeout(() => {
+      if(this.Filtereditems === null){
+        return false;
       }else{
-        // this.presDeMoiCalcul(myLat, myLong, "toBeFiltered", event.detail.value);
-        this.loadBar("tobefiltered", event.detail.value, "presdemoi", myLat, myLong);
-        console.log("Im filtering")
-        this.initFilterTous = null;
-        this.initFilterTopTen = null;
-        this.initFilterPresDeMoi = event.detail.value;
+        if(event.detail.value=="all"){
+          // this.presDeMoiCalcul(myLat, myLong, null, null);
+          this.loadBar(null, null, "presdemoi", myLat, myLong)
+          setTimeout(() => {
+            this.Filtereditems = this.Filtereditems.filter((bar) => {
+              return (bar.ENT_SECTEURACTIVITES !== null);
+            });
+          }, 100);
+          this.initFilterTous = null;
+          this.initFilterTopTen = null;
+          this.initFilterPresDeMoi = null;
+        }else{
+          // this.presDeMoiCalcul(myLat, myLong, "toBeFiltered", event.detail.value);
+          this.loadBar("tobefiltered", event.detail.value, "presdemoi", myLat, myLong);
+          console.log("Im filtering")
+          this.initFilterTous = null;
+          this.initFilterTopTen = null;
+          this.initFilterPresDeMoi = event.detail.value;
+        }
       }
-    }
+    }, 500);
   }
 
   tousLesBars(){
-    this.initFilterTopTen = null;
-    this.initFilterPresDeMoi = null;
+    this.mainOpac = "0";
+    this.popSpinner = "flex"; 
 
-    this.selectTous.value = "all";
+    setTimeout(() => {
+      this.initFilterTopTen = null;
+      this.initFilterPresDeMoi = null;
 
-    this.showDistance = false;
-    this.showRank = false;
+      this.selectTous.value = "all";
+
+      this.showDistance = false;
+      this.showRank = false;
+      //
+      this.loadBar(null, null, null, null, null);
+    },500);
+
+    setTimeout(() => {
+      this.popSpinner = "none"; 
+      this.mainOpac = "1";
+    }, 1000);
+    //------------------------------
     
     this.tabPosition = "translateX(0%)";
     this.leftPosition = "0%";
@@ -612,21 +753,33 @@ export class BarsPage implements AfterViewInit{
     this.activeColor3 = "rgb(82, 82, 82)";
 
     this.tousClicked = true;
+    this.initTousClicked = true;
     this.toptenClicked = false;
     this.presdemoiClicked = false;
     this.noBarFilter = false;
-
-    this.loadBar(null, null, null, null, null);
   }
 
   topten(){
-    this.initFilterTous = null;
-    this.initFilterPresDeMoi = null;
+    this.mainOpac = "0";
+    this.popSpinner = "flex";
 
-    this.selectTopTen.value = "all";
+    setTimeout(() => {
+      this.initFilterTous = null;
+      this.initFilterPresDeMoi = null;
 
-    this.showDistance = false;
-    this.showRank = true;
+      this.selectTopTen.value = "all";
+
+      this.showDistance = false;
+      this.showRank = true;
+
+      this.getAllRatings(null, null);  
+    },500);
+
+    setTimeout(() => {
+      this.popSpinner = "none"; 
+      this.mainOpac = "1";
+    }, 1000);
+    //------------------------------
 
     this.tabPosition = "translateX(-50%)";
     this.leftPosition = "50%";
@@ -636,20 +789,32 @@ export class BarsPage implements AfterViewInit{
 
     this.tousClicked = false;
     this.toptenClicked = true;
+    this.initTousClicked = false;
     this.presdemoiClicked = false;
     this.noBarFilter = false;
-
-    this.getAllRatings(null, null);
   }
 
   presdemoi(lat, long){
-    this.initFilterTous = null;
-    this.initFilterTopTen = null;
-    
-    this.selectPresDeMoi.value = "all";
+    this.mainOpac = "0";
+    this.popSpinner = "flex";
 
+    setTimeout(() => {
+      this.initFilterTous = null;
+      this.initFilterTopTen = null;
+      
+      this.selectPresDeMoi.value = "all";
+
+      this.showRank = false;
+
+      this.loadBar(null, null, "presdemoi", lat, long)
+    },500);
+
+    setTimeout(() => {
+      this.popSpinner = "none"; 
+      this.mainOpac = "1";
+    }, 1000);
+    //------------------------------
     
-    this.showRank = false;
 
     this.tabPosition = "translateX(-100%)";
     this.leftPosition = "100%";
@@ -660,10 +825,9 @@ export class BarsPage implements AfterViewInit{
     this.tousClicked = false;
     this.toptenClicked = false;
     this.presdemoiClicked = true;
+    this.initTousClicked = false;
     this.noBarFilter = false;
 
-    // this.presDeMoiCalcul(lat, long, null, null);
-    this.loadBar(null, null, "presdemoi", lat, long)
   }
 
   presDeMoiCalcul(myLat, myLong, toBeFiltered, category){

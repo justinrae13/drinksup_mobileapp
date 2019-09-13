@@ -1,3 +1,16 @@
 <ion-app>
   <ion-router-outlet></ion-router-outlet>
+
+  <div class="global_popup_wrapper slideUp" id="gpw">
+    <div class="global_popup">
+      <!-- Content -->
+      <div class="text_wrapper">
+          <img src="../assets/img/offers_icon_outline.svg" class="popupIcon">
+          <h1>Abonnez-vous dès maintenant afin de profiter des avantages de Drinks Up.</h1>
+          <ion-button expand="block" (click)="goAbo()">S'ABONNER</ion-button>
+      </div>
+      <img src="{{popup_bg}}" class="popupBg">
+      <span (click)="close()"><ion-icon name="close"></ion-icon></span>
+    </div>
+  </div>
 </ion-app>

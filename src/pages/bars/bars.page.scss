@@ -245,10 +245,10 @@ ion-content{
     font-family: "NBL";
     font-size: .8rem;
     color: gray;
-    text-align: center;
+    text-align: left;
     padding: 0 35px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     margin-top: 30px;
     ion-icon{
@@ -275,3 +275,27 @@ ion-content{
     opacity: 0 !important;
 }
 
+.loader_wrapper{
+    position: absolute;
+    top: 150px;
+    left: 0;
+    width: 100vw;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+    .loader{
+        width: 25px;
+        height: 25px;
+        border: 4px solid #d30000;
+        border-radius: 50%;
+        border-bottom: 4px solid transparent;
+        animation: rotateMe 450ms linear infinite;
+    }
+}
+
+@keyframes rotateMe{
+    0% {transform: rotate(0deg)}
+    100% {transform: rotate(360deg)}
+}
