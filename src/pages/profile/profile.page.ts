@@ -641,7 +641,7 @@ export class ProfilePage{
     //-----------------------------------
     async parrainageInfo(){
         var fixedMonthNum = this.userNumberOfMonthsRegistered.toFixed(1);
-        var msg = "<div class='table'> <div class='col xl'>Nombre de personnes parrainées :</div> <div class='col xs'>"+this.userNumberOfSponsors+"</div> <div class='col xl'>Membre depuis (mois) :</div> <div class='col xs'>"+fixedMonthNum+"</div> <div class='col xl'>Nombre d'avis laissés :</div> <div class='col xs'>"+this.userNumberOfGivenRatings+"</div> <div class='col xl'>Nombre d'offre profitées :</div> <div class='col xs'>"+this.userNumberOfOffers+"</div> </div>";
+        var msg = "<div class='table'> <div class='col xl'>Nombre de personnes parrainées :</div> <div class='col xs'>"+this.userNumberOfSponsors+"</div> <div class='col xl'>Membre depuis (mois) :</div> <div class='col xs'>"+fixedMonthNum+"</div> <div class='col xl'>Nombre d'avis laissés :</div> <div class='col xs'>"+this.userNumberOfGivenRatings+"</div> <div class='col xl'>Nombre d'offre \"profitées\" :</div> <div class='col xs'>"+this.userNumberOfOffers+"</div> </div>";
         const alert = await this.alertCtrl.create({
             header: this.loggedUser.INT_LEVEL,
             message: msg,

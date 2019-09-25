@@ -229,14 +229,15 @@ ion-item{
     justify-content: center;
     align-items: center;
     font-family: "NBO";
-    font-size: 14px;
-    width: 120px;
+    font-size: 14px !important;
+    width: 150px;
     height: 20px;
-    text-shadow: 2px 2px 3px #000;
+    text-shadow: 1px 1px 2px #000;
     ion-datetime{
         padding:0;
         font-family: "NBO";
-        text-shadow: 2px 2px 3px #000;
+        text-shadow: 1px 1px 2px #000;
+        font-size: 14px !important;
     }
 }
 

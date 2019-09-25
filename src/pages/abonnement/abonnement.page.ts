@@ -202,15 +202,15 @@ export class AbonnementPage{
                 this.addOrUpdatePaypal(this.montantAbo, this.typeAbo, this.idInternaute, this.nameInternaute, this.ifHasBeenSubscribed, this.emailInternaute)
               }, (error) => {
                 // Error or render dialog closed without being successful
-                alert("Render dialog closed without being successful => " + error);
+                // alert("Render dialog closed without being successful => " + error);
                 });
             }, (error) => {
               // Error in configuration
-              alert("Error in configuration paypal => " + error);
+            //   alert("Error in configuration paypal => " + error);
             });
           }, (error) => {
             // Error in initialization, maybe PayPal isn't supported or something else
-            alert("Error in initialization, PayPal isn't supported => " + error);
+            // alert("Error in initialization, PayPal isn't supported => " + error);
         });
     }
 
@@ -323,7 +323,7 @@ export class AbonnementPage{
                 document.getElementById("h1Top").innerText = "Vous avez choisi l'abonnement de 3 mois."
                 //Price and type
                 this.typeAbo = "3 mois";
-                this.montantAbo = "79.60";
+                this.montantAbo = "59.70";
                 //Opacity
                 this.opac1 = "0";
                 this.opac2 = "1";

@@ -1060,7 +1060,7 @@ ion-slides{
   position: fixed;
   top: 0;
   left: 0;
-  display: none;
+  display: flex;
   justify-content: flex-end;
   align-items: flex-end;
   // transition: all .5s ease-out;

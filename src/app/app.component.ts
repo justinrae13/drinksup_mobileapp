@@ -1,6 +1,6 @@
 import { RegisterPage } from './../pages/register/register.page';
 import { Component } from '@angular/core';
-import { Platform, NavController, AlertController, ModalController } from '@ionic/angular';
+import { Platform, NavController, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { Router } from '@angular/router';
@@ -12,8 +12,7 @@ import { ForgotPasswordPage } from 'src/pages/forgot-password/forgot-password.pa
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Events } from '@ionic/angular';
 import { AbonnementPage } from '../pages/abonnement/abonnement.page'
-
-
+import * as moment from 'moment-timezone'
 
 @Component({
   selector: 'app-root',
@@ -28,6 +27,7 @@ export class AppComponent {
   popup_bg : string;
   baseURI = "https://www.drinksup.ch/serveur/aksi.php";
   paidUser : string;
+  popUpInterval;
 
   constructor(
     private http : HttpClient,
@@ -40,7 +40,8 @@ export class AppComponent {
     private deepLinks: Deeplinks,
     private alertCtrl: AlertController,
     public events: Events,
-    private modalCtrl : ModalController
+    private modalCtrl : ModalController,
+    private toastCtrl : ToastController,
   ) {
     this.initializeApp();
   }
@@ -106,6 +107,7 @@ export class AppComponent {
         this.storage.get('SessionIdKey').then((valId) => {
           this.storage.get('SessionRoleKey').then((role) => {
             this.getPaidUser(valId,role);
+            this.getLastEntry(valId);
           });
         });
         //---
@@ -136,6 +138,13 @@ export class AppComponent {
               document.getElementById("gpw").style.transition = "all 0s";
             }, 350);
         });
+
+        //---
+        this.events.subscribe("checkLastEntry",()=>{
+          this.storage.get('SessionIdKey').then((valId) => {
+            this.getLastEntry(valId);
+          });
+        });
    
     });
 }
@@ -143,6 +152,7 @@ export class AppComponent {
 
   //
   close(){
+    // clearInterval(this.popUpInterval);  
     document.getElementById("gpw").classList.add("slideUp");
     setTimeout(() => {
       document.getElementById("gpw").style.transition = "all 0s";
@@ -157,18 +167,28 @@ export class AppComponent {
   }
 
   closeWhenOnAboPage(){
-    document.getElementById("gpw").classList.add("slideUp");
-    document.getElementById("gpw").classList.remove("gbl_p_w");
-    setTimeout(() => {
-      document.getElementById("gpw").style.transition = "all 0s";
-    }, 350);
+    // document.getElementById("gpw").classList.add("slideUp");
+    // document.getElementById("gpw").classList.remove("gbl_p_w");
+    // setTimeout(() => {
+    //   document.getElementById("gpw").style.transition = "all 0s";
+    // }, 350);
+    clearInterval(this.popUpInterval);
   }
 
-  popUp(){
+  // popUp(){
+  //   var randPic = Math.floor(Math.random() * 3) + 1;
+  //   this.popup_bg = "../assets/popupbg/popup_bg_"+randPic+".jpg";
+  //   document.getElementById("gpw").classList.remove("slideUp");
+  //   document.getElementById("gpw").style.transition = "all .5s ease-out";
+  // }
+
+  
+  showBox(){
     var randPic = Math.floor(Math.random() * 3) + 1;
     this.popup_bg = "../assets/popupbg/popup_bg_"+randPic+".jpg";
     document.getElementById("gpw").classList.remove("slideUp");
     document.getElementById("gpw").style.transition = "all .5s ease-out";
+    clearInterval(this.popUpInterval);
   }
 
   getPaidUser(id : string, role : string) {
@@ -181,14 +201,17 @@ export class AppComponent {
           
           if(data.validity !== "good"){
             if(role === "user"){
-              //popup test 
-              console.log("Im popping up.........................hehe")
-              setTimeout(() => {
-                document.getElementById("gpw").classList.add("gbl_p_w");
-              }, 500);
-              setTimeout(() => {
-                this.popUp();
-              }, 121000);//121000
+             
+              this.popUpInterval = setInterval(() => { 
+                this.showBox();
+              }, 121000);
+
+              // setTimeout(() => {
+              //   document.getElementById("gpw").classList.add("gbl_p_w");
+              // }, 500);
+              // setTimeout(() => {
+              //   this.popUp();
+              // }, 121000);//121000
             }else{
               console.log("User must be an admin or a bar owner")
             }
@@ -199,6 +222,50 @@ export class AppComponent {
         (error: any) => {
             console.log(error);
         });
+  }
+
+  updateLastEntry(id : string, today : any) {
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options: any		= { 'key' : 'updateLastEntry', 'idUser': id, 'ojd' : today },
+        url: any      	= this.baseURI;
+  
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+      console.log(data.message)
+    },  
+    (error: any) => {
+        console.log(error);
+    });
+  }
+
+  getLastEntry(id : string) {
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options: any		= { 'key' : 'getLastEntry', 'idUser': id},
+        url: any      	= this.baseURI;
+  
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+
+        var today = moment().tz("Europe/Zurich");
+        var lastentry = moment(data.INT_LASTENTRY);
+        var diff = today.diff(lastentry, "days");
+
+        if(data.INT_LASTENTRY === null || data.INT_LASTENTRY === "null" || data.INT_LASTENTRY === ""){
+          this.updateLastEntry(id, today);
+        }else{
+          if(diff >= 7){
+            setTimeout(() => {
+              this.sendNotification("Ça fait longtemps qu'on t'as pas vu !");
+            }, 3000);
+            setTimeout(() => {
+              this.updateLastEntry(id, today)
+            }, 3100);
+          }else{
+            this.updateLastEntry(id ,today)
+          }
+        }
+    },  
+    (error: any) => {
+        console.log(error);
+    });
   }
 
   async goAbo(){
@@ -228,4 +295,15 @@ export class AppComponent {
     }, 950);
   }
 
+  async sendNotification(msg: string) {
+    const toast = await this.toastCtrl.create({
+        message: msg,
+        duration: 5000,
+        position: 'top'
+    });
+    toast.present();
 }
+
+}
+
+

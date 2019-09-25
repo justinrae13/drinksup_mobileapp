@@ -188,6 +188,7 @@ export class OffersPage{
   }
 
   ionViewWillEnter(){
+    this.events.publish("checkLastEntry");
     
     this.storage.get('SessionIdKey').then((val) => {
       this.getPaidUser(val);

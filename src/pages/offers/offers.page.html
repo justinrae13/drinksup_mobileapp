@@ -38,7 +38,7 @@
           <div class="off_desc"><ion-icon src="../../assets/img/offres_icon.svg"></ion-icon>&nbsp;<p>{{bars.OFF_DESCRIPTION.charAt(0).toUpperCase()}}{{bars.OFF_DESCRIPTION.substring(1)}}</p></div>
           <p class="ent_nom"><ion-icon name="pin"></ion-icon>&nbsp;Chez&nbsp;{{bars.ENT_NOM}}</p>
           <!-- <p id="countdown_{{bars.OFF_ID}}" class="countdown">{{countdownText}}</p> -->
-          <p class="day_of_the_week"><ion-icon name="calendar"></ion-icon>&nbsp;&nbsp;<ion-datetime [readonly]="true" day-names="Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi" displayFormat="DDDD" value="{{bars.OFF_DATEDEBUT}}"></ion-datetime></p>
+          <p class="day_of_the_week"><ion-icon name="calendar"></ion-icon>&nbsp;&nbsp;<ion-datetime [readonly]="true" day-names="Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi" displayFormat="DDDD" value="{{bars.OFF_DATEDEBUT}}"></ion-datetime>&nbsp;-&nbsp;<ion-datetime [readonly]="true" displayFormat="DD.MM" value="{{bars.OFF_DATEDEBUT}}"></ion-datetime></p>
         </div>  
       </ion-item>
   </ion-list>

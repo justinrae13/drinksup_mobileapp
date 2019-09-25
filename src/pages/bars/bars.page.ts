@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { AborenewService } from '../../app/service/aborenew.service';
+import { Events } from '@ionic/angular';
 
 @Component({
   selector: 'app-bars',
@@ -99,7 +100,7 @@ export class BarsPage implements AfterViewInit{
   //
   initTousClicked : boolean = true;
 
-  constructor(private aborenew : AborenewService, private geolocation: Geolocation, private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
+  constructor(private events: Events, private aborenew : AborenewService, private geolocation: Geolocation, private storage : Storage, private http : HttpClient, private nativePageTransitions: NativePageTransitions, private navCtrl : NavController) { 
     this.storage.get('SessionIdKey').then((valId) => {
       this.aborenew.triggerRenewal(valId,"CheckIT");
     });
@@ -155,6 +156,9 @@ export class BarsPage implements AfterViewInit{
 
 
   ionViewWillEnter(){
+
+    this.events.publish("checkLastEntry");
+
     this.storage.get('SessionIdKey').then((valId) => {
       this.aborenew.triggerRenewal(valId,null);
     });
