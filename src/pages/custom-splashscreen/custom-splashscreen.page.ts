@@ -17,6 +17,7 @@ export class CustomSplashscreenPage implements OnInit {
   roleUser = 'user';
   roleAdmin = 'admin';
   roleProprio = 'proprio';
+  roleVIP = 'vip';
   goLeft : string = "translateX(0px)";
   goRight : string = "translateX(0px)";
   fadeOut : string = "1";
@@ -36,15 +37,15 @@ export class CustomSplashscreenPage implements OnInit {
   }
 
   ionViewDidEnter(){
-    setTimeout(() => {
-      this.animate();
-    }, 800);
+    // setTimeout(() => {
+    //   this.animate();
+    // }, 800);
 
     this.storage.get('SessionInKey').then((val) => {
       this.storage.get('SessionRoleKey').then((valRole) => {
           this.userSessionRole = valRole;
 
-          setTimeout(() => {
+          // setTimeout(() => {
             if(val===null || valRole ===null){
               this.navCtrl.navigateRoot('/login');
               this.storage.remove("SessionInKey");
@@ -58,14 +59,15 @@ export class CustomSplashscreenPage implements OnInit {
                   this.navCtrl.navigateRoot('/tabsproprio/qrcode');
               }else if(val==='Yes' && this.userSessionRole === this.roleUser){
                 this.storage.get('SessionIdKey').then((valId) => {
-                  // console.log('val=> '  + val + ' valRole=> ' + valRole + ' valId=> ' +valId);
                   this.getPaidUser(valId);
                 });
+              }else if(val==='Yes' && this.userSessionRole === this.roleVIP){
+                this.navCtrl.navigateRoot('/tabs/offers');
               }else{
                 return false;
               }
             }
-          }, 1250);
+          // }, 1250);
 
       });
     });

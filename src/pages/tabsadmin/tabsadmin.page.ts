@@ -3,6 +3,8 @@ import { AlertController, NavController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { Facebook } from '@ionic-native/facebook/ngx';
+import { Events } from '@ionic/angular';
+import { AborenewService } from '../../app/service/aborenew.service';
 
 @Component({
   selector: 'app-tabsadmin',
@@ -18,22 +20,35 @@ export class TabsadminPage implements OnInit {
   fadeOut : string = "1";
 
 
-  constructor(private fb: Facebook, public alertController: AlertController,public navCtrl : NavController, public storage: Storage, private googlePlus : GooglePlus) { }
+  constructor(private events : Events, private aborenew : AborenewService, private fb: Facebook, public alertController: AlertController,public navCtrl : NavController, public storage: Storage, private googlePlus : GooglePlus) { }
 
   ngOnInit() {
   }
 
-  ionViewDidEnter(){    
-    this.c_o_o_t_z = "0";
-    setTimeout(() => {
+  ionViewWillEnter(){
+    this.events.publish("wentThroughLogin");
+  }
+
+  ionViewDidEnter(){
+    if(!this.aborenew.wentThroughLoginPage){
+      this.animate();
+    }else{
       this.c_d_o_t_z = "none";
-    }, 500);
+    }
   }
 
   animate(){
-    this.goLeft = "translateX(-70px)";
-    this.goRight = "translateX(70px)";
-    this.fadeOut = "0";
+    setTimeout(() => {
+      this.goLeft = "translateX(-70px)";
+      this.goRight = "translateX(70px)";
+      this.fadeOut = "0";
+    }, 300);
+    setTimeout(() => {
+      this.c_o_o_t_z = "0"; 
+    }, 1000);
+    setTimeout(() => {
+      this.c_d_o_t_z = "none";
+    }, 1550);
   }
 
 

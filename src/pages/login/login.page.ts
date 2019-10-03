@@ -10,6 +10,7 @@ import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
 import { Network } from '@ionic-native/network/ngx';
 import { Events } from '@ionic/angular';
+import { AborenewService } from '../../app/service/aborenew.service';
 
 
 @Component({
@@ -54,8 +55,16 @@ export class LoginPage {
     formReg = "none";
 
     uuid : string = "";
+
+    //
+    c_o_o_t_z : string = "1";
+    c_d_o_t_z : string = "flex";
+
+    goLeft : string = "translateX(0px)";
+    goRight : string = "translateX(0px)";
+    fadeOut : string = "1";
     
-    constructor(private events : Events, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
+    constructor(private aborenew : AborenewService, private events : Events, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
         this.loginForm = new FormGroup({
             PRO_EMAIL: new FormControl(),
             PRO_PASSWORD: new FormControl(),
@@ -69,6 +78,10 @@ export class LoginPage {
 
         this.network.onDisconnect().subscribe(() => {});
         this.network.onConnect().subscribe(() => {});
+
+        this.events.subscribe("wentThroughLogin",()=>{
+            this.aborenew.wentThroughLoginPage = true;
+        });
     }
 
 
@@ -246,9 +259,7 @@ export class LoginPage {
                     this.storage.set('SessionRoleKey', this.roleAdmin);
                     //transitions
                     this.btnAnim_1_Off();
-                    // document.getElementById("seConnTextId").innerHTML = "OK !";
-                    // document.getElementById("seConnTextId").style.color = "#4caf50";
-                    // this.btnAnim_1_Off();
+                    
                     this.sendNotification("Bienvenue à bord !");
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsadmin/users');
@@ -258,20 +269,16 @@ export class LoginPage {
                     this.storage.set('SessionRoleKey', this.roleProprio);
                     //transitions
                     this.btnAnim_1_Off();
-                    // document.getElementById("seConnTextId").innerHTML = "OK !";
-                    // document.getElementById("seConnTextId").style.color = "#4caf50";
-                    // this.btnAnim_1_Off();
+                    
                     this.sendNotification("Bienvenue à bord !");
                     setTimeout(() => {
                         this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     }, 500); 
-                } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
+                } else if (this.userDetails.ROLE === this.roleUser) {
                     this.storage.set('SessionRoleKey', this.roleUser);
                     //transitions
                     this.btnAnim_1_Off();
-                    // document.getElementById("seConnTextId").innerHTML = "OK !";
-                    // document.getElementById("seConnTextId").style.color = "#4caf50";
-                    // this.btnAnim_1_Off();
+                    
                     this.sendNotification("Bienvenue à bord !");
                     setTimeout(() => {
                         if(this.payed !== "expired"){
@@ -280,7 +287,16 @@ export class LoginPage {
                             this.navCtrl.navigateRoot('/tabs/bars');
                         }
                     }, 500);
-                } else {
+                } else if (this.userDetails.ROLE === this.roleVIP) {
+                    this.storage.set('SessionRoleKey', this.roleVIP);
+                    //transitions
+                    this.btnAnim_1_Off();
+
+                    this.sendNotification("Bienvenue à bord !");
+                    setTimeout(() => {
+                        this.navCtrl.navigateRoot('/tabs/offers');
+                    }, 500);
+                }else {
                     
                     //transitions
                     this.btnAnim_1_Off()
@@ -324,7 +340,7 @@ export class LoginPage {
                 } else if (this.userDetails.ROLE === this.roleProprio) {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
-                } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
+                } else if (this.userDetails.ROLE === this.roleUser) {
                     setTimeout(() => {
                         if(this.payed !== "expired"){
                             this.navCtrl.navigateRoot('/tabs/offers');
@@ -333,7 +349,12 @@ export class LoginPage {
                         }
                     }, 300);
                     this.storage.set('SessionRoleKey', this.roleUser);
-                } else {
+                } else if (this.userDetails.ROLE === this.roleVIP){
+                    setTimeout(() => {
+                        this.navCtrl.navigateRoot('/tabs/offers');
+                    }, 300);
+                    this.storage.set('SessionRoleKey', this.roleVIP);
+                }else {
                     // console.log(JSON.stringify(options));
                     this.googlePlus.logout().then(res => {console.log(res);}).catch(err => console.error(err));
                     this.sendNotification('Votre adresse Google+ a été déjà utilisé via inscription native de Drinks Up. Si vous ne vous souvenez plus de votre mot de passe. Veuillez cliquer sur "Mot de passe oublié"');
@@ -375,7 +396,7 @@ export class LoginPage {
                 } else if (this.userDetails.ROLE === this.roleProprio) {
                     this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                     this.storage.set('SessionRoleKey', this.roleProprio);
-                } else if (this.userDetails.ROLE === this.roleUser || this.userDetails.ROLE === this.roleVIP) {
+                } else if (this.userDetails.ROLE === this.roleUser) {
                     setTimeout(() => {
                         if(this.payed !== "expired"){
                             this.navCtrl.navigateRoot('/tabs/offers');
@@ -384,7 +405,12 @@ export class LoginPage {
                         }
                     }, 300);
                     this.storage.set('SessionRoleKey', this.roleUser);
-                } else {
+                }else if (this.userDetails.ROLE === this.roleVIP){
+                    setTimeout(() => {
+                        this.navCtrl.navigateRoot('/tabs/offers');
+                    }, 300);
+                    this.storage.set('SessionRoleKey', this.roleVIP);
+                }else {
                     // console.log(JSON.stringify(options));
                     this.sendNotification('Votre compte Facebook a été déjà utilisé');
                     this.fb.logout();
@@ -436,6 +462,11 @@ export class LoginPage {
                         }
                     }, 300);
                     this.storage.set('SessionRoleKey', this.roleUser);
+                }else if (this.userDetails.ROLE === this.roleVIP){
+                    setTimeout(() => {
+                        this.navCtrl.navigateRoot('/tabs/offers');
+                    }, 300);
+                    this.storage.set('SessionRoleKey', this.roleVIP);
                 } else {
                     // console.log(JSON.stringify(options));
                     this.sendNotification('Votre compte Facebook a été déjà utilisé');
@@ -753,6 +784,24 @@ export class LoginPage {
             (error: any) => {
                 console.log(error);
         });
+      }
+
+      ionViewDidEnter(){
+          this.animate();
+      }
+
+      animate(){
+        setTimeout(() => {
+          this.goLeft = "translateX(-70px)";
+          this.goRight = "translateX(70px)";
+          this.fadeOut = "0";
+        }, 300);
+        setTimeout(() => {
+          this.c_o_o_t_z = "0"; 
+        }, 1000);
+        setTimeout(() => {
+          this.c_d_o_t_z = "none";
+        }, 1550);
       }
 
 }

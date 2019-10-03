@@ -12,6 +12,7 @@ export class AborenewService {
   ifHasBeenSubscribed : number = null;
   loggedUser : any = {};
   renewFirst : boolean = false;
+  wentThroughLoginPage : boolean = false;
   constructor(private http : HttpClient, private storage: Storage, private alertCtrl : AlertController) { }
 
   triggerRenewal(id, checkDate){

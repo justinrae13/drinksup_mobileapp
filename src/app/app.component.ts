@@ -167,22 +167,9 @@ export class AppComponent {
   }
 
   closeWhenOnAboPage(){
-    // document.getElementById("gpw").classList.add("slideUp");
-    // document.getElementById("gpw").classList.remove("gbl_p_w");
-    // setTimeout(() => {
-    //   document.getElementById("gpw").style.transition = "all 0s";
-    // }, 350);
     clearInterval(this.popUpInterval);
   }
 
-  // popUp(){
-  //   var randPic = Math.floor(Math.random() * 3) + 1;
-  //   this.popup_bg = "../assets/popupbg/popup_bg_"+randPic+".jpg";
-  //   document.getElementById("gpw").classList.remove("slideUp");
-  //   document.getElementById("gpw").style.transition = "all .5s ease-out";
-  // }
-
-  
   showBox(){
     var randPic = Math.floor(Math.random() * 3) + 1;
     this.popup_bg = "../assets/popupbg/popup_bg_"+randPic+".jpg";
@@ -198,25 +185,16 @@ export class AppComponent {
   
     this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
           // this.paidUser = data.validity;
-          
-          if(data.validity !== "good"){
-            if(role === "user"){
-             
+          if(role === "user"){
+            if(data.validity !== "good"){
               this.popUpInterval = setInterval(() => { 
                 this.showBox();
-              }, 121000);
-
-              // setTimeout(() => {
-              //   document.getElementById("gpw").classList.add("gbl_p_w");
-              // }, 500);
-              // setTimeout(() => {
-              //   this.popUp();
-              // }, 121000);//121000
+              }, 121000 );//121000
             }else{
-              console.log("User must be an admin or a bar owner")
+              console.log("User has a subscription")
             }
           }else{
-            console.log("User has a subscription")
+            console.log("User must be an admin,bar owner or a V.I.P")
           }
         },  
         (error: any) => {
@@ -253,7 +231,7 @@ export class AppComponent {
         }else{
           if(diff >= 7){
             setTimeout(() => {
-              this.sendNotification("Ça fait longtemps qu'on t'as pas vu !");
+              this.sendNotification("Ça fait longtemps qu'on ne t'a pas vu !");
             }, 3000);
             setTimeout(() => {
               this.updateLastEntry(id, today)

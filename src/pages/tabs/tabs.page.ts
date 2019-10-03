@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Events } from '@ionic/angular';
-import { Storage } from '@ionic/storage';
+import { AborenewService } from '../../app/service/aborenew.service';
 
 @Component({
   selector: 'app-tabs',
@@ -20,29 +20,33 @@ export class TabsPage implements OnInit {
   fadeOut : string = "1";
 
   ifPassThroughLogin : boolean = false;
-  constructor(private storage : Storage) { }
+
+  constructor(private events : Events, private aborenew : AborenewService) { }
 
   ionViewWillEnter(){
-    this.storage.get('PassByLogin').then((val) => {
-      if(val !== null){
-        this.ifPassThroughLogin = true;
-      }else{
-        this.ifPassThroughLogin = false;
-      }
-    });
+    this.events.publish("wentThroughLogin");
   }
 
   ionViewDidEnter(){
-    this.c_o_o_t_z = "0";
-    setTimeout(() => {
+    if(!this.aborenew.wentThroughLoginPage){
+      this.animate();
+    }else{
       this.c_d_o_t_z = "none";
-    }, 500);
+    }
   }
 
   animate(){
-    this.goLeft = "translateX(-70px)";
-    this.goRight = "translateX(70px)";
-    this.fadeOut = "0";
+    setTimeout(() => {
+      this.goLeft = "translateX(-70px)";
+      this.goRight = "translateX(70px)";
+      this.fadeOut = "0";
+    }, 300);
+    setTimeout(() => {
+      this.c_o_o_t_z = "0"; 
+    }, 1000);
+    setTimeout(() => {
+      this.c_d_o_t_z = "none";
+    }, 1550);
   }
 
   ngOnInit() {

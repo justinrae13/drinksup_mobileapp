@@ -259,6 +259,7 @@ export class ProfilePage{
 
     logoutFromApp(){
         this.storage.remove("SessionInKey");
+        this.storage.remove("showDebutPopUp");
         this.storage.remove("SessionRoleKey");
         this.storage.remove("SessionEmailKey");
         this.storage.remove("SessionIdKey");

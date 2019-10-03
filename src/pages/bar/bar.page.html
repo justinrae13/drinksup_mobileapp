@@ -72,7 +72,7 @@
     </form>
 
     <div class="scheduleSection">
-      <h1><ion-icon name="time"></ion-icon>&nbsp;Votre horaire <span>Glisser le jour pour modifier.</span></h1>
+      <h1><ion-icon name="time"></ion-icon>&nbsp;Votre horaire <span>Glissez le jour pour modifier.</span></h1>
       <ion-item-sliding *ngFor="let schedule of mySchedule" #slidingItem>
           <ion-item-options side="start">
             <ion-item-option color="secondary" (click)="editSchedule(schedule.HOR_ID, schedule.HOR_JOURS, schedule.HOR_HEUREDEBUT_JOUR, schedule.HOR_HEUREFIN_JOUR, schedule.HOR_HEUREDEBUT_SOIR, schedule.HOR_HEUREFIN_SOIR)"><ion-icon slot="top" name="create"></ion-icon>&nbsp;Modifier</ion-item-option>

@@ -120,7 +120,7 @@ export class RegisterthirdpartyPage implements OnInit {
                 this.storage.set('SessionRoleKey', this.roleProprio);
                 this.sendNotification('Bienvenue à bord !');
             } else if (this.userDetails.ROLE === this.roleUser) {
-                this.navCtrl.navigateRoot('/tabs/offers');
+                this.navCtrl.navigateRoot('/tabs/bars');
                 this.storage.set('SessionRoleKey', this.roleUser);
                 this.sendNotification('Bienvenue à bord !'); 
             } else {

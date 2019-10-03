@@ -708,6 +708,75 @@ ion-modal.ratings-modal {
   }
 }
 
+
+//popUpDebut
+.popUpDebut{
+  ion-backdrop {
+  opacity: 0.75 !important;
+  }
+
+  .alert-wrapper.sc-ion-alert-md{
+    max-width: unset !important;
+    min-width: unset !important;
+    width: calc(100vw - 52px);
+    position: relative;
+  }
+
+
+  .alert-head.sc-ion-alert-md{
+    display: none;
+  }
+  
+
+  .alert-message.sc-ion-alert-md{
+    max-height: unset !important;
+    height: 55vh;
+    background-color: #161616;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 35px;
+    img{
+      width: 95%;
+    }
+  }
+
+  .alert-button-group{
+    border: none;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent !important;
+    padding: 15px 0;
+    button{
+      margin-bottom: 15px;
+      border-color: rgba(255,255,255,.75);
+      border-radius: 3px;
+      border-style: solid;
+      border-width: 1px;
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+      padding-left: 50px !important;
+      padding-right: 50px !important;
+      box-shadow: 0 15px 18px -10px rgba(255, 255, 255,.1);
+      color: #fff;
+      font-size: .8rem;
+      font-family: "NBL";
+      background: repeating-linear-gradient(
+          -55deg,
+          rgba(255,255,255,.3) 1px, 
+          rgba(255,255,255,.3)1px, /*size stripes*/
+          rgba(255,255,255,.075) 2px,
+          rgba(255,255,255,.075) 10px /*space between stripes*/
+      );
+      span{
+        color: #fff !important;
+      }
+    }
+  }
+}
+
 .alertTables{
   ion-backdrop {
     opacity: 0.75 !important;

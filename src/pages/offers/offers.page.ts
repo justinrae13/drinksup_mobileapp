@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
-import { ToastController, ModalController, NavController, IonContent, IonSelect } from '@ionic/angular';
+import { ToastController, ModalController, NavController, IonContent, IonSelect, AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { NativePageTransitions,  } from '@ionic-native/native-page-transitions/ngx';
 import * as Global from '../../app/global';
@@ -77,7 +77,7 @@ export class OffersPage{
   // bannerSlidDown : string = "translateY(0)"; 
 
 
-  constructor(private events: Events, private aborenew : AborenewService, private navCtrl : NavController, private nativePageTransitions: NativePageTransitions, private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private toastCtrl : ToastController) { 
+  constructor(private alertCtrl: AlertController, private events: Events, private aborenew : AborenewService, private navCtrl : NavController, private nativePageTransitions: NativePageTransitions, private modalCtrl : ModalController, private storage : Storage, private http : HttpClient, private toastCtrl : ToastController) { 
     this.random = Math.floor(Math.random() * 100);
     this.randomImgNo = Math.floor(Math.random() * 3)+1;
     this.storage.get('SessionIdKey').then((val) => {
@@ -188,6 +188,7 @@ export class OffersPage{
   }
 
   ionViewWillEnter(){
+    this.popUpCond(); 
     this.events.publish("checkLastEntry");
     
     this.storage.get('SessionIdKey').then((val) => {
@@ -218,6 +219,7 @@ export class OffersPage{
     this.tous();
 
     this.selectRef.value = "all";
+    this.storage.set('showDebutPopUp', 'No');
   }
 
   getPaidUser(id : string) {
@@ -419,4 +421,57 @@ export class OffersPage{
     this.events.publish("closeWhenOnAboPage");
   }
 
+  popUpCond() : void{
+    let headers 	: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+        options 	: any		= { "key" : "popUpCondition"},
+        url       : any      	= this.baseURI;
+
+    this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
+    {
+        console.log("POPUP", data.showpopup)
+        // this.storage.get('showDebutPopUp').then((debut)=>{
+        //   if(debut!==null || debut!==undefined){
+        //     this.storage.set('showDebutPopUp', 'No');
+        //     setTimeout(() => {
+        //       alert("Do not show")
+        //     }, 2000);
+        //   }else{
+            
+        //   }
+        // })
+        this.storage.get('showDebutPopUp').then((debut)=>{
+          if(debut === null || debut === undefined || debut === "undefined"){
+            if(data.showpopup === 1){
+              setTimeout(() => {
+                this.popUpDebutAlert();
+              }, 2000);
+            }
+          }else{
+            setTimeout(() => {
+              this.popUpDebutAlert();
+            }, 6000);
+          }
+        });
+        
+    },
+    (error : any) =>
+    {
+      console.log(error);
+    });
+  }
+
+  async popUpDebutAlert(){
+    const alert = await this.alertCtrl.create({
+        message: "<img src='../../assets/img/cool_popup_img.svg'/>",
+        cssClass : "popUpDebut",
+        buttons: [
+            {
+                text: 'OK',
+            },
+        ]
+    });
+
+    await alert.present();
+}
+  
 }
