@@ -9,7 +9,7 @@ import { ModalRatingsPage } from '../modal-ratings/modal-ratings.page';
 import { timer } from 'rxjs';
 import { LaunchNavigator } from '@ionic-native/launch-navigator/ngx';
 import * as Global from '../../app/global';
-
+import * as moment from 'moment';
 
 
 @Component({
@@ -304,9 +304,9 @@ export class BarUserPage implements OnInit {
 
         setInterval(()=>{
           // Get todays date and time
-          let startDate = new Date(this.oneOffer.OFF_DATEDEBUT).getTime();
-          let endDate = new Date(this.oneOffer.OFF_DATEFIN).getTime();
-          let now = new Date().getTime();
+          let startDate = moment(this.oneOffer.OFF_DATEDEBUT).valueOf();
+          let endDate = moment(this.oneOffer.OFF_DATEFIN).valueOf();
+          let now = moment().valueOf();
           id = this.oneOffer.OFF_ID;
 
           // Output the result in an element with id="demo"
