@@ -128,9 +128,6 @@
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
     <plugin name="cordova-plugin-stripe" spec="1.5.3" />
-    <plugin name="phonegap-plugin-barcodescanner" spec="8.0.1">
-        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
-    </plugin>
     <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="5.0.4">
         <variable name="GOOGLE_API_KEY_FOR_ANDROID" value="{AIzaSyC3OQKTko8SiIeHkd1xJ1gZAHGQiAj0UFY}" />
     </plugin>
@@ -143,6 +140,9 @@
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <plugin name="cordova-plugin-network-information" spec="2.0.2" />
     <plugin name="com.paypal.cordova.mobilesdk" spec="3.5.0" />
+    <plugin name="phonegap-plugin-barcodescanner" spec="8.1.0">
+        <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
+    </plugin>
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="^5.0.1" />
 </widget>

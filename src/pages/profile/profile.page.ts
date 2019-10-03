@@ -336,6 +336,7 @@ export class ProfilePage{
     async goAbonnement(){
         const modal = await this.modalCtrl.create( {
             component: AbonnementPage,
+            cssClass: "abonne-modal",
             showBackdrop : true,
             componentProps: {},
         });

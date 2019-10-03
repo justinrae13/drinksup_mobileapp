@@ -25,22 +25,24 @@
 </div>
 
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
-
-  <ion-list *ngFor="let bars of Filtereditems; let i = index; let number = index">
-      <ion-item no-padding color="secondary" lines="none">
-        <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
-        <img *ngIf="ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-filled.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
-        <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlready}"></div>
-        <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-        <img (click)="moveToBar(bars.ENT_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
-        <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
-          <div class="off_desc"><ion-icon src="../../assets/img/bars_icon.svg"></ion-icon>&nbsp;<p>{{bars.ENT_NOM}}</p></div>
-          <p class="ent_nom"><ion-icon name="pin"></ion-icon>&nbsp;{{bars.ENT_ADRESSE}}</p>
-          <p *ngIf="showRank" class="ent_rank"><ion-icon src="../../assets/img/rank_icon.svg"></ion-icon>&nbsp;<span>Top&nbsp;{{bars.ranking}}</span></p>
-          <p *ngIf="showDistance" class="ent_distance">~{{bars.DistanceFromUser.toFixed(2)}}&nbsp;km</p>
-        </div>  
-      </ion-item>
-  </ion-list>
+  
+  <div class="ion_content_wrapper">
+      <ion-list *ngFor="let bars of Filtereditems; let i = index; let number = index">
+          <ion-item no-padding color="secondary" lines="none">
+            <img *ngIf="!ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-empty.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
+            <img *ngIf="ifFave(bars.ENT_ID)" src="../../assets/img/star-icon-filled.svg" class="star" (click)="addRemoveFave(i, bars.ENT_ID)" id="starIconId3_{{i}}">
+            <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlready}"></div>
+            <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
+            <img (click)="moveToBar(bars.ENT_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
+            <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
+              <div class="off_desc"><ion-icon src="../../assets/img/bars_icon.svg"></ion-icon>&nbsp;<p>{{bars.ENT_NOM}}</p></div>
+              <p class="ent_nom"><ion-icon name="pin"></ion-icon>&nbsp;{{bars.ENT_ADRESSE}}</p>
+              <p *ngIf="showRank" class="ent_rank"><ion-icon src="../../assets/img/rank_icon.svg"></ion-icon>&nbsp;<span>Top&nbsp;{{bars.ranking}}</span></p>
+              <p *ngIf="showDistance" class="ent_distance">~{{bars.DistanceFromUser.toFixed(2)}}&nbsp;km</p>
+            </div>  
+          </ion-item>
+      </ion-list>
+  </div>
 
   <ion-select #tousFilter placeholder="Select One" [interfaceOptions]="customActionSheetOptions" style="display:none" (ionChange)="filterTous($event)">
     <ion-select-option value="all">Tous</ion-select-option> 

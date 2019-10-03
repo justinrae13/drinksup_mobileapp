@@ -1,13 +1,13 @@
-<div class="header-solid">
-    <div class="hs-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg"> retour</div>
-</div>
-<div class="faq_header">
-    <h1 *ngIf="role === 'proprio'">FAQ Partenaire</h1>
-    <h1 *ngIf="role === 'user' || role === 'vip'">FAQ Client</h1>
-</div> 
-    
-<ion-content padding color="secondary">
-    <div *ngIf="role === 'user' || role === 'vip'">
+ 
+<ion-content color="secondary">
+    <div class="header-solid">
+            <div class="hs-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg"> retour</div>
+    </div>
+    <div class="faq_header">
+        <h1 *ngIf="role === 'proprio'">FAQ Partenaire</h1>
+        <h1 *ngIf="role === 'user' || role === 'vip'">FAQ Client</h1>
+    </div> 
+    <div *ngIf="role === 'user' || role === 'vip'" class="faq_q_wrapper">
         <div *ngFor="let faqc of faqClientContent; let i = index">
             <div class="faqctitle" id="faqc_wrapper_{{i}}">
                 <h1 (click)="expandTitleC(i)"><span class="sign" id="signc_{{i}}">+</span><span class="text">{{faqc.title}}</span></h1>
@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <div *ngIf="role === 'proprio'">
+    <div *ngIf="role === 'proprio'" class="faq_q_wrapper">
         <div *ngFor="let faqp of faqPartenaireContent; let i = index">
             <div class="faqptitle" id="faqp_wrapper_{{i}}">
                 <h1 (click)="expandTitleP(i)"><span class="sign" id="signp_{{i}}">+</span><span class="text">{{faqp.title}}</span></h1>

@@ -434,12 +434,12 @@ export class OffersPage{
             if(data.showpopup === 1){
               setTimeout(() => {
                 this.popUpDebutAlert();
-              }, 2000);
+              }, 1000);
             }
           }else{
             setTimeout(() => {
               this.popUpDebutAlert();
-            }, 6000);
+            }, 1000);
           }
         });
         

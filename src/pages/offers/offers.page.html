@@ -24,7 +24,8 @@
 
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
 
-  <p *ngIf="Filtereditems===null" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour le moment</p>
+  <div class="ion_content_wrapper">
+    <p *ngIf="Filtereditems===null" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour le moment</p>
 
   <ion-list *ngFor="let bars of Filtereditems; let i = index">
     <ion-item no-padding color="secondary" lines="none">
@@ -40,13 +41,14 @@
           <!-- <p id="countdown_{{bars.OFF_ID}}" class="countdown">{{countdownText}}</p> -->
           <p class="day_of_the_week"><ion-icon name="calendar"></ion-icon>&nbsp;&nbsp;<ion-datetime [readonly]="true" day-names="Dimanche, Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi" displayFormat="DDDD" value="{{bars.OFF_DATEDEBUT}}"></ion-datetime>&nbsp;-&nbsp;<ion-datetime [readonly]="true" displayFormat="DD.MM" value="{{bars.OFF_DATEDEBUT}}"></ion-datetime></p>
         </div>  
-      </ion-item>
-  </ion-list>
+        </ion-item>
+    </ion-list>
 
-  <ion-select placeholder="Select One" [interfaceOptions]="customActionSheetOptions"  style="display:none" (ionChange)="filterByDay($event)">
-      <ion-select-option [selected]="true" value="all">Tous</ion-select-option>
-      <ion-select-option *ngFor="let jour of joursDeLaSemaine" value="{{jour.num}}">{{jour.nomFr}}</ion-select-option>
-  </ion-select>
+    <ion-select placeholder="Select One" [interfaceOptions]="customActionSheetOptions"  style="display:none" (ionChange)="filterByDay($event)">
+        <ion-select-option [selected]="true" value="all">Tous</ion-select-option>
+        <ion-select-option *ngFor="let jour of joursDeLaSemaine" value="{{jour.num}}">{{jour.nomFr}}</ion-select-option>
+    </ion-select>
+  </div>
 </ion-content>
 
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">

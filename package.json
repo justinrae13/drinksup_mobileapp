@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "^7.2.2",
     "@angular/router": "^7.2.2",
     "@ionic-native/android-permissions": "^5.0.0-beta.14",
-    "@ionic-native/barcode-scanner": "^5.4.0",
+    "@ionic-native/barcode-scanner": "^5.14.0",
     "@ionic-native/calendar": "^5.4.0",
     "@ionic-native/camera": "^5.2.0",
     "@ionic-native/clipboard": "^5.12.0",
@@ -88,7 +88,7 @@
     "moment-timezone": "^0.5.26",
     "ngx-qrcode2": "0.0.9",
     "phonegap": "^8.2.2",
-    "phonegap-plugin-barcodescanner": "^8.1.0",
+    "phonegap-plugin-barcodescanner": "8.1.0",
     "rxjs": "^6.4.0",
     "rxjs-compat": "^6.4.0",
     "serve": "10.1.2",
@@ -172,9 +172,6 @@
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },
       "cordova-plugin-stripe": {},
-      "phonegap-plugin-barcodescanner": {
-        "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      },
       "cordova-plugin-facebook4": {
         "APP_ID": "434430730652551",
         "APP_NAME": "drinksup"
@@ -195,7 +192,10 @@
       },
       "cordova-clipboard": {},
       "cordova-plugin-network-information": {},
-      "com.paypal.cordova.mobilesdk": {}
+      "com.paypal.cordova.mobilesdk": {},
+      "phonegap-plugin-barcodescanner": {
+        "ANDROID_SUPPORT_V4_VERSION": "27.+"
+      }
     },
     "platforms": [
       "android",

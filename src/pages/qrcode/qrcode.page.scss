@@ -26,6 +26,33 @@ ion-content{
     }
 }
 
+@media (min-width: 680px) and (max-width: 1024px) {
+    .scan_button{
+        img{
+            width: 30%;
+            opacity: .5;
+        }
+    }
+}
+
+@media (max-width: 680px){
+    .scan_button{
+        img{
+            width: 50%;
+            opacity: .5;
+        }
+    }
+}
+
+@media (max-width: 480px){
+    .scan_button{
+        img{
+            width: 80%;
+            opacity: .5;
+        }
+    }
+}
+
  //ripple effect start
  .rippleEffect{
     position: absolute;

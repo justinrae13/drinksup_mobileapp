@@ -57,7 +57,6 @@
                 <h1>{{loggedUser.INT_PRENOM}}</h1>
                 <h2>{{loggedUser.INT_EMAIL}}</h2>
                 <p>Membre {{dateInscription}}</p>
-            
                 <legend class="niveau" *ngIf="loggedUser.Roles_ROL_ID!==2" (click)="parrainageInfo()">{{loggedUser.INT_LEVEL}}&nbsp;&nbsp;<ion-icon name="information-circle-outline"></ion-icon></legend>
                 <legend class="partenaire" *ngIf="loggedUser.Roles_ROL_ID===2"><ion-icon name="contacts"></ion-icon>Partenaire</legend>
             </div>

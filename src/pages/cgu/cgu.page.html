@@ -1,13 +1,13 @@
-<div class="header-solid">
-  <div class="hs-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg"> retour</div>
-</div>
-<div class="cgu_header">
-  <h1>Conditions Générales<br>d'utilisation</h1>
-</div> 
-  
-<ion-content padding color="secondary">
+
+<ion-content color="secondary">
+  <div class="header-solid">
+      <div class="hs-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg"> retour</div>
+    </div>
+    <div class="cgu_header">
+      <h1>Conditions Générales<br>d'utilisation</h1>
+    </div> 
     <p class="header_p">Veuillez lire avec attention les Conditions Générales d’Utilisation (CGU) avant d’utiliser notre Site et notre Application. <span class="hidden_text" [ngStyle]="{'display':readmoreDisplay}">En utilisant le Site ou l’Application, vous acceptez les Conditions Générales dans leur intégralité. Si ce n’est pas le cas, vous ne pouvez pas utiliser le Site ou l’Application. Vous pouvez utiliser à tout âge. Cependant, vous devez respecter l’âge légal dans le pays en vigueur pour consommer une boisson alcoolisée. C’est une violation punie par la loi d’acheter de l’alcool pour une personne âgée de moins de 18 ans. Les présentes Conditions Générales d’Utilisation s'appliquent, sans restriction ni réserve, à l’utilisation de l’Application téléchargeable gratuitement et exécutable à partir du système d’exploitation d’un téléphone mobile ou d’une tablette. Les Conditions Générales peuvent être modifiées à tout moment, sans égard, de manière unilatérale. Sans préavis, et pour quelque raison que ce soit, le principe de tarification de l’Application peut être modifié, et/ou l’Application peut tout simplement être supprimée. Afin d’utiliser toutes les fonctionnalités de l’Application, un téléphone mobile compatible avec l’Application est nécessaire, un smartphone (Android ou iPhone), ainsi qu’un accès à Internet haut débit, et un abonnement téléphonique avec un accès à Internet.</span><br><span id="readMore" (click)="readMore()">En lire plus&nbsp;<ion-icon name="arrow-dropdown"></ion-icon></span></p>
-    <div *ngFor="let cgu of cguContent; let i = index">
+    <div class="cgu_c_wrapper" *ngFor="let cgu of cguContent; let i = index">
         <div class="articletitle" id="article_wrapper_{{i}}">
           <h1 (click)="expandTitle(i)"><span class="sign" id="sign_{{i}}">+</span><span class="text">{{cgu.ArticleTitle}}</span></h1>
           <p class="articletext">{{cgu.ArticleText}}</p> 

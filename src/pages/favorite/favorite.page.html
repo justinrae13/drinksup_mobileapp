@@ -6,24 +6,27 @@
   <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
-    <ion-list *ngFor="let bars of items; let i = index">
-      <ion-item no-padding color="secondary" lines="none">
-        <img src="../../assets/img/star-icon-filled.svg" class="star" alt="" (click)="removeToFave(bars.ENT_ID)">
-        <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlreadyFave}"></div>
-        <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
-        <img (click)="moveToBar(bars.ENT_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
-        <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
-        <div class="off_desc"><ion-icon name="bookmark"></ion-icon><p>{{bars.ENT_NOM}}</p></div>
-        <p class="ent_nom">{{bars.ENT_ADRESSE}}</p>
-        </div>  
-      </ion-item>
-  </ion-list>
-  <div *ngIf="items == null" class="empty_fave_wrapper">
-    <div class="empty_fave">
-      <img src="../../assets/img/empty_favorite.svg">
-      <h1>Votre boîte de favoris est vide</h1>
-    </div>
-  </div>
+      <div class="ion_content_wrapper">
+          <ion-list *ngFor="let bars of items; let i = index">
+              <ion-item no-padding color="secondary" lines="none">
+                <img src="../../assets/img/star-icon-filled.svg" class="star" alt="" (click)="removeToFave(bars.ENT_ID)">
+                <div class="img_curtain_black" [ngClass]="{'isLoaded': bars.ENT_PRELOAD_NAME === true}" [ngStyle]="{'display' : ifLoadedAlreadyFave}"></div>
+                <div (click)="moveToBar(bars.ENT_ID)" class="img-overlay"></div>
+                <img (click)="moveToBar(bars.ENT_ID)" (load)="bars.ENT_PRELOAD_NAME=true; displayNone()" class="bar-img" [src]="uplPhotoURI + bars.ENT_NOM + '_1.jpg?ran=' + random"  [id]="'offset_'+i">
+                <div (click)="moveToBar(bars.ENT_ID)" class="bar-details">
+                <div class="off_desc"><ion-icon name="bookmark"></ion-icon><p>{{bars.ENT_NOM}}</p></div>
+                <p class="ent_nom">{{bars.ENT_ADRESSE}}</p>
+                </div>  
+              </ion-item>
+          </ion-list>
+      </div>
+
+      <div *ngIf="items == null" class="empty_fave_wrapper">
+        <div class="empty_fave">
+          <img src="../../assets/img/empty_favorite.svg">
+          <h1>Votre boîte de favoris est vide</h1>
+        </div>
+      </div>
 </ion-content>
 
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
