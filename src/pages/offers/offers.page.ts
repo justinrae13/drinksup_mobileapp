@@ -7,6 +7,7 @@ import * as Global from '../../app/global';
 import { AborenewService } from '../../app/service/aborenew.service';
 import { AbonnementPage } from '../abonnement/abonnement.page'
 import { Events } from '@ionic/angular';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-offers',
@@ -256,10 +257,8 @@ export class OffersPage{
     this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
     {
         for(var i in data){
-            var newdate = new Date(data[i].OFF_DATEDEBUT);
-            var newformatDate = new Date(newdate.getTime() - newdate.getTimezoneOffset()*60000);
-            data[i].OFF_DATEDEBUT = newformatDate.toISOString();
-        }   
+            data[i].OFF_DATEDEBUT = moment(data[i].OFF_DATEDEBUT).utc().format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+        }
         this.items = data;
         this.Filtereditems = this.items;
     },
@@ -429,18 +428,9 @@ export class OffersPage{
     this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
     {
         console.log("POPUP", data.showpopup)
-        // this.storage.get('showDebutPopUp').then((debut)=>{
-        //   if(debut!==null || debut!==undefined){
-        //     this.storage.set('showDebutPopUp', 'No');
-        //     setTimeout(() => {
-        //       alert("Do not show")
-        //     }, 2000);
-        //   }else{
-            
-        //   }
-        // })
+
         this.storage.get('showDebutPopUp').then((debut)=>{
-          if(debut === null || debut === undefined || debut === "undefined"){
+          if(debut === null || debut === undefined || debut === ""){
             if(data.showpopup === 1){
               setTimeout(() => {
                 this.popUpDebutAlert();
