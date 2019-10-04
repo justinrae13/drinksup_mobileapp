@@ -5,6 +5,7 @@ import {CalendarComponent} from 'ionic2-calendar/calendar';
 import {DatePipe, formatDate} from '@angular/common';
 import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
+import * as moment from 'moment';
 
 
 @Component({
@@ -18,18 +19,18 @@ export class OffersManagementPage{
   event = {
         title: '',
         description: '',
-        startTime: new Date().toISOString(),
-        endTime: new Date().toISOString(),
+        startTime: moment().toDate().toISOString(),
+        endTime: moment().toDate().toISOString(),
         entreprise: '',
         idOffre: '',
         actif: '',
         allDay: false
     };
-    minDate = new Date().toISOString();
+    minDate = moment().toDate().toISOString();
     eventSource = [];
     calendar = {
         mode: 'month',
-        currentDate: new Date()
+        currentDate: moment().toDate()
     }
     viewTitle = '';
     entValid : string = "";
@@ -39,8 +40,8 @@ export class OffersManagementPage{
     offres = {
         title: '',
         description: '',
-        startTime: new Date(),
-        endTime: new Date(),
+        startTime: moment().toDate(),
+        endTime: moment().toDate(),
         entreprise: '',
         idOffre: '',
         actif: '',
@@ -53,7 +54,7 @@ export class OffersManagementPage{
     entreprise_id : string = "";
     barname : string;
     
-    ojd = new Date();
+    ojd = moment().toDate();
 
     //
     ifHasConnection : boolean = true;
@@ -97,8 +98,8 @@ export class OffersManagementPage{
         this.event = {
             title: '',
             description: '',
-            startTime: new Date().toISOString(),
-            endTime: new Date().toISOString(),
+            startTime: moment().toDate().toISOString(),
+            endTime: moment().toDate().toISOString(),
             entreprise: '',
             idOffre: '',
             actif: '',
@@ -133,8 +134,8 @@ export class OffersManagementPage{
                 this.offres = {
                     title: this.listeOffres[i].title.toString(),
                     description: this.listeOffres[i].description.toString(),
-                    startTime: new Date(this.listeOffres[i].startTime),
-                    endTime: new Date(this.listeOffres[i].endTime),
+                    startTime: moment(this.listeOffres[i].startTime).toDate(),
+                    endTime: moment(this.listeOffres[i].endTime).toDate(),
                     entreprise: this.listeOffres[i].entreprise,
                     idOffre: this.listeOffres[i].idOffre,
                     actif: this.listeOffres[i].actif,
@@ -150,8 +151,8 @@ export class OffersManagementPage{
         const eventCopy = {
             title: this.entreprise_id,
             description: this.event.description,
-            startTime: new Date(this.event.startTime),
-            endTime: new Date(this.event.endTime),
+            startTime: moment(this.event.startTime).toDate(),
+            endTime: moment(this.event.endTime).toDate(),
             entreprise: this.event.entreprise,
             idOffre: this.event.idOffre,
             actif: 'Non',
@@ -161,8 +162,8 @@ export class OffersManagementPage{
         const dateFin = this.dp.transform(eventCopy.endTime, 'yyyy-MM-dd  HH:mm', 'GMT+0000');
         const capitalizeDesc = eventCopy.description.charAt(0).toUpperCase()+eventCopy.description.substring(1);
         // console.log("Date de debut =>",dateDebut);
-        var ojd = new Date();
-        var startOffer = new Date(dateDebut);
+        var ojd = moment().toDate();
+        var startOffer = moment(dateDebut).toDate();
         if(startOffer<ojd){
             this.sendNotification("La date et heure de début ne peut pas être inférieure à la date et heure d'aujourd'hui !");
         }else{
@@ -173,8 +174,8 @@ export class OffersManagementPage{
     }
 
     addEventError(){
-        const start = new Date(this.event.startTime).toISOString();
-        const end = new Date(this.event.endTime).toISOString();
+        const start = moment(this.event.startTime).toDate().toISOString();
+        const end = moment(this.event.endTime).toDate().toISOString();
 
         if(start>end){
             this.sendNotification("La date de début doit être inférieure à la date de fin !")
@@ -231,7 +232,7 @@ export class OffersManagementPage{
         swiper.slideNext();
     }
     today() {
-        this.calendar.currentDate = new Date();
+        this.calendar.currentDate = moment().toDate();
     }
     async eventSelected(event) {
         const start = formatDate(event.startTime, 'dd/MM/yyyy HH:mm', this.locale);
@@ -261,7 +262,7 @@ export class OffersManagementPage{
     }
 
     onTimeSelected(ev) {
-        const selected = new Date(ev.selectedTime);
+        const selected = moment(ev.selectedTime).toDate();
         this.event.startTime = selected.toISOString();
         selected.setHours(selected.getHours() + 1);
         this.event.endTime = (selected.toISOString());
