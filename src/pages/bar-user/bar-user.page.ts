@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit, ViewChild} from '@angular/core';
-import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
+import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ModalController, ToastController, AlertController, IonContent } from "@ionic/angular";
 import { Storage } from '@ionic/storage';
@@ -670,8 +670,13 @@ export class BarUserPage implements OnInit {
     document.getElementById("first_pic").classList.remove("firstimgscale");
     document.getElementById("second_pic").classList.remove("secondimgscale");
     document.getElementById("third_pic").classList.remove("thirdimgscale");
-
-    this.nativePageTransitions.fade(null); 
+    
+    let opt : NativeTransitionOptions = {
+      duration: 600,
+      iosdelay: 1000,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.back();
   }
 

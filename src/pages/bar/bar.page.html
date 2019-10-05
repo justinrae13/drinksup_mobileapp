@@ -78,7 +78,7 @@
             <ion-item-option color="secondary" (click)="editSchedule(schedule.HOR_ID, schedule.HOR_JOURS, schedule.HOR_HEUREDEBUT_JOUR, schedule.HOR_HEUREFIN_JOUR, schedule.HOR_HEUREDEBUT_SOIR, schedule.HOR_HEUREFIN_SOIR)"><ion-icon slot="top" name="create"></ion-icon>&nbsp;Modifier</ion-item-option>
           </ion-item-options>
 
-          <ion-item class="sched_row" [ngClass]="(schedule.HOR_JOURS == dayOfTheWeek) ? 'today' : 'notToday'">
+          <ion-item lines="none" class="sched_row" [ngClass]="(schedule.HOR_JOURS == dayOfTheWeek) ? 'today' : 'notToday'">
             <ion-label class="sched_left">{{schedule.HOR_JOURS}}</ion-label>
             <ion-label class="sched_right">
                 <p *ngIf="(schedule.HOR_HEUREDEBUT_JOUR == '00:00:00' && schedule.HOR_HEUREFIN_JOUR == '00:00:00') && (schedule.HOR_HEUREDEBUT_SOIR != '00:00:00' || schedule.HOR_HEUREFIN_SOIR != '00:00:00')">Fermé le matin</p>

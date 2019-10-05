@@ -16,7 +16,7 @@ import { ModalGetSponsoredPage } from '../modal-get-sponsored/modal-get-sponsore
 import { LoadingpagePage } from '../loadingpage/loadingpage.page'
 import { AbonnementPage } from '../abonnement/abonnement.page'
 import * as Global from '../../app/global';
-import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
+import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { AborenewService } from '../../app/service/aborenew.service';
 import { Events } from '@ionic/angular';
 import { toDate } from '@angular/common/src/i18n/format_date';
@@ -656,7 +656,12 @@ export class ProfilePage{
                 {
                     text: "Plus d'information",
                     handler: () => {
-                        this.nativePageTransitions.fade(null); 
+                        let opt : NativeTransitionOptions = {
+                            duration: 600,
+                            iosdelay: 1000,
+                            androiddelay: 100
+                          }
+                        this.nativePageTransitions.fade(opt); 
                         this.navCtrl.navigateForward('/parrainage');
                     }
                 }

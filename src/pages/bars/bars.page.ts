@@ -1,7 +1,7 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { IonContent, NavController, IonSelect } from "@ionic/angular";
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
+import { NativePageTransitions, NativeTransitionOptions } from '@ionic-native/native-page-transitions/ngx';
 import { Storage } from '@ionic/storage';
 import * as Global from '../../app/global';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
@@ -569,12 +569,22 @@ export class BarsPage implements AfterViewInit{
   }
 
   openSearch(){
-    this.nativePageTransitions.fade(null); 
+    let opt : NativeTransitionOptions = {
+      duration: 600,
+      iosdelay: 1000,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.navigateForward("/search-a-bar");
   }
 
   moveToBar(id : string){
-    this.nativePageTransitions.fade(null); 
+    let opt : NativeTransitionOptions = {
+      duration: 600,
+      iosdelay: 1000,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.navigateForward('/bar-user/'+id);
     setTimeout(() => {
       this.hideElem = "block";

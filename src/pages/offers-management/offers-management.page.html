@@ -44,7 +44,7 @@
     <ion-list style="background: #070708">
       <ion-item-sliding *ngFor="let event of selectedDate?.events" #slidingItem>
          
-        <ion-item (click)="eventSelected(event)">
+        <ion-item (click)="eventSelected(event)" lines="none">
 
           <div *ngIf="event.actif ==='Non' && event.endTime<ojd" [ngStyle]="{'color' : mostInvalidColor}" class="item-content" style="width: 100%; height: 100%; display : flex; align-items: center">
               <ion-icon name="alert" style="font-size: 1.5em"></ion-icon>&nbsp;&nbsp;{{event.startTime|date: 'HH:mm'}} - {{event.endTime|date: 'HH:mm'}}&nbsp;&nbsp;<span style="font-family : 'NBL'">{{event.description}}</span>&nbsp;<i style="font-size: .9em">(Dépassée)</i>

@@ -29,15 +29,14 @@ import { ModalGetSponsoredPageModule } from '../pages/modal-get-sponsored/modal-
 import { ModalStatsDetailsPageModule } from '../pages/modal-stats-details/modal-stats-details.module';
 import { AbonnementPageModule } from '../pages/abonnement/abonnement.module';
 
-
 import { LaunchNavigator } from '@ionic-native/launch-navigator/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { NativeGeocoder } from '@ionic-native/native-geocoder/ngx';
 import { PayPal } from '@ionic-native/paypal/ngx';
 
 import { Calendar } from '@ionic-native/calendar/ngx';
-import {EmailComposer} from '@ionic-native/email-composer/ngx';
-import {Stripe} from '@ionic-native/stripe/ngx';
+import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { Stripe } from '@ionic-native/stripe/ngx';
 import { BarcodeScanner } from '@ionic-native/barcode-scanner/ngx';
 import { NgxQRCodeModule } from 'ngx-qrcode2';
 import { SocialSharing } from '@ionic-native/social-sharing/ngx'

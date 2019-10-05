@@ -29,7 +29,12 @@ export class SearchABarPage implements OnInit {
   }
 
   backToTheRoots(){
-    this.nativePageTransitions.fade(null); 
+    let opt : NativeTransitionOptions = {
+      duration: 600,
+      iosdelay: 1000,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.back();
     this.searchBarInput.value = "";
     setTimeout(() => {
@@ -75,7 +80,12 @@ export class SearchABarPage implements OnInit {
   }
 
   moveToBar(id : string){
-    this.nativePageTransitions.fade(null); 
+    let opt : NativeTransitionOptions = {
+      duration: 600,
+      iosdelay: 1000,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.navigateForward('/bar-user/'+id);
     setTimeout(() => {
       this.showItems = "none";

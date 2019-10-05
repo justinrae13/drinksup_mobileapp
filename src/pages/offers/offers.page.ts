@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
 import { ToastController, ModalController, NavController, IonContent, IonSelect, AlertController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { NativePageTransitions,  } from '@ionic-native/native-page-transitions/ngx';
+import { NativePageTransitions, NativeTransitionOptions,  } from '@ionic-native/native-page-transitions/ngx';
 import * as Global from '../../app/global';
 import { AborenewService } from '../../app/service/aborenew.service';
 import { AbonnementPage } from '../abonnement/abonnement.page'
@@ -391,7 +391,12 @@ export class OffersPage{
   }
 
   moveToBar(id : string, id_offer : string){
-    this.nativePageTransitions.fade(null); 
+    let opt : NativeTransitionOptions = {
+      duration: 600,
+      iosdelay: 1000,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.navigateForward("/bar-user/"+id+"/"+id_offer);  
   }
 
