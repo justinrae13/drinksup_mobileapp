@@ -5,14 +5,14 @@
 <h4><img width="60px" src="https://justinrae.ch/git_icons/step1.svg"> Clone the project :</h4>
 
 ```
-$ git clone https://github.com/omarLiibaan/drinksup.git
+$ git clone https://github.com/justinrae13/drinksup_mobileapp.git
 
 ```
 
 <i>to clone a specific branch :</i>
 
 ```
-$ git clone -b name_of_the_branch https://github.com/omarLiibaan/drinksup.git
+$ git clone -b name_of_the_branch https://github.com/justinrae13/drinksup_mobileapp.git
 ```
 
 <h4><img width="60px" src="https://justinrae.ch/git_icons/step2.svg"> Install all dependencies :</h4>
