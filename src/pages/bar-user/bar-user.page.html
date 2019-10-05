@@ -1,27 +1,9 @@
-<div class="header_bar" [ngStyle]="{'top' : hideHeader}">
-    <div *ngIf="ifHasConnection" class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
-    <div *ngIf="!ifHasConnection" class="hb-button" (click)="retour_offline()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
-    <!-- <div class="ifOpen" *ngFor="let sched of FilteredSched">
-      <div *ngIf="dayShift">
-        <div *ngIf="(dayShiftIn)">
-            <p class="openSched"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Ouvert</p>
-        </div>
-        <div *ngIf="(!dayShiftIn)">
-            <p class="closeSched"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Fermé le matin</p>
-        </div>
-      </div>
-      <div *ngIf="nightShift">
-        <div *ngIf="(nightShiftIn)">
-            <p class="openSched"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Ouvert</p>
-        </div>
-        <div *ngIf="(!nightShiftIn)">
-            <p class="closeSched"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Fermé le soir</p>
-        </div>
-      </div>
-    </div> -->
-</div>
-
 <ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
+  <div class="header_bar" [ngStyle]="{'transform' : hideHeader}">
+      <div *ngIf="ifHasConnection" class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
+      <div *ngIf="!ifHasConnection" class="hb-button" (click)="retour_offline()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
+  </div>
+
   <div class="img-slide" [ngStyle]="{'opacity' : dyn_imgSlide_opacity}">
     <div class="load_overlay" id="load_overL"></div>
     <div class="img_wrapper iw_1" id="img_1" (touchstart)="touchstart_1($event)" (touchend)="touchend_1($event)">
@@ -89,26 +71,6 @@
       <div class="ifOpenNow">
         <p class="closeSchednow"><ion-icon name="time"></ion-icon>&nbsp;Horaire du bar</p>
       </div>
-      <!-- <div class="ifOpenNow" *ngFor="let sched of FilteredSched">
-          <div *ngIf="dayShift">
-            <div *ngIf="(dayShiftIn)">
-                <p class="openSchednow"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Ouvert<span>&nbsp;ferme à <ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{sched.HOR_HEUREFIN_JOUR}}"></ion-datetime></span></p>
-            </div>
-            <div *ngIf="(!dayShiftIn)">
-                <p class="closeSchednow"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Fermé le matin</p>
-            </div>
-          </div>
-
-
-          <div *ngIf="nightShift">
-            <div *ngIf="(nightShiftIn)">
-                <p class="openSchednow"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Ouvert<span>&nbsp;ferme à <ion-datetime [readonly]="true" displayFormat="HH:mm" value="{{sched.HOR_HEUREFIN_SOIR}}"></ion-datetime></span></p>
-            </div>
-            <div *ngIf="(!nightShiftIn)">
-                <p class="closeSchednow"><ion-icon name="time"></ion-icon>&nbsp;{{sched.HOR_JOURS}}, Fermé le soir</p>
-            </div>
-          </div>
-        </div> -->
   </div>
 
   <div class="schedule">
@@ -126,7 +88,6 @@
     </div>
   </div>
 
-  <!-- (click)="directMe(myBar.ENT_ADRESSE,myBar.ENT_NPA,myBar.ENT_LOCALITE)" -->
   <div class="map_wrapper" (click)="goToMap(myBar.ENT_LATITUDE, myBar.ENT_LONGITUDE, myBar.ENT_ADRESSE, myBar.ENT_NPA, myBar.ENT_LOCALITE)">
     <div>
         <p>{{myBar.ENT_ADRESSE}}, {{myBar.ENT_NPA}} {{myBar.ENT_LOCALITE}}</p>

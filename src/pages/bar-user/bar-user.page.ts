@@ -56,7 +56,7 @@ export class BarUserPage implements OnInit {
   touchendY = 0;
 
   lastScroll : number = 0;
-  hideHeader : string = "0";
+  hideHeader : string = "translateY(0)";
   scrollOffsetTop : number = 0;
   scrollOffsetTopCounter : number = 400;
   scrollCounter : number = 0;
@@ -423,11 +423,11 @@ export class BarUserPage implements OnInit {
       this.scrollOffsetTop = event.detail.scrollTop;
 
         if(currentScroll > 0 && this.lastScroll <= currentScroll){
-            this.hideHeader = "-50px";
+            this.hideHeader = "translateY(-50px)";
             this.lastScroll = currentScroll;
             this.scrollCounter--;
         }else{
-            this.hideHeader = "0px";
+            this.hideHeader = "translateY(0)";
             this.lastScroll = currentScroll;
             this.scrollCounter++;
         }
