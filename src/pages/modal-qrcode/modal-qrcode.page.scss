@@ -15,7 +15,15 @@ ngx-qrcode{
     }
 }
 
+.card_wrapper{
+    width: 100%;
+    background-color: yelllow;
+}
+
 ion-card{
+    margin: 0 auto;
+    height: 330px;
+    width: 330px;
     border: none !important;
     box-shadow: none !important;
     filter: invert(1) !important;

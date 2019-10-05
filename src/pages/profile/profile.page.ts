@@ -19,6 +19,7 @@ import * as Global from '../../app/global';
 import { NativePageTransitions } from '@ionic-native/native-page-transitions/ngx';
 import { AborenewService } from '../../app/service/aborenew.service';
 import { Events } from '@ionic/angular';
+import { toDate } from '@angular/common/src/i18n/format_date';
 
 @Component({
     selector: 'app-profile',
@@ -383,8 +384,8 @@ export class ProfilePage{
 
 
             if(data.ABO_DATEDEBUT !== undefined){
-                var newStart = new Date(data.ABO_DATEDEBUT).toISOString();
-                var newEnd = new Date(data.ABO_DATEFIN).toISOString();
+                var newStart = moment(data.ABO_DATEDEBUT).toDate().toISOString();
+                var newEnd = moment(data.ABO_DATEFIN).toDate().toISOString();
                 data.ABO_DATEDEBUT = newStart;
                 data.ABO_DATEFIN= newEnd;
                 this.abonneDetail = data;
@@ -566,9 +567,8 @@ export class ProfilePage{
         await alert.present();
     }
 
-    async monAbonnementDetail(id, type,debut,fin){
+    async monAbonnementDetail(id, type, debut,fin){
         moment.locale('fr');
-        
         const alert = await this.alertCtrl.create({
             header: "Mon abonnement",
             message: "<div class='table'> <div class='col'>Type :</div> <div class='col'>"+type+"</div> <div class='col'>Début :</div> <div class='col'>"+moment(debut).format('LLL')+"</div> <div class='col'>Fin :</div> <div class='col'>"+moment(fin).format('LLL')+"</div></div>",
@@ -583,9 +583,9 @@ export class ProfilePage{
                     cssClass: "btnResilier",
                     handler: () => {
                         //Check Subscription end date
-                        var ojd = new Date();
+                        var ojd = moment().toDate();
                         // ojd.setDate(ojd.getDate() + 24);
-                        var endDate = new Date(this.abonneDetail.ABO_DATEFIN);
+                        var endDate = moment(this.abonneDetail.ABO_DATEFIN).toDate();
                         const diffTime = Math.abs(ojd.getTime() - endDate.getTime());
                         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
                         if(diffDays < 7){

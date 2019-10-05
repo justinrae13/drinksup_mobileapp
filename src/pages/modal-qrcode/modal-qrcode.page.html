@@ -6,8 +6,10 @@
   
   <h2><span>Offre : </span>{{description}}</h2>
   <h3><span>Bar : </span>{{chosenBar.ENT_NOM}}</h3>
-  <ion-card *ngIf="codeContent">
-    <ngx-qrcode [(qrc-value)]="codeContent" ></ngx-qrcode>
-  </ion-card>
+  <div class="card_wrapper">
+    <ion-card *ngIf="codeContent">
+      <ngx-qrcode [(qrc-value)]="codeContent" ></ngx-qrcode>
+    </ion-card>
+  </div>
   <h1>Veuillez présenter le Qrcode au barman</h1>
 </ion-content>

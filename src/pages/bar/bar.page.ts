@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
-import { ModalController, ToastController, IonItemSliding, NavController, IonTextarea, IonContent, AlertController } from '@ionic/angular';
+import { ModalController, ToastController, IonItemSliding, NavController, IonTextarea, IonContent, AlertController, IonSlides } from '@ionic/angular';
 import { Camera } from '@ionic-native/camera/ngx';
 import { FormGroup, Validators, FormBuilder, FormControl } from '@angular/forms';
 import { ModalSchedulePage } from '../modal-schedule/modal-schedule.page';
@@ -61,6 +61,7 @@ export class BarPage implements OnInit {
   ifHasConnection : boolean = true;
   //Custom Refresher Made By Jutin Rae
   @ViewChild(IonContent) maincontent: IonContent;
+  @ViewChild(IonSlides) slides: IonSlides;
   scrollOffsetTop : number = 0;
   touchStart : number = 0;
   refresherPosY : number = 0;
@@ -113,6 +114,7 @@ imgLoad(){
   }
 
   ionViewWillEnter(){ 
+    this.slides.update();
     this.barFromAdminSide = this.aRoute.snapshot.paramMap.get('id_partenaire');
 
     this.storage.get('SessionRoleKey').then((role) => {

@@ -312,6 +312,32 @@ ion-tab-bar, ion-tab-button{
   bottom: calc(env(safe-area-inset-bottom) + 50px) !important;
 }
 
+ion-modal.ModalQRDCODE {
+  @media (min-width: 300px) and (min-height: 500px) {
+    ion-backdrop {
+      visibility: visible;
+      opacity: .75 !important;
+    }
+  }
+
+  .modal-wrapper {
+    position: absolute;
+    overflow: hidden;
+    max-width: 100vw;
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border-radius: 10px;
+    box-shadow: 0 16px 20px rgba(0,0,0,.4);
+    background-color: transparent;
+  }
+}
+
 ion-modal.edit-schedule-modal {
   @media (min-width: 300px) and (min-height: 500px) {
     ion-backdrop {
@@ -323,7 +349,7 @@ ion-modal.edit-schedule-modal {
   .modal-wrapper {
     position: absolute;
     overflow: hidden;
-    max-width: 310px;
+    max-width: 350px;
     width: 80vw;
     height: 60vh;
     top: 0;
@@ -348,7 +374,7 @@ ion-modal.edit-photos-modal {
   .modal-wrapper {
     position: absolute;
     overflow: hidden;
-    max-width: 310px;
+    max-width: 350px;
     width: 80vw;
     height: 45vh;
     top: 0;
@@ -371,7 +397,7 @@ ion-modal.edit-profilepic-modal {
   }
 
   .modal-wrapper {
-    max-width: 310px;
+    max-width: 350px;
     width: 80vw;
     height: calc(52px + 120px + 52px);
     border-radius: 4px;
@@ -389,7 +415,7 @@ ion-modal.stat-detail {
   }
 
   .modal-wrapper {
-    max-width: 310px;
+    max-width: 350px;
     width: 80vw;
     height: calc(52px + 200px + 52px);
     border-radius: 4px;
@@ -407,7 +433,7 @@ ion-modal.modalFourLinesHeader {
   }
 
   .modal-wrapper {
-    max-width: 310px;
+    max-width: 350px;
     width: 80vw;
     height: calc(97px + 170px + 52px);
     border-radius: 4px;
@@ -425,7 +451,7 @@ ion-modal.modalThreeLinesHeader {
   }
 
   .modal-wrapper {
-    max-width: 310px;
+    max-width: 350px;
     width: 80vw;
     height: calc(82px + 150px + 52px);
     border-radius: 4px;
@@ -492,7 +518,7 @@ ion-modal.ratings-modal {
   .modal-wrapper {
     position: absolute;
     overflow: hidden;
-    max-width: 310px;
+    max-width: 350px;
     width: 80vw;
     height: 45vh;
     top: 0;
@@ -668,16 +694,19 @@ ion-modal.ratings-modal {
 
 //MyCoolAlertBox
 .myCoolAlertBoxSmall{
+ --background: transparent !important;
+
   ion-backdrop {
   opacity: 0.75 !important;
   }
 
 
-  .alert-head.sc-ion-alert-md{
+  .alert-head{
     display: none;
+    background-color: transparent !important;
   }
 
-  .alert-message.sc-ion-alert-md{
+  .alert-message{
  
     .mcabs{
       width: 100%;
@@ -716,6 +745,7 @@ ion-modal.ratings-modal {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: transparent !important;
     button{
       border: none;
       padding: 6px 55px !important;
@@ -730,89 +760,22 @@ ion-modal.ratings-modal {
 }
 
 
-//popUpDebut
-.popUpDebut{
-  ion-backdrop {
-  opacity: 0.75 !important;
-  }
 
-  .alert-wrapper.sc-ion-alert-md{
-    max-width: unset !important;
-    min-width: unset !important;
-    width: calc(100vw - 52px);
-    position: relative;
-  }
-
-
-  .alert-head.sc-ion-alert-md{
-    display: none !important;
-  }
-  
-
-  .alert-message.sc-ion-alert-md{
-    max-height: unset !important;
-    height: 55vh;
-    background-color: #161616;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding-bottom: 35px;
-    img{
-      width: 95%;
-      max-width: 300px;
-    }
-  }
-
-  .alert-button-group{
-    border: none;
-    box-shadow: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent !important;
-    padding: 15px 0;
-    button{
-      margin-bottom: 15px;
-      border-color: rgba(255,255,255,.75);
-      border-radius: 3px;
-      border-style: solid;
-      border-width: 1px;
-      padding-top: 8px !important;
-      padding-bottom: 8px !important;
-      width: 40%;
-      box-shadow: 0 15px 18px -10px rgba(255, 255, 255,.1);
-      color: #fff;
-      font-size: .8rem;
-      font-family: "NBL";
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: repeating-linear-gradient(
-          -55deg,
-          rgba(255,255,255,.3) 1px, 
-          rgba(255,255,255,.3)1px, /*size stripes*/
-          rgba(255,255,255,.075) 2px,
-          rgba(255,255,255,.075) 10px /*space between stripes*/
-      );
-      span{
-        display: flex !important;
-        margin: 0 auto !important;
-        color: #fff !important;
-        justify-content: center !important;
-        align-items: center !important;
-      }
-    }
-  }
-}
 
 .alertTables{
   ion-backdrop {
     opacity: 0.75 !important;
   }
+
+  .alert-message{
+    max-height: unset !important;
+    background-color: #161616 !important;
+  }
   .table{
     width: 100%;
     display: flex;
     flex-wrap: wrap;
+    background-color: #161616 !important;
     .col:nth-child(odd){
       height: 35px;
       width: 30%;
@@ -823,6 +786,7 @@ ion-modal.ratings-modal {
       font-family: "NBL";
       font-size: .9rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
     }
     .col:nth-child(even){
       height: 35px;
@@ -834,6 +798,7 @@ ion-modal.ratings-modal {
       font-family: "NBL";
       font-size: .9rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: left;
     }
 
     .col.xs{
@@ -865,15 +830,26 @@ ion-modal.ratings-modal {
 }
 
 ion-alert{
- --background: #161616 !important;
+ --background: #161616;
+
+ .alert-wrapper{
+  max-width: 350px !important;
+  min-width: unset !important;
+  width: 80vw !important;
+  position: relative;
+  background-color: #161616 !important;
+}
+
+.alert-message{
+  max-height: unset !important;
+  background-color: #161616 !important;
+}
 
  .alert-head{
-    background: #161616;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.3);
-    border-bottom: 1px solid rgba(255,255,255,.05);
+    background-color: #161616;
  }
 
- .alert-message.sc-ion-alert-md{
+ .alert-message{
    padding-top: 20px !important;
  }
   h2{
@@ -963,8 +939,6 @@ ion-alert{
 
   .alert-button-group{
     background-color: #161616;
-    box-shadow: 0px -2px 8px -2px rgba(0, 0, 0, 0.3);
-    border-top: 1px solid rgba(255,255,255,.05);
     button{
       span{
         font-family: "NBL";
@@ -974,6 +948,93 @@ ion-alert{
       }
     }
     
+  }
+}
+
+//popUpDebut
+.popUpDebut{
+  --background: transparent !important;
+  background-color: transparent !important;
+  ion-backdrop {
+  opacity: 0.9 !important;
+  }
+
+  .alert-wrapper{
+    max-width: 350px !important;
+    min-width: unset !important;
+    width: 80vw !important;
+    position: relative;
+    background-color: transparent !important;
+    height: 70vh !important;
+    max-height: unset !important;
+    min-height: unset !important;
+  }
+
+
+  .alert-head.sc-ion-alert-md{
+    display: none !important;
+    background-color: transparent !important;
+  }
+
+  .alert-head{
+    background-color: transparent !important;
+ }  
+  
+
+  .alert-message{
+    max-height: unset !important;
+    background-color: transparent !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 55vh !important;
+    img{
+      width: 95%;
+      // max-width: 300px;
+    }
+  }
+
+  .alert-button-group{
+    border: none;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent !important;
+    height: 15vh !important;
+    width: 100% !important;
+    
+    button{
+      border-radius: 3px;
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+      width: 130px !important;
+      margin: 0 3px;
+      max-width: 130px !important;
+      min-width: 130px !important;
+      border: 1px solid rgba(255,255,255,.75) !important;
+      box-shadow: 0 15px 18px -10px rgba(255, 255, 255,.1);
+      color: #fff;
+      font-size: .8rem;
+      font-family: "NBL";
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background: repeating-linear-gradient(
+          -55deg,
+          rgba(255,255,255,.3) 1px, 
+          rgba(255,255,255,.3)1px, /*size stripes*/
+          rgba(255,255,255,.075) 2px,
+          rgba(255,255,255,.075) 10px /*space between stripes*/
+      );
+      span{
+        display: flex !important;
+        margin: 0 auto !important;
+        color: #fff !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+    }
   }
 }
 
@@ -1019,8 +1080,7 @@ ion-slides{
 
 }
 
-[aria-checked="true"].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md,
-[aria-checked="true"].sc-ion-alert-ios .alert-radio-icon.sc-ion-alert-ios {
+[aria-checked="true"].sc-ion-alert-md .alert-radio-icon.sc-ion-alert-md{
   border-color: #c40000 !important;
 }
 

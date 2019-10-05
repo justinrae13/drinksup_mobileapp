@@ -25,7 +25,8 @@
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
 
   <div class="ion_content_wrapper">
-    <p *ngIf="Filtereditems===null" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour le moment</p>
+  <p *ngIf="noOffer" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour ce jour</p>
+  <p *ngIf="Filtereditems===null" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour le moment</p>
 
   <ion-list *ngFor="let bars of Filtereditems; let i = index">
     <ion-item no-padding color="secondary" lines="none">

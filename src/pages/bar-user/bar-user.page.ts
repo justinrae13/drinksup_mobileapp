@@ -611,6 +611,7 @@ export class BarUserPage implements OnInit {
     //modal
     async activerOffre(desc, start, end, off_id, ent_id, user_id) {
         const modal = await this.modalCtrl.create({
+            cssClass : "ModalQRDCODE",
             component: ModalQrcodePage,
             componentProps: {
               description : desc,
