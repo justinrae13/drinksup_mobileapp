@@ -6,9 +6,11 @@
   <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
-  <div class="scan_button" (click)="scannerCodeDelay()">
-    <img src="../../assets/img/scan_icon.svg">
-    <span class="rippleEffect"></span>
+  <div class="btn_scan_wrapper">
+    <div class="scan_button" (click)="scannerCodeDelay()">
+      <img src="../../assets/img/scan_icon.svg">
+      <span class="rippleEffect"></span>
+    </div>
   </div>
 </ion-content>
 
