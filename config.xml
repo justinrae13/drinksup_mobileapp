@@ -150,5 +150,5 @@
         <variable name="ANDROID_SUPPORT_V4_VERSION" value="27.+" />
     </plugin>
     <engine name="android" spec="7.1.4" />
-    <engine name="ios" spec="^5.0.1" />
+    <engine name="ios" spec="5.0.1" />
 </widget>

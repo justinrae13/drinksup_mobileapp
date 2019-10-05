@@ -43,11 +43,13 @@ import { SocialSharing } from '@ionic-native/social-sharing/ngx'
 import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { Network } from '@ionic-native/network/ngx';
+import { mdTransitionAnimation } from '@ionic/core/dist/collection/utils/transition/md.transition';
+
 
 @NgModule({
     declarations: [AppComponent],
     entryComponents: [],
-    imports: [NgxQRCodeModule, BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule, AbonnementPageModule, UsersPageModule, ModalStatsDetailsPageModule, ModalGetSponsoredPageModule, ModalToSharePageModule, ModalToSponsorPageModule, ModalChangePhotosPageModule, ModalChangeUserphotoPageModule, ModalPageModule, ModalQrcodePageModule, ModalbarAdminPageModule, ModalSchedulePageModule, LoadingpagePageModule, OffersAddbarPageModule, ModalRatingsPageModule, ModalMoreOptionPageModule, IonicStorageModule.forRoot()],
+    imports: [NgxQRCodeModule, BrowserModule, IonicModule.forRoot({navAnimation:mdTransitionAnimation}), AppRoutingModule, HttpClientModule, AbonnementPageModule, UsersPageModule, ModalStatsDetailsPageModule, ModalGetSponsoredPageModule, ModalToSharePageModule, ModalToSponsorPageModule, ModalChangePhotosPageModule, ModalChangeUserphotoPageModule, ModalPageModule, ModalQrcodePageModule, ModalbarAdminPageModule, ModalSchedulePageModule, LoadingpagePageModule, OffersAddbarPageModule, ModalRatingsPageModule, ModalMoreOptionPageModule, IonicStorageModule.forRoot()],
     providers: [
         PayPal,
         StatusBar,

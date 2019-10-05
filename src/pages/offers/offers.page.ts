@@ -393,7 +393,7 @@ export class OffersPage{
   moveToBar(id : string, id_offer : string){
     let opt : NativeTransitionOptions = {
       duration: 600,
-      iosdelay: 1000,
+      iosdelay: 50,
       androiddelay: 100
     }
     this.nativePageTransitions.fade(opt); 
