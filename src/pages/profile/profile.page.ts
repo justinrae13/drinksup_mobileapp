@@ -657,8 +657,8 @@ export class ProfilePage{
                     text: "Plus d'information",
                     handler: () => {
                         let opt : NativeTransitionOptions = {
-                            duration: 600,
-                            iosdelay: 1000,
+                            duration: 450,
+                            iosdelay: 100,
                             androiddelay: 100
                           }
                         this.nativePageTransitions.fade(opt); 

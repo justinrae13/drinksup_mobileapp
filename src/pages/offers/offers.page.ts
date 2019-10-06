@@ -392,8 +392,8 @@ export class OffersPage{
 
   moveToBar(id : string, id_offer : string){
     let opt : NativeTransitionOptions = {
-      duration: 600,
-      iosdelay: 50,
+      duration: 450,
+      iosdelay: 100,
       androiddelay: 100
     }
     this.nativePageTransitions.fade(opt); 
@@ -437,14 +437,10 @@ export class OffersPage{
         this.storage.get('showDebutPopUp').then((debut)=>{
           if(debut === null || debut === undefined || debut === ""){
             if(data.showpopup === 1){
-              setTimeout(() => {
                 this.popUpDebutAlert();
-              }, 1000);
             }
           }else{
-            setTimeout(() => {
               this.popUpDebutAlert();
-            }, 1000);
           }
         });
         

@@ -672,8 +672,8 @@ export class BarUserPage implements OnInit {
     document.getElementById("third_pic").classList.remove("thirdimgscale");
     
     let opt : NativeTransitionOptions = {
-      duration: 600,
-      iosdelay: 1000,
+      duration: 450,
+      iosdelay: 100,
       androiddelay: 100
     }
     this.nativePageTransitions.fade(opt); 
@@ -682,12 +682,22 @@ export class BarUserPage implements OnInit {
 
   goToMap(lat, long, address, npa, zipcode){
     let fullAddress = address+", "+npa+" "+zipcode;
-    this.nativePageTransitions.fade(null); 
+    let opt : NativeTransitionOptions = {
+      duration: 450,
+      iosdelay: 100,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.navigateForward("show-map/"+lat+"/"+long+"/"+fullAddress);
   }
 
   retour_offline(){
-    this.nativePageTransitions.fade(null); 
+    let opt : NativeTransitionOptions = {
+      duration: 450,
+      iosdelay: 100,
+      androiddelay: 100
+    }
+    this.nativePageTransitions.fade(opt); 
     this.navCtrl.back();
   }
 

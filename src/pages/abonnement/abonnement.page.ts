@@ -169,20 +169,25 @@ export class AbonnementPage{
     }
 
     async alertPayment(msg){
+        var img = "";
+        if(msg === "new"){
+            img = "<img src='../../assets/img/toast_new.svg'/>"
+        }else{
+            img = "<img src='../../assets/img/toast_renew.svg'/>"
+        }
         const alert = await this.alertCtrl.create({
-            message: "<div class='mcabs'> <h1>Nous avons bien reçu votre paiement </h1> <img src='../../assets/img/toast.svg'/> <h2>"+msg+"</h2> </div>",
-            cssClass : "myCoolAlertBoxSmall",
+            message: img,
+            cssClass : "popUpDebut",
             buttons: [
                 {
                     text: 'OK',
-                    cssClass: 'secondary',
                     handler: () => {
                         this.modalCtrl.dismiss("paymentDone");
                     }
                 },
             ]
         });
-
+    
         await alert.present();
     }
 

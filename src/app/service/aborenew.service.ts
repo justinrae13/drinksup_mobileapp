@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 import { AlertController } from '@ionic/angular';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -61,7 +62,7 @@ export class AborenewService {
       }else{
         if(this.ifHasBeenSubscribed > 0 && this.paidUser !== "good"){
           if(data.ABO_CANCEL === "NON"){
-            console.log("User's subscription is not valid. Autorenewal is being launched... (From aborenew)");
+            console.log("User's subscription is done. Autorenewal is being launched... (From aborenew)");
             this.renewAbonnement(data.ABO_PRIX, data.ABO_TYPE, data.ABO_TOKEN, userId, this.loggedUser.INT_PRENOM, this.loggedUser.INT_EMAIL);
           }else{
             console.log("Can't renew. User cancelled his Subscription (From aborenew)");
@@ -73,11 +74,12 @@ export class AborenewService {
         }
       }
       //Check Subscription end date);
-      var ojd = new Date();
+      var ojd = moment().toDate();
       // ojd.setDate(ojd.getDate() + 23);
-      var endDate = new Date(data.ABO_DATEFIN);
+      var endDate = moment(data.ABO_DATEFIN).toDate();
       const diffTime = Math.abs(ojd.getTime() - endDate.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+      console.log("DIFFFFFFFFF ====>", this.renewFirst)
       if(checkDate !== null){
         this.storage.get('TriggerOnce').then((value) => {
           if(diffDays<=7){
@@ -110,9 +112,11 @@ export class AborenewService {
           
           this.storage.get('TriggerAlertOnce').then((value) => {
             if(value === null || value === ""){
-              this.renouvellementMsg(data+" Veuillez rafraîchir la page.");
+              this.renouvellementMsg(data);
               this.renewFirst = true;
               this.storage.set("TriggerAlertOnce", "Yes");
+              this.storage.remove("TriggerOnce");
+
             }
           });
       },

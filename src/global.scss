@@ -966,9 +966,9 @@ opacity: 0.75 !important;
   }
 
   .alert-wrapper{
-    max-width: 350px !important;
+    max-width: 97vw !important;
     min-width: unset !important;
-    width: 85vw !important;
+    width: 97vw !important;
     position: relative;
     background-color: transparent !important;
     height: 70vh !important;
@@ -995,7 +995,7 @@ opacity: 0.75 !important;
     align-items: center;
     height: 55vh !important;
     img{
-      width: 95%;
+      width: 100% !important;
       // max-width: 300px;
     }
   }

@@ -30,8 +30,8 @@ export class SearchABarPage implements OnInit {
 
   backToTheRoots(){
     let opt : NativeTransitionOptions = {
-      duration: 600,
-      iosdelay: 1000,
+      duration: 450,
+      iosdelay: 100,
       androiddelay: 100
     }
     this.nativePageTransitions.fade(opt); 
@@ -81,8 +81,8 @@ export class SearchABarPage implements OnInit {
 
   moveToBar(id : string){
     let opt : NativeTransitionOptions = {
-      duration: 600,
-      iosdelay: 1000,
+      duration: 450,
+      iosdelay: 100,
       androiddelay: 100
     }
     this.nativePageTransitions.fade(opt); 
