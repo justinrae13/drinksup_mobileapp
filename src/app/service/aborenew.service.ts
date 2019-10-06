@@ -73,29 +73,31 @@ export class AborenewService {
             console.log("Do nothing, User is not even subbed (From aborenew)")
         }
       }
-      //Check Subscription end date);
-      var ojd = moment().toDate();
-      // ojd.setDate(ojd.getDate() + 23);
-      var endDate = moment(data.ABO_DATEFIN).toDate();
-      const diffTime = Math.abs(ojd.getTime() - endDate.getTime());
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-      console.log("DIFFFFFFFFF ====>", this.renewFirst)
-      if(checkDate !== null){
-        this.storage.get('TriggerOnce').then((value) => {
-          if(diffDays<=7){
-            console.log("Votre abonnement arrivera bientôt à échéance.");
-            if(value === null || value === ""){
-              setTimeout(() => {
-                if(!this.renewFirst){
-                  this.renouvellementMsg("Votre abonnement arrivera bientôt à échéance.")
-                  this.storage.set("TriggerOnce", "Yes");
-                }
-              }, 200);
+
+      if(this.ifHasBeenSubscribed > 0 && this.paidUser === "good"){
+        //Check Subscription end date);
+        var ojd = moment().toDate();
+        // ojd.setDate(ojd.getDate() + 23);
+        var endDate = moment(data.ABO_DATEFIN).toDate();
+        const diffTime = Math.abs(ojd.getTime() - endDate.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+        if(checkDate !== null){
+          this.storage.get('TriggerOnce').then((value) => {
+            if(diffDays<=7){
+              console.log("Votre abonnement arrivera bientôt à échéance.");
+              if(value === null || value === ""){
+                setTimeout(() => {
+                  if(!this.renewFirst){
+                    this.renouvellementMsg("Votre abonnement arrivera bientôt à échéance.")
+                    this.storage.set("TriggerOnce", "Yes");
+                  }
+                }, 200);
+              }
+            }else{
+              console.log("Subscription validity is still good")
             }
-          }else{
-            console.log("Subscription validity is still good")
-          }
-        });
+          });
+        }
       }
     },
     (error: any) => {
