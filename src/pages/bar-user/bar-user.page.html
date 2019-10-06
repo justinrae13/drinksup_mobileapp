@@ -1,4 +1,4 @@
-<ion-content *ngIf="ifHasConnection" color="secondary" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
+<ion-content *ngIf="ifHasConnection" color="secondary" no-bounce has-bouncing="false" [forceOverscroll]="false" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchend)="touchend()" (touchmove)="touchmove($event)">
   <div class="header_bar" [ngStyle]="{'transform' : hideHeader}">
       <div *ngIf="ifHasConnection" class="hb-button" (click)="retour()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
       <div *ngIf="!ifHasConnection" class="hb-button" (click)="retour_offline()"><img src="../../assets/img/back-arrow-icon.svg">retour</div>
