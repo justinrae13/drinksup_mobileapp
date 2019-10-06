@@ -5,7 +5,7 @@
 <div class="cp_refresher_wrapper" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
   <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
 </div>
-<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
       <div class="ion_content_wrapper">
           <ion-list *ngFor="let bars of items; let i = index">
               <ion-item no-padding color="secondary" lines="none">

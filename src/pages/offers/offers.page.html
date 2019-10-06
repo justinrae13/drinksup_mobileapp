@@ -22,7 +22,7 @@
   <div class="spinner_wrapper"><div class="spinner" [ngStyle]="{'opacity' : spinner_fade}"></div></div>
 </div>
 
-<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
 
   <div class="ion_content_wrapper">
   <p *ngIf="noOffer" class="pasDoffre"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Il n'y a pas d'offre pour ce jour</p>
@@ -52,7 +52,7 @@
   </div>
 </ion-content>
 
-<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+<ion-content [ngStyle]="{'opacity' : mainOpac}"  [forceOverscroll]="false" *ngIf="!ifHasConnection" color="secondary" class="mainContent noConnContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
     <div class="no_connection">
       <img src="../../assets/img/no_connection.svg">
       <h1>Veuillez vous assurer que votre appareil est connecté au réseau.</h1>

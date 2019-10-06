@@ -13,7 +13,7 @@
 </div>
 <!-- Custom Refresher End -->
 
-<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="true" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
   
   <p *ngIf="padDeDonee" class="pasDeDonnee"><ion-icon name="information-circle"></ion-icon>&nbsp;&nbsp;Aucune offre</p>
 
