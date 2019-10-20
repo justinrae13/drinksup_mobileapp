@@ -1044,6 +1044,99 @@ opacity: 0.75 !important;
   }
 }
 
+// popUpDebut_small
+.popUpDebut_small{
+  --background: transparent !important;
+  background-color: transparent !important;
+  align-items: flex-end !important;
+  padding-bottom: 56px !important;
+  ion-backdrop {
+  opacity: 0.8 !important;
+  }
+
+  .alert-wrapper{
+    border-radius: 0 !important;
+    max-width: 100vw !important;
+    min-width: unset !important;
+    width: 100vw !important;
+    position: relative;
+    background-color: transparent !important;
+    background: url("assets/img/popupdebut.jpg") center/cover !important;
+    height: 120px !important;
+    max-height: unset !important;
+    min-height: unset !important;
+    display: flex;
+    flex-direction: column-reverse;
+    &::before{
+      content: "";
+      top: 0;
+      left: 0;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: -1;
+    }
+  }
+
+
+  .alert-head{
+    display: none !important;
+    background-color: transparent !important;
+  }
+
+  .alert-message{
+    max-height: unset !important;
+    background-color: transparent !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px !important;
+    font-family: "NBL";
+    color: #fff;
+    text-align: center;
+  }
+
+  .alert-button-group{
+    border: none;
+    box-shadow: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 20px !important;
+    width: 100% !important;
+    background-color: transparent !important;
+    padding: 0 !important;
+    padding-right: 16px !important;
+    
+    button{
+      padding: 0 !important;
+      width: 20px !important;
+      height: 20px !important;
+      margin: 0 3px;
+      max-width: 20px !important;
+      min-width: 20px !important;
+      border: none !important;
+      box-shadow: none;
+      color: #fff;
+      font-size: .8rem;
+      font-family: "NBL";
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      background-color: transparent;
+      
+      span{
+        display: flex !important;
+        margin: 0 auto !important;
+        color: #fff !important;
+        justify-content: center !important;
+        align-items: center !important;
+      }
+    }
+  }
+}
+
 ion-slides{
   table{
     border: none !important;

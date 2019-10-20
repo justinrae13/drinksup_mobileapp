@@ -437,10 +437,14 @@ export class OffersPage{
         this.storage.get('showDebutPopUp').then((debut)=>{
           if(debut === null || debut === undefined || debut === ""){
             if(data.showpopup === 1){
-                this.popUpDebutAlert();
+                setTimeout(() => {
+                  this.popUpDebutAlert();
+                }, 2000);
             }
           }else{
-              this.popUpDebutAlert();
+              setTimeout(() => {
+                this.popUpDebutAlert();
+              }, 2000);
           }
         });
         
@@ -453,11 +457,11 @@ export class OffersPage{
 
   async popUpDebutAlert(){
     const alert = await this.alertCtrl.create({
-        message: "<img src='../../assets/img/cool_popup_img.svg'/>",
-        cssClass : "popUpDebut",
+        message: "Profitez des offres gratuitement pendant la période d'essaie.",
+        cssClass : "popUpDebut_small",
         buttons: [
             {
-                text: 'OK',
+                text: 'x',
             },
         ]
     });
