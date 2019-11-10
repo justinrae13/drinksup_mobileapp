@@ -89,14 +89,14 @@ export class LoginPage {
         this.getUsers();
         setTimeout(() => {
             this.formLog = "block";
-        }, 1750);
+        }, 3200);
     }
 
     ionViewWillEnter(){
    
         setTimeout(() => {
             this.formLog = "block";
-        }, 1750);       
+        }, 3250);       
         this.loginForm.controls['PRO_EMAIL'].setValue("");
         this.loginForm.controls['PRO_PASSWORD'].setValue("");
         this.uuid = this.device.uuid;

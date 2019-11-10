@@ -24,6 +24,7 @@ export class AppComponent {
   roleUser = 'user';
   roleAdmin = 'admin';
   roleProprio = 'proprio';
+  roleVIP = 'vip';
   popup_bg : string;
   baseURI = "https://www.drinksup.ch/serveur/aksi.php";
   paidUser : string;
@@ -78,29 +79,83 @@ export class AppComponent {
         });
 
       //Check if app is launch for the first time
-        this.storage.get('firstLaunch_DrinksUp').then((first)=>{
-          if(!this.ifMatchedDeeplink){
-            console.log("The App was NOT launched by a deeplink")
-            if(first!==null || first!==undefined){
-              this.navCtrl.navigateForward('custom-splashscreen');
-                setTimeout(() => {
-                  this.splashScreen.hide();
-                }, 500);
-            }else{
-              this.storage.set('firstLaunch_DrinksUp', 'Yes');
-              this.storage.remove("SessionInKey");
-              this.storage.remove("SessionRoleKey");
-              this.storage.remove("SessionEmailKey");
-              this.storage.remove("SessionIdKey");
-              this.navCtrl.navigateForward('custom-splashscreen');
-                // setTimeout(() => {
-                  this.splashScreen.hide();
-              // }, 500);
-            }
+      this.storage.get('firstLaunch_DrinksUp').then((first)=>{
+        if(!this.ifMatchedDeeplink){
+          console.log("The App was NOT launched by a deeplink")
+          if(first!==null || first!==undefined){
+              this.storage.get('SessionInKey').then((val) => {
+                this.storage.get('SessionRoleKey').then((valRole) => {
+                    this.userSessionRole = valRole;
+          
+                      if(val===null || valRole ===null){
+                        this.navCtrl.navigateRoot('/login');
+                        this.storage.remove("SessionInKey");
+                        this.storage.remove("SessionRoleKey");
+                        this.storage.remove("SessionEmailKey");
+                        this.storage.remove("SessionIdKey");
+                      }else{
+                        if(val==='Yes' && this.userSessionRole === this.roleAdmin){
+                            this.navCtrl.navigateRoot('/tabsadmin/users');
+                        }else if(val==='Yes' && this.userSessionRole === this.roleProprio){
+                            this.navCtrl.navigateRoot('/tabsproprio/qrcode');
+                        }else if(val==='Yes' && this.userSessionRole === this.roleUser){
+                          this.storage.get('SessionIdKey').then((valId) => {
+                            this.isUserSubscribed(valId);
+                          });
+                        }else if(val==='Yes' && this.userSessionRole === this.roleVIP){
+                          this.navCtrl.navigateRoot('/tabs/offers');
+                        }else{
+                          return false;
+                        }
+                      }
+                });
+              });
+              setTimeout(() => {
+                this.splashScreen.hide();
+              }, 3000);
+
           }else{
-            console.log("The App was launched by a deeplink")
+            this.storage.set('firstLaunch_DrinksUp', 'Yes');
+            this.storage.remove("SessionInKey");
+            this.storage.remove("SessionRoleKey");
+            this.storage.remove("SessionEmailKey");
+            this.storage.remove("SessionIdKey");
+
+            this.storage.get('SessionInKey').then((val) => {
+              this.storage.get('SessionRoleKey').then((valRole) => {
+                  this.userSessionRole = valRole;
+        
+                    if(val===null || valRole ===null){
+                      this.navCtrl.navigateRoot('/login');
+                      this.storage.remove("SessionInKey");
+                      this.storage.remove("SessionRoleKey");
+                      this.storage.remove("SessionEmailKey");
+                      this.storage.remove("SessionIdKey");
+                    }else{
+                      if(val==='Yes' && this.userSessionRole === this.roleAdmin){
+                          this.navCtrl.navigateRoot('/tabsadmin/users');
+                      }else if(val==='Yes' && this.userSessionRole === this.roleProprio){
+                          this.navCtrl.navigateRoot('/tabsproprio/qrcode');
+                      }else if(val==='Yes' && this.userSessionRole === this.roleUser){
+                        this.storage.get('SessionIdKey').then((valId) => {
+                          this.isUserSubscribed(valId);
+                        });
+                      }else if(val==='Yes' && this.userSessionRole === this.roleVIP){
+                        this.navCtrl.navigateRoot('/tabs/offers');
+                      }else{
+                        return false;
+                      }
+                    }
+                });
+              });
+              setTimeout(() => {
+                this.splashScreen.hide();
+              }, 3000);
           }
-        });
+        }else{
+          console.log("The App was launched by a deeplink")
+        }
+      });
 
 
         //---------------------------------------------------------------
@@ -280,6 +335,25 @@ export class AppComponent {
         position: 'top'
     });
     toast.present();
+}
+
+isUserSubscribed(id : string) {
+  const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+      options: any		= { 'key' : 'getPaidUser', 'idUser': id},
+      url: any      	= this.baseURI;
+
+  this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
+        this.paidUser = data.validity;
+
+        if(data.validity !== "expired"){
+          this.navCtrl.navigateRoot('/tabs/offers');
+        }else{
+          this.navCtrl.navigateRoot('/tabs/bars');
+        }
+      },  
+      (error: any) => {
+          console.log(error);
+  });
 }
 
 }

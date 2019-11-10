@@ -193,8 +193,8 @@ export class AbonnementPage{
 
     paymentWithPaypal(){
         this.payPal.init({
-            PayPalEnvironmentProduction: 'YOUR_PRODUCTION_CLIENT_ID',
-            PayPalEnvironmentSandbox: 'AQXHHFD4_Nw_zfqTbTCEdqSDr8ahfAHCnMxb-ktBpRhC_xmU7UpIWovH3zgCf1MEJOEE4wC1kixs1tDQ'
+            PayPalEnvironmentProduction: 'AWp08CAc1j1GXCsna8lbIvc445sj_rnxTqUte1zurdt_inowYW44SAkWWVKtfkFNmE5CzB4e47RQ5F5N',
+            PayPalEnvironmentSandbox: 'AWp08CAc1j1GXCsna8lbIvc445sj_rnxTqUte1zurdt_inowYW44SAkWWVKtfkFNmE5CzB4e47RQ5F5N'
           }).then(() => {
             // Environments: PayPalEnvironmentNoNetwork, PayPalEnvironmentSandbox, PayPalEnvironmentProduction
             this.payPal.prepareToRender('PayPalEnvironmentSandbox', new PayPalConfiguration({

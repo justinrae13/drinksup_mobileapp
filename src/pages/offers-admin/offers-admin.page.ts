@@ -194,99 +194,99 @@ mainOpac : string = "1";
   }
 
   //My Stuff
-  scrollEvent(event){
-    let currentScroll = event.detail.scrollTop;
-    this.scrollOffsetTop = event.detail.scrollTop;
-    if(this.scrollOffsetTop > 0){
-        this.maincontent.scrollY = true;
-    }
+  // scrollEvent(event){
+  //   let currentScroll = event.detail.scrollTop;
+  //   this.scrollOffsetTop = event.detail.scrollTop;
+  //   if(this.scrollOffsetTop > 0){
+  //       this.maincontent.scrollY = true;
+  //   }
     
-    if(currentScroll > 0 && this.lastScroll <= currentScroll){
-        this.hideHeader = "-50px";
-        this.hideSubHeader = "0px";
-        this.lastScroll = currentScroll;
-    }else{
-        this.hideHeader = "0px";
-        this.hideSubHeader = "50px";
-        this.lastScroll = currentScroll;
-    }
-  }
+  //   if(currentScroll > 0 && this.lastScroll <= currentScroll){
+  //       this.hideHeader = "-50px";
+  //       this.hideSubHeader = "0px";
+  //       this.lastScroll = currentScroll;
+  //   }else{
+  //       this.hideHeader = "0px";
+  //       this.hideSubHeader = "50px";
+  //       this.lastScroll = currentScroll;
+  //   }
+  // }
 
-  pullstart(e){
-    this.touchStart = e.changedTouches[0].clientY;
-  }
+  // pullstart(e){
+  //   this.touchStart = e.changedTouches[0].clientY;
+  // }
 
-  pull(e){
-    this.animDur = "0s";
-    var touchEnd = e.changedTouches[0].clientY;
+  // pull(e){
+  //   this.animDur = "0s";
+  //   var touchEnd = e.changedTouches[0].clientY;
   
-    if (this.touchStart > touchEnd) {
-      this.refresherPosY--;
-    } else {
-      this.refresherPosY++;
-    }
+  //   if (this.touchStart > touchEnd) {
+  //     this.refresherPosY--;
+  //   } else {
+  //     this.refresherPosY++;
+  //   }
 
-    //---------------------------------------------
-    var incPosY = this.refresherPosY*12;
+  //   //---------------------------------------------
+  //   var incPosY = this.refresherPosY*12;
 
-    if (this.touchStart > touchEnd) {
+  //   if (this.touchStart > touchEnd) {
 
-    }else {
-      if(this.scrollOffsetTop == 0){
-          this.maincontent.scrollY = false;
-          this.ifPulled = true;
-          if(incPosY>= 0 && incPosY <= 200){
-            this.currPosY = incPosY;
-            this.posY = "translateY("+incPosY+"px)";
-          }
-          if(incPosY > 150 && incPosY < 200){
-            this.maincontent.scrollY = false;
-          }else{
-            this.maincontent.scrollY = true;
-          }
-      }
-    }
-  }
+  //   }else {
+  //     if(this.scrollOffsetTop == 0){
+  //         this.maincontent.scrollY = false;
+  //         this.ifPulled = true;
+  //         if(incPosY>= 0 && incPosY <= 200){
+  //           this.currPosY = incPosY;
+  //           this.posY = "translateY("+incPosY+"px)";
+  //         }
+  //         if(incPosY > 150 && incPosY < 200){
+  //           this.maincontent.scrollY = false;
+  //         }else{
+  //           this.maincontent.scrollY = true;
+  //         }
+  //     }
+  //   }
+  // }
 
-  endpull(){
-    this.maincontent.scrollY = true;
-    if(this.currPosY < 150){
-      this.refresherPosY = 0;
-      this.posY = "translateY("+this.refresherPosY+"px)";
-      this.animDur = "200ms";
-    }else{
-      //
-      if(this.scrollOffsetTop == 0 && this.ifPulled){
-        this.ifPulled = false; 
-        this.posY = "translateY("+150+"px)";
-        this.animDur = "200ms";
-        this.rotate = "rotate 600ms infinite linear";
-        this.maincontent.scrollY = false;
-        this.popFD = "block";
-        setTimeout(() => {
-          this.animDur = "500ms";
-          this.rotate = "none";
-          this.refresherPosY = 0;
-          this.posY = "translateY("+this.refresherPosY+"px)";
-        }, 2200);
+  // endpull(){
+  //   this.maincontent.scrollY = true;
+  //   if(this.currPosY < 150){
+  //     this.refresherPosY = 0;
+  //     this.posY = "translateY("+this.refresherPosY+"px)";
+  //     this.animDur = "200ms";
+  //   }else{
+  //     //
+  //     if(this.scrollOffsetTop == 0 && this.ifPulled){
+  //       this.ifPulled = false; 
+  //       this.posY = "translateY("+150+"px)";
+  //       this.animDur = "200ms";
+  //       this.rotate = "rotate 600ms infinite linear";
+  //       this.maincontent.scrollY = false;
+  //       this.popFD = "block";
+  //       setTimeout(() => {
+  //         this.animDur = "500ms";
+  //         this.rotate = "none";
+  //         this.refresherPosY = 0;
+  //         this.posY = "translateY("+this.refresherPosY+"px)";
+  //       }, 2200);
   
-        setTimeout(() => {
-          this.popFD = "none";
-          this.mainOpac = "0";
-          //Put LifeCycle Hooks Here...
-          this.ionViewWillEnter();
-          //
-        }, 2300);
+  //       setTimeout(() => {
+  //         this.popFD = "none";
+  //         this.mainOpac = "0";
+  //         //Put LifeCycle Hooks Here...
+  //         this.ionViewWillEnter();
+  //         //
+  //       }, 2300);
         
-        setTimeout(() => {
-          this.mainOpac  = "1";
-          this.maincontent.scrollY = true;
-        }, 3000);
-      }
-      //
-    }
+  //       setTimeout(() => {
+  //         this.mainOpac  = "1";
+  //         this.maincontent.scrollY = true;
+  //       }, 3000);
+  //     }
+  //     //
+  //   }
     
-  }
+  // }
 
 tous(){
     this.filteredOffres = this.offres;

@@ -19,7 +19,7 @@ const routes: Routes = [
   { path: 'bar/:id_partenaire', loadChildren: '../pages/bar/bar.module#BarPageModule'},
   { path: 'cgu', loadChildren: '../pages/cgu/cgu.module#CguPageModule' },
   { path: 'parrainage', loadChildren: '../pages/parrainage/parrainage.module#ParrainagePageModule' },
-  { path: 'custom-splashscreen', loadChildren: '../pages/custom-splashscreen/custom-splashscreen.module#CustomSplashscreenPageModule' },
+  // { path: 'custom-splashscreen', loadChildren: '../pages/custom-splashscreen/custom-splashscreen.module#CustomSplashscreenPageModule' },
   { path: 'show-map/:lat/:long/:address', loadChildren: '../pages/show-map/show-map.module#ShowMapPageModule' },
 ];
 

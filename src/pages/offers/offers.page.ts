@@ -457,7 +457,7 @@ export class OffersPage{
 
   async popUpDebutAlert(){
     const alert = await this.alertCtrl.create({
-        message: "Profitez des offres gratuitement pendant la période d'essaie.",
+        message: "Profitez des offres gratuitement pendant la période d'essai.",
         cssClass : "popUpDebut_small",
         buttons: [
             {
