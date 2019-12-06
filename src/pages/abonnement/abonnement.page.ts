@@ -8,6 +8,17 @@ import * as moment from 'moment';
 import {Storage} from '@ionic/storage';
 import * as Global from '../../app/global';
 import { TouchSequence } from 'selenium-webdriver';
+import { InAppPurchase } from '@ionic-native/in-app-purchase/ngx';
+
+const unMois = "ch.drinksup.app.DrinksupUnMois";
+const troisMois = "ch.drinksup.app.DrinksupTroisMois";
+const sixMois = "ch.drinksup.app.DrinksupSixMois";
+const douzeMois = "ch.drinksup.app.DrinksupDouzeMois";
+
+
+
+
+
 
 @Component({
     selector: 'app-abonnement',
@@ -69,7 +80,10 @@ export class AbonnementPage{
     typeAbo : string = null;
     montantAbo : string = null;
 
-    constructor(private payPal: PayPal, private modalCtrl : ModalController, private formBuilder: FormBuilder, public storage: Storage,  public http: HttpClient, public navCtrl: NavController, private alertCtrl: AlertController , private toastCtrl: ToastController) {
+    //In-app-purchase abonnements
+    abonnements : any = [];
+
+    constructor(private iap : InAppPurchase, private payPal: PayPal, private modalCtrl : ModalController, private formBuilder: FormBuilder, public storage: Storage,  public http: HttpClient, public navCtrl: NavController, private alertCtrl: AlertController , private toastCtrl: ToastController) {
         this.paiementForm = new FormGroup({
             cardNumber: new FormControl(),
             cardMonth: new FormControl(),
@@ -79,10 +93,21 @@ export class AbonnementPage{
         this.validationForm();
     }
 
+    subscribeToDrinksUp(){
+        alert("No payment needed !")
+    }
+
     ionViewWillEnter() : void{
         this.storage.get('SessionIdKey').then((val) => {
             this.loadData(val);
             this.hasBeenSubscribed(val);
+        });
+
+        this.iap.getProducts([unMois, troisMois, sixMois, douzeMois]).then((products) => {
+            console.log("Our products =>",products);
+            this.abonnements = products;
+        }).catch((err) => {
+            console.log(err);
         });
     }
 
@@ -94,6 +119,8 @@ export class AbonnementPage{
             'cardCVV' : ['', Validators.compose([Validators.maxLength(3), Validators.minLength(3), Validators.pattern('^[0-9]*$'), Validators.required])]
         });
     }
+
+    
 
     hasBeenSubscribed(idSession : number){
         let headers 	: any		= new HttpHeaders({ 'Content-Type': 'application/json'}),

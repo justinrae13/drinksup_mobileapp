@@ -4,8 +4,12 @@
 
 <ion-content color="primary">
     <h1 id="h1Top">Veuillez choisir le type d'abonnement.</h1>
-    <section [ngStyle]="{'height' : sectHeight}">
 
+    <div *ngFor="let abo of abonnements">
+        {{abo.productId}}
+    </div>
+    <section [ngStyle]="{'height' : sectHeight}">
+      <!-- (click)="typeDabo(1)" -->
         <div (click)="typeDabo(1)" [ngStyle]="{'opacity' : opac1, 'display' : display1, 'height' : height1}">
           <img src="../../assets/img/abonnement-icon-red.svg" class="bg_icon odd">
           <div class="bg_price"><span class="curr">CHF</span><span class="price">24.90</span></div>

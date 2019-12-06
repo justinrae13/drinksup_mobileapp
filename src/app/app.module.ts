@@ -44,6 +44,7 @@ import { Clipboard } from '@ionic-native/clipboard/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { Network } from '@ionic-native/network/ngx';
 import { mdTransitionAnimation } from '@ionic/core/dist/collection/utils/transition/md.transition';
+import { InAppPurchase } from '@ionic-native/in-app-purchase/ngx';
 
 
 @NgModule({
@@ -69,6 +70,7 @@ import { mdTransitionAnimation } from '@ionic/core/dist/collection/utils/transit
         Clipboard,
         Device,
         Network,
+        InAppPurchase,
         { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
     ],
     bootstrap: [AppComponent]
