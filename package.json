@@ -60,6 +60,7 @@
     "cordova-plugin-actionsheet": "^2.3.3",
     "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-advanced-http": "^2.2.0",
+    "cordova-plugin-apple-login": "^1.0.0",
     "cordova-plugin-calendar": "^5.1.5",
     "cordova-plugin-camera": "^4.1.0",
     "cordova-plugin-device": "^2.0.3",

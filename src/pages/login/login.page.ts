@@ -12,7 +12,8 @@ import { Network } from '@ionic-native/network/ngx';
 import { Events } from '@ionic/angular';
 import { AborenewService } from '../../app/service/aborenew.service';
 
-
+declare var SignInWithApple: any;
+ 
 @Component({
     selector: 'app-login',
     templateUrl: './login.page.html',
@@ -82,6 +83,11 @@ export class LoginPage {
         this.events.subscribe("wentThroughLogin",()=>{
             this.aborenew.wentThroughLoginPage = true;
         });
+
+
+        SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.info(isAvailable)
+        })
     }
 
 
