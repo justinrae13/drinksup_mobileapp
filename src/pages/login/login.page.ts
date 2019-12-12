@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
-import {NavController, ToastController, AlertController} from '@ionic/angular';
+import {NavController, ToastController, AlertController, Platform} from '@ionic/angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -12,7 +12,8 @@ import { Network } from '@ionic-native/network/ngx';
 import { Events } from '@ionic/angular';
 import { AborenewService } from '../../app/service/aborenew.service';
 
-declare var SignInWithApple: any;
+declare var cordova: any;
+declare var window: any;
  
 @Component({
     selector: 'app-login',
@@ -65,7 +66,7 @@ export class LoginPage {
     goRight : string = "translateX(0px)";
     fadeOut : string = "1";
     
-    constructor(private aborenew : AborenewService, private events : Events, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
+    constructor(private platform : Platform, private aborenew : AborenewService, private events : Events, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
         this.loginForm = new FormGroup({
             PRO_EMAIL: new FormControl(),
             PRO_PASSWORD: new FormControl(),
@@ -85,9 +86,79 @@ export class LoginPage {
         });
 
 
-        SignInWithApple.isAvailable().then(function (isAvailable) {
-            console.info(isAvailable)
+        
+    }
+
+
+appleSignIn1(){
+    this.platform.ready().then(() => {
+        cordova.plugins.SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.log("1 =====>",isAvailable)
         })
+    });
+}
+
+appleSignIn2(){
+    this.platform.ready().then(() => {
+        cordova.plugin.SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.log("1 =====>",isAvailable)
+        })
+    });
+}
+
+
+appleSignIn3(){
+    this.platform.ready().then(() => {
+        window.cordova.plugins.SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.log("2 =====>",isAvailable)
+        })
+    });
+}
+
+
+appleSignIn4(){
+    this.platform.ready().then(() => {
+        window.cordova.plugin.SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.log("2 =====>",isAvailable)
+        })
+    });
+}
+
+appleSignIn5(){
+    this.platform.ready().then(() => {
+        window.cordova.SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.log("2 =====>",isAvailable)
+        })
+    });
+}
+
+
+appleSignIn6(){
+    this.platform.ready().then(() => {
+        window.plugin.SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.log("3 =====>",isAvailable)
+        })
+    });
+}
+
+
+appleSignIn7(){
+    this.platform.ready().then(() => {
+        window.plugins.SignInWithApple.isAvailable().then(function (isAvailable) {
+            console.log("3 =====>",isAvailable)
+        })
+    });
+}
+
+
+    appleSignIn(){
+        console.log("0this===> sasadas")
+        console.log("1this===>", cordova.plugins.SignInWithApple.isAvailable())
+        this.platform.ready().then(() => {
+        console.log("2this===>", cordova.plugins.SignInWithApple.isAvailable())
+         
+        });
+        
     }
 
 

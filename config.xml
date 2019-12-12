@@ -160,6 +160,7 @@
     <plugin name="cordova-plugin-mixpanel" spec="github:laurant/cordova-mixpanel-plugin" />
     <plugin name="cordova-plugin-ionic-webview" spec="^4.1.2" />
     <plugin name="cordova-plugin-inapppurchase" spec="^1.2.0" />
+    <plugin name="cordova-plugin-sign-in-with-apple" spec="0.0.4" />
     <engine name="android" spec="7.1.4" />
     <engine name="ios" spec="5.0.1" />
 </widget>
