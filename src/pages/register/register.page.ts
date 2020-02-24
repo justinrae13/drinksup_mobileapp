@@ -26,6 +26,7 @@ export class RegisterPage implements OnInit {
   roleUser = 'user';
   roleAdmin = 'admin';
   roleProprio = 'proprio';
+  roleVIP = 'vip';
   //--transitions
   eyeOn : string = "block";
   eyeOff : string = "none";
@@ -170,18 +171,23 @@ export class RegisterPage implements OnInit {
         }
 
         checkEmailIfExist(email : string){
-
-            for(var i = 0; i < this.users.length; i++) {
-                this.pushedUserArray.push(this.users[i].INT_EMAIL);
-            }
-    
-            if(this.pushedUserArray.indexOf(email) > -1){
-                this.emailExist = true;
-                console.log("address mail exist already!");
+            if(this.users !== null){
+                for(var i = 0; i < this.users.length; i++) {
+                    this.pushedUserArray.push(this.users[i].INT_EMAIL);
+                }
+        
+                if(this.pushedUserArray.indexOf(email) > -1){
+                    this.emailExist = true;
+                    console.log("address mail exist already!");
+                }else{
+                    this.emailExist = false;
+                    console.log("address mail ready!");
+                }
             }else{
                 this.emailExist = false;
                 console.log("address mail ready!");
             }
+            
             
         }
 
@@ -203,15 +209,19 @@ export class RegisterPage implements OnInit {
                     if (this.userDetails.ROLE === this.roleAdmin) {
                         this.navCtrl.navigateRoot('/tabsadmin/users');
                         this.storage.set('SessionRoleKey', this.roleAdmin);
-                        this.sendNotification('Bienvenue !'); 
+                        this.sendNotification('Bienvenue à bord !'); 
                     } else if (this.userDetails.ROLE === this.roleProprio) {
                         this.navCtrl.navigateRoot('/tabsproprio/qrcode');
                         this.storage.set('SessionRoleKey', this.roleProprio);
-                        this.sendNotification('Bienvenue !');          
+                        this.sendNotification('Bienvenue à bord !');          
                     } else if (this.userDetails.ROLE === this.roleUser) {
                         this.navCtrl.navigateRoot('/tabs/bars');
                         this.storage.set('SessionRoleKey', this.roleUser);
-                        this.sendNotification('Bienvenue !');  
+                        this.sendNotification('Bienvenue à bord !');  
+                    } else if (this.userDetails.ROLE === this.roleVIP) {
+                        this.navCtrl.navigateRoot('/tabs/offers');
+                        this.storage.set('SessionRoleKey', this.roleVIP);
+                        this.sendNotification('Bienvenue à bord !');  
                     } else {
                         // console.log(JSON.stringify(options));
                         this.sendNotification('Email ou mot de passe erroné');

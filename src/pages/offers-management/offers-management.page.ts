@@ -195,6 +195,7 @@ export class OffersManagementPage{
                 this.sendNotification('L\'ajout de l\'offre a bien été pris en compte!');
                 this.myCal.loadEvents();
                 console.log(idEnt);
+                console.log("Méthode d'ajout d'offre à été déclanchée !")
                 this.sendNotifToAdmin("Ajout d'une nouvelle offre", this.barname);
             },
             (error: any) => {

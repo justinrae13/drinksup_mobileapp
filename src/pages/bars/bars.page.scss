@@ -190,7 +190,7 @@ ion-item{
         font-family: "NBO";
         display: flex;
         align-items: center;
-        
+        text-transform: capitalize !important;
     }
 
     .ent_rank{
@@ -304,6 +304,7 @@ ion-content{
    
            .ent_nom{
                font-size: 14px;
+               text-transform: capitalize !important;
            }  
        }
    }

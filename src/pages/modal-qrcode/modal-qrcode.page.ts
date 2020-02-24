@@ -19,7 +19,7 @@ export class ModalQrcodePage implements OnInit {
   idUser = null;
   codeContent = null;
   baseURI = Global.mainURI;
-  chosenBar = {};
+  chosenBar = <any>{};
 
 
   constructor(private http : HttpClient, private navParams : NavParams, private modalCtrl : ModalController, private barcode : BarcodeScanner) { }

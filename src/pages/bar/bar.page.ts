@@ -35,6 +35,7 @@ export class BarPage implements OnInit {
   barStatus : string;
   dayOfTheWeek : string;
   lirePlusClicked : boolean = false;
+  crwDisplay : string = "none";
 
   //style
   barInputDisabled : boolean = true;
@@ -166,6 +167,7 @@ imgLoad(){
 
     this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
     {
+        this.checkIfPhotoOneExist(data.ENT_NOM);
         var random = Math.floor(Math.random() * 10000);
         this.myBar = data;
         this.barName = data.ENT_NOM;
@@ -182,13 +184,12 @@ imgLoad(){
         }
 
         //Check bar name if it has already been updated
-        if(this.barName.substring(0, 6) === "Nom de"){
-          this.nameNotYetUpdated = true;
-        }else{
-          this.nameNotYetUpdated = false;
-        }
+        // if(this.barName.substring(0, 6) === "Nom de"){
+        //   this.nameNotYetUpdated = true;
+        // }else{
+        //   this.nameNotYetUpdated = false;
+        // }
 
-        // console.log("???",this.nameNotYetUpdated)
 
         //
         let initTextLength = data.ENT_DESCRIPTION;
@@ -257,6 +258,25 @@ updateImageName(oldNameParam : string, newNameParam : string){
       (error: any) => {
           console.log(error);
   });
+}
+
+checkIfPhotoOneExist(nameBar : string){
+    const headers: any		= new HttpHeaders({ 'Content-Type': 'application/json' }),
+    options: any		= { 'key' : 'checkIfPhotoOneExist', 'nameBar' : nameBar},
+    url: any      	= this.baseURI;
+    this.http.post(url, JSON.stringify(options), headers).subscribe((photo_one_exist: any) => {
+      console.log(photo_one_exist);
+      if(photo_one_exist === 1){
+        this.nameNotYetUpdated = true;
+      }else{
+        this.nameNotYetUpdated = false;
+      }
+      // 
+
+    },
+    (error: any) => {
+        console.log(error);
+    });
 }
 
 loadSchedule(idBarParam : string){

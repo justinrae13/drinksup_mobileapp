@@ -4,18 +4,18 @@
 
 <!-- Custom modals -->
 <!-- Backdrop -->
-<div class="custom_backdrop" id="bckdrop" (click)="closeModal()"></div>
+<div class="custom_backdrop" id="bckdrop"></div>
 
 <!-- Parrainage/Partage modal -->
 <div class="parrainage_modal" id="pm">
   <header id="pm_header_text"></header>
   <section>
     <div id="pm_body_text"></div>
-    <ion-button expand="block" id="pm_copy_btn" (click)="copyMyCode()">Copier votre code</ion-button>
+    <ion-button expand="block" id="pm_copy_btn">Copier votre code</ion-button>
   </section>
   <footer>
-    <span id="pm_btn_text" (click)="shareCode(loggedUser.Roles_ROL_ID)"></span>
-    <span (click)="closeModal()">Annuler</span>
+    <span id="pm_btn_text"></span>
+    <span>Annuler</span>
   </footer>
 </div>
 
@@ -27,24 +27,25 @@
       <p>VOTRE CODE</p>
       <h1>{{the_pasted_code}}</h1>
     </div>
-    <ion-button expand="block" (click)="pasteTheCode(loggedUser.INT_ID)">Coller le code</ion-button>
+    <ion-button expand="block" >Coller le code</ion-button>
   </section>
   <footer>
-    <span (click)="saveCode(loggedUser.INT_CODE, loggedUser.INT_ID)">Confirmer</span>
-    <span (click)="closeModal()">Annuler</span>
+    <span>Confirmer</span>
+    <span>Annuler</span>
   </footer>
 </div>
 
 
 
 <!-- Custom Refresher Start -->
-<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<!-- <div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
 <div class="cp_refresher_wrapper" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
   <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
-</div>
+</div> -->
 
-<ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
-    <div class="inner_content_wrapper">
+<!-- <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()"> -->
+<ion-content [ngStyle]="{'opacity' : mainOpac}" *ngIf="ifHasConnection" color="secondary" class="mainContent">
+  <div class="inner_content_wrapper">
     <div class="upper_content">
         <div class="upper_content_over">
             <div class="profile_pic_frame_bg" (click)="changerPhoto(loggedUser.INT_EMAIL)">
@@ -54,7 +55,7 @@
                 </div>
             </div>
             <div class="user_info_sect">
-                <h1>{{loggedUser.INT_PRENOM}}</h1>
+                <h1>{{userFullName}}</h1>
                 <h2>{{loggedUser.INT_EMAIL}}</h2>
                 <p>Membre {{dateInscription}}</p>
                 <div class="niveau" *ngIf="loggedUser.Roles_ROL_ID!==2" (click)="parrainageInfo()">{{loggedUser.INT_LEVEL}}&nbsp;&nbsp;<ion-icon name="information-circle-outline"></ion-icon></div>

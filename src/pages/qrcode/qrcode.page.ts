@@ -37,6 +37,7 @@ export class QrcodePage {
   rotate : string = "none";
   popFD : string = "none";
   mainOpac : string = "1";
+  userRole : string = "notVIP";
   
   constructor(private toastCtrl : ToastController, private alertCtrl : AlertController, private barcode : BarcodeScanner, private http : HttpClient, private storage : Storage) { }
 
@@ -128,7 +129,7 @@ export class QrcodePage {
           }else if(barId !== this.chosenBar){
             this.alert("Code invalide !<br><br>Cette offre appartient à un autre bar.", "alertRed", "close-circle");
             this.ionViewWillEnter();
-          }else if(!this.userReallySubbed){
+          }else if(!this.userReallySubbed && this.userRole === "notVIP"){
             this.alertWButton("Une anomalie s'est produite !\nL'utilisateur n'est pas abonné ! Prevenir l'administrateur.", this.user_name, this.user_email);
             this.ionViewWillEnter();
           }else if(this.ifScanned){
@@ -215,7 +216,7 @@ export class QrcodePage {
             console.log("Not subbed");
           }else{
             this.userReallySubbed = true;
-            console.log("Subbed");
+            console.log("Subbed or VIP");
           }
         },  
         (error: any) => {
@@ -343,6 +344,12 @@ export class QrcodePage {
         {
             this.user_name = data.INT_PRENOM;
             this.user_email = data.INT_EMAIL;
+            if(data.Roles_ROL_ID === 4 || data.Roles_ROL_ID === "4"){
+              this.userRole = "VIP"
+            }else{
+              this.userRole = "notVIP";
+            }
+            
         },
         (error : any) =>
         {

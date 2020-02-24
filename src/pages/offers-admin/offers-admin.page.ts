@@ -162,7 +162,7 @@ mainOpac : string = "1";
 
         this.offres = data;
         this.filteredOffres = this.offres;
-
+        this.tous();
     });
   }
 

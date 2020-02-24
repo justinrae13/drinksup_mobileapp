@@ -77,6 +77,7 @@ mainOpac : string = "1";
         this.http.post(url, JSON.stringify(options), headers).subscribe((data: any) => {
             this.users = data;
             this.usersFilter = this.users;
+            this.tous();
         });
 
   }

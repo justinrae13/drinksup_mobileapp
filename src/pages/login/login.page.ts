@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {Facebook, FacebookLoginResponse} from '@ionic-native/facebook/ngx';
-import {NavController, ToastController, AlertController} from '@ionic/angular';
+import {NavController, ToastController, AlertController, Platform} from '@ionic/angular';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
@@ -18,6 +18,8 @@ import { AborenewService } from '../../app/service/aborenew.service';
     templateUrl: './login.page.html',
     styleUrls: ['./login.page.scss'],
 })
+
+
 export class LoginPage {
     payed : string;
     userData: any;
@@ -64,7 +66,7 @@ export class LoginPage {
     goRight : string = "translateX(0px)";
     fadeOut : string = "1";
     
-    constructor(private aborenew : AborenewService, private events : Events, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
+    constructor(private platform: Platform, private aborenew : AborenewService, private events : Events, private alertCtrl : AlertController, private network: Network, private device: Device, private fb: Facebook, private route: Router, private formBuilder: FormBuilder, private navCtrl: NavController, private googlePlus : GooglePlus, private toastCtrl: ToastController, public http: HttpClient, private storage: Storage) {
         this.loginForm = new FormGroup({
             PRO_EMAIL: new FormControl(),
             PRO_PASSWORD: new FormControl(),
@@ -82,7 +84,9 @@ export class LoginPage {
         this.events.subscribe("wentThroughLogin",()=>{
             this.aborenew.wentThroughLoginPage = true;
         });
+
     }
+
 
 
     ngAfterViewInit(){
@@ -540,18 +544,24 @@ export class LoginPage {
 
     checkEmailIfExist(){
         const REG_EMAIL: string = this.registerEmail.controls['REG_EMAIL'].value;
-      
-        for(var i = 0; i < this.users.length; i++) {
-            this.pushedUserArray.push(this.users[i].INT_EMAIL);
-        }
-
-        if(this.pushedUserArray.indexOf(REG_EMAIL) > -1){
-            this.emailExistReg = true;
-            console.log("address mail exist already!");
+        if(this.users !== null){
+            for(var i = 0; i < this.users.length; i++) {
+                this.pushedUserArray.push(this.users[i].INT_EMAIL);
+            }
+    
+            if(this.pushedUserArray.indexOf(REG_EMAIL) > -1){
+                this.emailExistReg = true;
+                console.log("address mail exist already!");
+            }else{
+                this.emailExistReg = false;
+                console.log("address mail ready!");
+            }
         }else{
             this.emailExistReg = false;
             console.log("address mail ready!");
         }
+      
+        
     }
 
     forgotPass(){

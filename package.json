@@ -72,6 +72,7 @@
     "cordova-plugin-nativegeocoder": "^3.2.2",
     "cordova-plugin-nativestorage": "^2.3.2",
     "cordova-plugin-network-information": "^2.0.2",
+    "cordova-plugin-sign-in-with-apple": "0.0.4",
     "cordova-plugin-splashscreen": "^5.0.3",
     "cordova-plugin-statusbar": "^2.4.3",
     "cordova-plugin-stripe": "^1.5.3",
@@ -195,11 +196,12 @@
       "com.paypal.cordova.mobilesdk": {},
       "phonegap-plugin-barcodescanner": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
-      }
+      },
+      "cordova-plugin-sign-in-with-apple": {}
     },
     "platforms": [
-      "android",
-      "ios"
+      "ios",
+      "android"
     ]
   }
 }

@@ -28,7 +28,7 @@ export class ModalToSponsorPage{
   }
 
   toSponsor(){
-    let message = "Télécharger Drinks Up dès maintenant ! \n\n Android : https://drinksup.ch \n IOS : https://drinksup.ch \n\nN'oublies pas de saisir mon code via l'appli : "+this.code+"\n\nTu peux soit copier le message en entier ou copier juste le code et le coller dans la section \"As-tu un code?\".";
+    let message = "Télécharger Drinks Up dès maintenant ! \n\n Android : https://play.google.com/store/apps/details?id=ch.drinksup.app \n IOS : https://apps.apple.com/fr/app/drinks-up/id1485176588 \n\nN'oublies pas de saisir mon code via l'appli : "+this.code+"\n\nTu peux soit copier le message en entier ou copier juste le code et le coller dans la section \"As-tu un code?\".";
     let subject = "Drinks Up application mobile (Android/IOS)";
 
     this.socialSharing.share(message,subject,null,null).then((data) => {

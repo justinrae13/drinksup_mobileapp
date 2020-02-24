@@ -1,11 +1,12 @@
 <div class="tab_header">Scanner le code</div>
 
 <!-- Custom Refresher Start -->
-<div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
+<!-- <div class="cpr_frontdrop" [ngStyle]="{'display' : popFD}"></div>
 <div class="cp_refresher_wrapper" [ngStyle]="{'transform' : posY, 'transition' : animDur}">
   <div class="custom_pull_refresher"><img src="../../assets/img/custom_pull_refresher_arrow.svg" [ngStyle]="{'animation' : rotate}"></div>
-</div>
+</div> -->
 <ion-content [ngStyle]="{'opacity' : mainOpac}" [forceOverscroll]="false" *ngIf="ifHasConnection" color="secondary" class="mainContent" [scrollEvents]="true" (ionScroll)="scrollEvent($event)" (touchmove)="pull($event)" (touchstart)="pullstart($event)" (touchend)="endpull()">
+<ion-content [ngStyle]="{'opacity' : mainOpac}" *ngIf="ifHasConnection" color="secondary" class="mainContent">
   <div class="btn_scan_wrapper">
     <div class="scan_button" (click)="scannerCodeDelay()">
       <img src="../../assets/img/scan_icon.svg">

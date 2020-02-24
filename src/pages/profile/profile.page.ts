@@ -83,6 +83,8 @@ export class ProfilePage{
     rotate : string = "none";
     popFD : string = "none";
     mainOpac : string = "1";
+
+    userFullName : string;
     constructor(private events: Events, private aborenew : AborenewService, private nativePageTransitions: NativePageTransitions, public alertCtrl: AlertController, private toastCtrl : ToastController,private modalCtrl : ModalController,private emailComposer: EmailComposer,private fb: Facebook, private googlePlus : GooglePlus, private route: Router, public navCtrl : NavController, public storage: Storage, private http : HttpClient) {
         this.storage.get('SessionIdKey').then((valId) => {
             this.aborenew.triggerRenewal(valId,"CheckIT");
@@ -214,6 +216,7 @@ export class ProfilePage{
         this.http.post(url, JSON.stringify(options), headers).subscribe((data : any) =>
             {
                 this.loggedUser = data;
+                this.userFullName = data.INT_PRENOM.replace("Null","").replace("null","");
                 this.dateInscription = moment(this.loggedUser.INT_DATEINSCRIPTION, "YYYYMMDD").fromNow();
                 this.idInternaute = this.loggedUser.INT_ID;
                 this.userNumberOfMonthsRegistered = moment().diff(moment(this.loggedUser.INT_DATEINSCRIPTION), 'months', true);
